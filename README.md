@@ -13,9 +13,9 @@ Utilizing [GladNet4](https://github.com/HelloKitty/GladNet3/tree/gladnet4) and t
 This service is unfortunately low priority and of low usefulness and so minimal emulation for the PSOBB patching protocol will be implemented. It's suggested a non-emulated patching solution be utilized for patching the client instead.
 
 
-### Credits
+## Credits
 
-This project is built on top of 20 years of reverse engineering work done by many in the PSO community. Much was learned and owed to some of the following projects such as: Sodaboy's proxy, [Sylverant's opensource C++ DC/BB/GC server implementation](https://github.com/Sylverant/) and one of the [most recent public Tethella releases](https://github.com/justnoxx/psobb-tethealla/).
+This project is built on top of **20 years** of reverse engineering work done by many in the PSO community. Much was learned and owed to some of the following projects such as: Sodaboy's proxy, [Sylverant's opensource C++ DC/BB/GC server implementation](https://github.com/Sylverant/) and one of the [most recent public Tethella releases](https://github.com/justnoxx/psobb-tethealla/).
 
 Special thanks to @Soly for implementing and explaining the cryptography involved and his continued contributions to the underlying library that powers this server emulator found at: [Booma.Proxy](https://github.com/helloKitty/booma.proxy)
 
