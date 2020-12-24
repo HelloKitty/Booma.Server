@@ -20,14 +20,14 @@ namespace Booma
 	/// <see cref="IFactoryCreatable{TCreateType,TContextType}"/> implementation that can create <see cref="BoomaPatchManagedSession"/>s
 	/// from <see cref="SessionCreationContext"/> using an <see cref="IContainer"/> to resolve dependencies.
 	/// </summary>
-	public sealed class PatchManagedSessionFactory : IPatchManagedSessionFactory
+	public sealed class PatchManagedSessionFactory : IPatchManagedSessionFactory, IDisposable
 	{
 		/// <summary>
 		/// Service container.
 		/// </summary>
-		private IContainer Container { get; }
+		private ILifetimeScope Container { get; }
 
-		public PatchManagedSessionFactory([NotNull] IContainer container)
+		public PatchManagedSessionFactory([NotNull] ILifetimeScope container)
 		{
 			Container = container ?? throw new ArgumentNullException(nameof(container));
 		}
@@ -61,6 +61,11 @@ namespace Booma
 				scope.Dispose();
 				throw;
 			}
+		}
+
+		public void Dispose()
+		{
+			Container?.Dispose();
 		}
 	}
 }
