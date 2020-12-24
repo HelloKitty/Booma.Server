@@ -20,10 +20,18 @@ namespace Booma
 		/// </summary>
 		private IContainer Container { get; }
 
+		/// <summary>
+		/// The factory that can generate <see cref="BoomaPatchManagedSession"/>.
+		/// </summary>
+		private IPatchManagedSessionFactory SessionFactory { get; }
+
 		public BoomaPatchServerApplication(NetworkAddressInfo serverAddress, ILog logger)
 			: base(serverAddress, logger)
 		{
 			Container = BuildServiceContainer(logger);
+
+			//Kinda hacky we manually resolve this but other ways suck too.
+			SessionFactory = Container.Resolve<IPatchManagedSessionFactory>();
 		}
 
 		private static IContainer BuildServiceContainer([NotNull] ILog logger)
@@ -62,32 +70,9 @@ namespace Booma
 		{
 			if(context == null) throw new ArgumentNullException(nameof(context));
 
-			//We don't actually dispose the lifetime scope right away, we attach it to the session.
-			ILifetimeScope scope = Container.BeginLifetimeScope(c =>
-			{
-				c.RegisterInstance(context.Connection)
-					.AsSelf()
-					.ExternallyOwned();
-
-				c.RegisterInstance(context.Details)
-					.AsSelf()
-					.ExternallyOwned();
-			});
-
-			try
-			{
-				//We build the session then attach the container's lifetime scope it was built from to the session right away
-				//so it's disposed when the session is disposed.
-				BoomaPatchManagedSession session = scope.Resolve<BoomaPatchManagedSession>();
-				session.AttachDisposableResource(scope);
-				return session;
-			}
-			catch (Exception)
-			{
-				//Important to dispose of container scope if we fail to build.
-				scope.Dispose();
-				throw;
-			}
+			//Originally there was a lot of code piled into here but the factory
+			//now takes care of the complex resolving of dependencies and setup for a session.
+			return SessionFactory.Create(context);
 		}
 	}
 }
