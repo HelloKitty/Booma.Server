@@ -11,6 +11,7 @@ namespace Booma
 	/// </summary>
 	public sealed class DefaultLoggingServiceModule : Module
 	{
+		/// <inheritdoc />
 		protected override void Load(ContainerBuilder builder)
 		{
 			base.Load(builder);
@@ -19,7 +20,8 @@ namespace Booma
 
 			builder.RegisterInstance(logger)
 				.As<ILog>()
-				.SingleInstance();
+				.SingleInstance()
+				.ExternallyOwned();
 		}
 	}
 }
