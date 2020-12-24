@@ -32,48 +32,11 @@ namespace Booma
 
 			ContainerBuilder serviceBuilder = new ContainerBuilder();
 
-			serviceBuilder
-				.RegisterInstance(logger)
-				.As<ILog>()
-				.SingleInstance()
-				.ExternallyOwned();
-
-			//All the patch serializer stuff is stateless and can be shared
-			//so we're going to SingleInstance it.
-			serviceBuilder
-				.RegisterType<PatchPacketSerializer>()
-				.AsImplementedInterfaces()
-				.SingleInstance();
-
-			serviceBuilder.RegisterType<PatchPacketHeaderFactory>()
-				.AsImplementedInterfaces()
-				.SingleInstance();
-
-			serviceBuilder.RegisterType<PatchPacketHeaderSerializer>()
-				.AsImplementedInterfaces()
-				.SingleInstance();
-
-			//Handlers AND handler service should be stateless so we only need single instance.
-			serviceBuilder
-				.RegisterType<DefaultMessageHandlerService<PSOBBPatchPacketPayloadClient, SessionMessageContext<PSOBBPatchPacketPayloadServer>>>()
-				.As<IMessageHandlerService<PSOBBPatchPacketPayloadClient, SessionMessageContext<PSOBBPatchPacketPayloadServer>>>()
-				.OnActivated(args =>
-				{
-					//TODO: Autodiscovery handlers via reflection.
-					//Bind one of the default handlers
-					args.Instance.Bind<PSOBBPatchPacketPayloadClient>(new DefaultPatchMessageHandler(args.Context.Resolve<ILog>()));
-				})
-				.SingleInstance();
-
-			//This is just message serialization stuff. We don't need to make this instance per, it should be stateless.
-			serviceBuilder
-				.RegisterType<SessionMessageBuildingServiceContext<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer>>()
-				.AsSelf()
-				.SingleInstance();
-
-			serviceBuilder.RegisterType<InPlaceNetworkMessageDispatchingStrategy<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer>>()
-				.AsImplementedInterfaces()
-				.InstancePerLifetimeScope();
+			//Patch service modules
+			serviceBuilder.RegisterModule<DefaultLoggingServiceModule>()
+				.RegisterModule<PatchSerializationServiceModule>()
+				.RegisterModule<PatchMessageHandlerServiceModule>()
+				.RegisterModule<PatchMessageServicesServiceModule>();
 
 			//Obviously we need a FRESH session per lifetime.
 			serviceBuilder
