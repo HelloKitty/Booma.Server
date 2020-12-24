@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>  
+    <RootNamespace>Booma</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Booma.Packet.Patch" Version="0.0.4" />
+    <PackageReference Include="GladNet.Server.DotNetTcpServer" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Network\Structures\" />
+  </ItemGroup>
+
+</Project>
