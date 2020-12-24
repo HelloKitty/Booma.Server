@@ -44,12 +44,8 @@ namespace Booma
 			serviceBuilder.RegisterModule<DefaultLoggingServiceModule>()
 				.RegisterModule<PatchSerializationServiceModule>()
 				.RegisterModule<PatchMessageHandlerServiceModule>()
-				.RegisterModule<PatchMessageServicesServiceModule>();
-
-			//Obviously we need a FRESH session per lifetime.
-			serviceBuilder
-				.RegisterType<BoomaPatchManagedSession>()
-				.InstancePerLifetimeScope();
+				.RegisterModule<PatchMessageServicesServiceModule>()
+				.RegisterModule<PatchManagedSessionServiceModule>();
 
 			serviceBuilder
 				.RegisterInstance(new NetworkConnectionOptions(2, 2, 1024))
