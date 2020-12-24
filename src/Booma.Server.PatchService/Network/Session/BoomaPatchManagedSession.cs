@@ -38,8 +38,9 @@ namespace Booma
 			IMessageSendService<PSOBBPatchPacketPayloadServer> sendService = new QueueBasedMessageSendService<PSOBBPatchPacketPayloadServer>(this.MessageService.OutgoingMessageQueue);
 			CachedSessionContext = new SessionMessageContext<PSOBBPatchPacketPayloadServer>(details, sendService, ConnectionService);
 
-			//We should immediately send a hello for testing!
+			//We should immediately send a hello for testing and then skip patching.
 			sendService.SendMessageAsync(new PatchingMessagePayload("Hello world!"));
+			sendService.SendMessageAsync(new PatchingDoneCommandPayload());
 		}
 
 		/// <inheritdoc />
