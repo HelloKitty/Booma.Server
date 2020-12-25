@@ -37,10 +37,6 @@ namespace Booma
 			//Either way we build a send service and session context that captures it to provide to handling.
 			IMessageSendService<PSOBBPatchPacketPayloadServer> sendService = new QueueBasedMessageSendService<PSOBBPatchPacketPayloadServer>(this.MessageService.OutgoingMessageQueue);
 			CachedSessionContext = new SessionMessageContext<PSOBBPatchPacketPayloadServer>(details, sendService, ConnectionService);
-
-			//We should immediately send a hello for testing and then skip patching.
-			sendService.SendMessageAsync(new PatchingMessagePayload("Hello world!"));
-			sendService.SendMessageAsync(new PatchingDoneCommandPayload());
 		}
 
 		/// <inheritdoc />
@@ -48,6 +44,15 @@ namespace Booma
 		{
 			//Dispatcher will route and/or handle messages incoming.
 			await MessageDispatcher.DispatchNetworkMessageAsync(CachedSessionContext, message, token);
+		}
+
+		protected override void OnSessionInitialized()
+		{
+			base.OnSessionInitialized();
+
+			//We should immediately send a hello for testing and then skip patching.
+			CachedSessionContext.MessageService.SendMessageAsync(new PatchingMessagePayload("Hello world!"));
+			CachedSessionContext.MessageService.SendMessageAsync(new PatchingDoneCommandPayload());
 		}
 	}
 }
