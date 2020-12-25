@@ -15,8 +15,15 @@ namespace Booma
 			ILog logger = new ConsoleLogger(LogLevel.All, true);
 			logger.Info($"Starting Patch Service.");
 
-			await new BoomaPatchServerApplication(new NetworkAddressInfo(Address, 11000), logger)
-				.BeginListeningAsync();
+			try
+			{
+				await new BoomaPatchServerApplication(new NetworkAddressInfo(Address, 11000), logger)
+					.BeginListeningAsync();
+			}
+			finally
+			{
+				logger.Warn($"Shutting down Patch Service.");
+			}
 		}
 	}
 }
