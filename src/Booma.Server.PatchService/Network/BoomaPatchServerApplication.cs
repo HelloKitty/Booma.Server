@@ -11,64 +11,37 @@ using JetBrains.Annotations;
 namespace Booma
 {
 	/// <summary>
-	/// GladNet <see cref="TcpGladNetServerApplication{TManagedSessionType}"/> implementation for PSO Booma Patch Service.
+	/// GladNet <see cref="BaseBoomaServerApplication{TManagedSessionType}"/> implementation for PSO Booma Patch Service.
 	/// </summary>
-	public sealed class BoomaPatchServerApplication : TcpGladNetServerApplication<BoomaPatchManagedSession>
+	public sealed class BoomaPatchServerApplication : BaseBoomaServerApplication<BoomaPatchManagedSession>
 	{
-		/// <summary>
-		/// Service container for the application.
-		/// </summary>
-		private IContainer Container { get; }
-
-		/// <summary>
-		/// The factory that can generate <see cref="BoomaPatchManagedSession"/>.
-		/// </summary>
-		private IManagedSessionFactory<BoomaPatchManagedSession> SessionFactory { get; }
-
-		public BoomaPatchServerApplication(NetworkAddressInfo serverAddress, ILog logger)
+		public BoomaPatchServerApplication(NetworkAddressInfo serverAddress, ILog logger) 
 			: base(serverAddress, logger)
 		{
-			Container = BuildServiceContainer(logger);
 
-			//Kinda hacky we manually resolve this but other ways suck too.
-			SessionFactory = Container.Resolve<IManagedSessionFactory<BoomaPatchManagedSession>>();
 		}
 
-		private static IContainer BuildServiceContainer([NotNull] ILog logger)
+		protected override ContainerBuilder RegisterServices(ContainerBuilder builder)
 		{
-			if (logger == null) throw new ArgumentNullException(nameof(logger));
-
-			ContainerBuilder serviceBuilder = new ContainerBuilder();
-
 			//Patch service modules
-			serviceBuilder.RegisterModule<DefaultLoggingServiceModule>()
+			builder.RegisterModule<DefaultLoggingServiceModule>()
 				.RegisterModule<PatchSerializationServiceModule>()
 				.RegisterModule<PatchMessageHandlerServiceModule>()
 				.RegisterModule<PatchMessageServicesServiceModule>()
 				.RegisterModule<ServerSessionServiceModule<BoomaPatchManagedSession>>();
 
-			serviceBuilder
+			builder
 				.RegisterInstance(new NetworkConnectionOptions(2, 2, 1024))
 				.AsSelf()
 				.SingleInstance();
 
-			return serviceBuilder.Build();
+			return builder;
 		}
 
 		/// <inheritdoc />
 		protected override bool IsClientAcceptable(Socket connection)
 		{
 			return true;
-		}
-
-		/// <inheritdoc />
-		public override BoomaPatchManagedSession Create(SessionCreationContext context)
-		{
-			if(context == null) throw new ArgumentNullException(nameof(context));
-
-			//Originally there was a lot of code piled into here but the factory
-			//now takes care of the complex resolving of dependencies and setup for a session.
-			return SessionFactory.Create(context);
 		}
 	}
 }
