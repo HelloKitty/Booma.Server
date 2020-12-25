@@ -36,11 +36,16 @@ namespace Booma
 			builder.RegisterModule<InPlaceMessageDispatchingServiceModule<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer>>();
 
 			builder
-				.RegisterInstance(new NetworkConnectionOptions(2, 2, 1024))
+				.RegisterInstance(BuildNetworkOptions())
 				.AsSelf()
 				.SingleInstance();
 
 			return builder;
+		}
+
+		private static NetworkConnectionOptions BuildNetworkOptions()
+		{
+			return new NetworkConnectionOptions(NetworkPatchPacketConstants.PATCH_PACKET_HEADER_SIZE, NetworkPatchPacketConstants.PATCH_PACKET_HEADER_SIZE, NetworkPatchPacketConstants.PATCH_PACKET_MAXIMUM_SIZE);
 		}
 
 		/// <inheritdoc />
