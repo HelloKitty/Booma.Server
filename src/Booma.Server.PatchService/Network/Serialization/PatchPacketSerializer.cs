@@ -15,15 +15,14 @@ namespace Booma
 	/// </summary>
 	public sealed class PatchPacketSerializer : IMessageSerializer<PSOBBPatchPacketPayloadServer>, IMessageDeserializer<PSOBBPatchPacketPayloadClient>
 	{
-		//TODO: Inject
 		/// <summary>
 		/// The adapted serialization service.
 		/// </summary>
-		private SerializerService Serializer { get; } = new SerializerService();
+		private ISerializerService Serializer { get; }
 
-		public PatchPacketSerializer()
+		public PatchPacketSerializer([NotNull] ISerializerService serializer)
 		{
-			Serializer.RegisterPatchPacketSerializers();
+			Serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
 		}
 
 		/// <inheritdoc />

@@ -2,32 +2,25 @@
 using System.Collections.Generic;
 using System.Text;
 using Autofac;
+using Autofac.Core;
+using Booma.Proxy;
+using FreecraftCore.Serializer;
+using JetBrains.Annotations;
 
 namespace Booma
 {
 	/// <summary>
 	/// Patch service packet/header serialization service module.
 	/// </summary>
-	public sealed class PatchSerializationServiceModule : Module
+	public sealed class PatchSerializationServiceModule 
+		: ServerMessageSerializationServiceModule<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer, PatchPacketSerializer, PatchPacketHeaderFactory, PatchPacketHeaderSerializer>
 	{
-		protected override void Load(ContainerBuilder builder)
+		protected override void OnSerializerCreated([NotNull] IActivatedEventArgs<SerializerService> serializerActivatedEventArgs)
 		{
-			base.Load(builder);
+			if (serializerActivatedEventArgs == null) throw new ArgumentNullException(nameof(serializerActivatedEventArgs));
 
-			//All the patch serializer stuff is stateless and can be shared
-			//so we're going to SingleInstance it.
-			builder
-				.RegisterType<PatchPacketSerializer>()
-				.AsImplementedInterfaces()
-				.SingleInstance();
-
-			builder.RegisterType<PatchPacketHeaderFactory>()
-				.AsImplementedInterfaces()
-				.SingleInstance();
-
-			builder.RegisterType<PatchPacketHeaderSerializer>()
-				.AsImplementedInterfaces()
-				.SingleInstance();
+			//Only need to register the patch serializers.
+			serializerActivatedEventArgs.Instance.RegisterPatchPacketSerializers();
 		}
 	}
 }
