@@ -28,8 +28,12 @@ namespace Booma
 			builder.RegisterModule<DefaultLoggingServiceModule>()
 				.RegisterModule<PatchSerializationServiceModule>()
 				.RegisterModule<PatchMessageHandlerServiceModule>()
-				.RegisterModule<PatchMessageServicesServiceModule>()
 				.RegisterModule<ServerSessionServiceModule<BoomaPatchManagedSession>>();
+
+			//We want in-place handling on the patch server since really message reading throughput isn't required
+			//and this handling strategy avoids greedy clients from saturating the CPU with handling packets.
+			//1 packet is read and handled at a time with this strategy.
+			builder.RegisterModule<InPlaceMessageDispatchingServiceModule<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer>>();
 
 			builder
 				.RegisterInstance(new NetworkConnectionOptions(2, 2, 1024))
