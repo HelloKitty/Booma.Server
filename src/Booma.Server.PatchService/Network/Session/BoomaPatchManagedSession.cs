@@ -27,6 +27,8 @@ namespace Booma
 		{
 			base.OnSessionInitialized();
 
+			//Default PSOBB clients will get redirected to Port 12000 on the same IP.
+			//Unless we redirect them first! Which we DO have a packet for!
 			//We should immediately skip patching.
 			SendService.SendMessageAsync<PatchingDoneCommandPayload>();
 		}

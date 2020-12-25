@@ -7,11 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
-    <PackageReference Include="Booma.Packet.Common" Version="0.0.5" />
+    <PackageReference Include="Booma.Packet.Common" Version="0.0.6" />
     <PackageReference Include="Common.Logging" Version="3.4.1" />
     <PackageReference Include="FreecraftCore.Serializer" Version="4.0.47" />
-    <PackageReference Include="GladNet.API.Server" Version="4.0.4" />
-    <PackageReference Include="GladNet.Server.DotNetTcpServer" Version="4.0.4" />
+    <PackageReference Include="GladNet.API.Server" Version="4.0.5" />
+    <PackageReference Include="GladNet.Server.DotNetTcpServer" Version="4.0.5" />
   </ItemGroup>
 
 </Project>
