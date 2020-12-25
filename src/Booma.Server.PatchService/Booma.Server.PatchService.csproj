@@ -16,4 +16,8 @@
     <Folder Include="Network\Structures\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Booma.Server.Common\Booma.Server.Common.csproj" />
+  </ItemGroup>
+
 </Project>

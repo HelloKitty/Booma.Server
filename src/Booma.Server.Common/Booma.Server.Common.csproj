@@ -5,4 +5,12 @@
     <RootNamespace>Booma</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Autofac\Modules\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Common.Logging" Version="3.4.1" />
+  </ItemGroup>
+
 </Project>
