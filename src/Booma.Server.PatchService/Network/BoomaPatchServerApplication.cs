@@ -21,6 +21,7 @@ namespace Booma
 
 		}
 
+		/// <inheritdoc />
 		protected override ContainerBuilder RegisterServices(ContainerBuilder builder)
 		{
 			//Patch service modules
