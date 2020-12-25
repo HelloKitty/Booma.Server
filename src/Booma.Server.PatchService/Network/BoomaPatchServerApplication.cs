@@ -45,7 +45,7 @@ namespace Booma
 				.RegisterModule<PatchSerializationServiceModule>()
 				.RegisterModule<PatchMessageHandlerServiceModule>()
 				.RegisterModule<PatchMessageServicesServiceModule>()
-				.RegisterModule<PatchManagedSessionServiceModule>();
+				.RegisterModule<ServerSessionServiceModule<BoomaPatchManagedSession>>();
 
 			serviceBuilder
 				.RegisterInstance(new NetworkConnectionOptions(2, 2, 1024))
