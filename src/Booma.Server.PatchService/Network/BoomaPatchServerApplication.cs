@@ -23,7 +23,7 @@ namespace Booma
 		/// <summary>
 		/// The factory that can generate <see cref="BoomaPatchManagedSession"/>.
 		/// </summary>
-		private IPatchManagedSessionFactory SessionFactory { get; }
+		private IManagedSessionFactory<BoomaPatchManagedSession> SessionFactory { get; }
 
 		public BoomaPatchServerApplication(NetworkAddressInfo serverAddress, ILog logger)
 			: base(serverAddress, logger)
@@ -31,7 +31,7 @@ namespace Booma
 			Container = BuildServiceContainer(logger);
 
 			//Kinda hacky we manually resolve this but other ways suck too.
-			SessionFactory = Container.Resolve<IPatchManagedSessionFactory>();
+			SessionFactory = Container.Resolve<IManagedSessionFactory<BoomaPatchManagedSession>>();
 		}
 
 		private static IContainer BuildServiceContainer([NotNull] ILog logger)

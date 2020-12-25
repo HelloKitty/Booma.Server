@@ -21,7 +21,7 @@ namespace Booma
 				.InstancePerLifetimeScope();
 
 			//Should be stateless, so we should be alright.
-			builder.RegisterType<PatchManagedSessionFactory>()
+			builder.RegisterType<ManagedSessionFactory<BoomaPatchManagedSession>>()
 				.AsImplementedInterfaces()
 				.SingleInstance();
 		}
