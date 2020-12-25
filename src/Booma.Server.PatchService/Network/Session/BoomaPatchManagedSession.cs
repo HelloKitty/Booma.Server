@@ -27,9 +27,8 @@ namespace Booma
 		{
 			base.OnSessionInitialized();
 
-			//We should immediately send a hello for testing and then skip patching.
-			SendService.SendMessageAsync(new PatchingMessagePayload("Hello world!"));
-			SendService.SendMessageAsync(new PatchingDoneCommandPayload());
+			//We should immediately skip patching.
+			SendService.SendMessageAsync<PatchingDoneCommandPayload>();
 		}
 	}
 }
