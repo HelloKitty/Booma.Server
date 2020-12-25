@@ -12,7 +12,8 @@ namespace Booma
 	/// Patch service message handler service module.
 	/// Registers the services and handling for message handlers.
 	/// </summary>
-	public sealed class PatchMessageHandlerServiceModule : ServerMessageHandlerServiceModule<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer, DefaultPatchMessageHandler>
+	public sealed class PatchMessageHandlerServiceModule 
+		: ServerMessageHandlerServiceModule<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer, DefaultBoomaMessageHandler<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer, PatchNetworkOperationCode>>
 	{
 
 	}
