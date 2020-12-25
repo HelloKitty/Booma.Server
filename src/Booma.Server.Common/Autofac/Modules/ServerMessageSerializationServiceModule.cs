@@ -23,12 +23,11 @@ namespace Booma
 	/// <see cref="SerializerService"/> for FreecraftCore.
 	/// <para />
 	/// </summary>
-	public abstract class ServerMessageSerializationServiceModule<TMessageReadType, TMessageWriteType, TMessageSerializerType, THeaderFactoryType, TPacketHeaderSerializerType> : Module
-			where TMessageSerializerType : IMessageSerializer<TMessageWriteType>, IMessageDeserializer<TMessageReadType>
-			where THeaderFactoryType : IPacketHeaderFactory
-			where TPacketHeaderSerializerType : IMessageSerializer<PacketHeaderSerializationContext<TMessageWriteType>>
-			where TMessageWriteType : class
-			where TMessageReadType : class
+	public abstract class ServerMessageSerializationServiceModule<TMessageReadType, TMessageWriteType, THeaderFactoryType, TPacketHeaderSerializerType> : Module
+		where THeaderFactoryType : IPacketHeaderFactory
+		where TPacketHeaderSerializerType : IMessageSerializer<PacketHeaderSerializationContext<TMessageWriteType>>
+		where TMessageWriteType : class, ITypeSerializerWritingStrategy<TMessageWriteType>
+		where TMessageReadType : class, ITypeSerializerReadingStrategy<TMessageReadType>
 	{
 		/// <inheritdoc />
 		protected sealed override void Load(ContainerBuilder builder)
@@ -37,7 +36,7 @@ namespace Booma
 
 			//Assume all the serializer stuff is stateless and can be shared
 			//so we're going to SingleInstance it.
-			builder.RegisterType<TMessageSerializerType>()
+			builder.RegisterType<DefaultFreecraftCoreMessageSerializer<TMessageReadType, TMessageWriteType>>()
 				.AsSelf()
 				.As<IMessageSerializer<TMessageWriteType>>()
 				.As<IMessageDeserializer<TMessageReadType>>()

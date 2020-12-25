@@ -13,7 +13,7 @@ namespace Booma
 	/// Patch service packet/header serialization service module.
 	/// </summary>
 	public sealed class PatchSerializationServiceModule 
-		: ServerMessageSerializationServiceModule<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer, PatchPacketSerializer, PatchPacketHeaderFactory, PatchPacketHeaderSerializer>
+		: ServerMessageSerializationServiceModule<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer, PatchPacketHeaderFactory, PatchPacketHeaderSerializer>
 	{
 		protected override void OnSerializerCreated([NotNull] IActivatedEventArgs<SerializerService> serializerActivatedEventArgs)
 		{
