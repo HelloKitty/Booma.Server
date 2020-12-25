@@ -17,11 +17,6 @@ namespace Booma
 		{
 			base.Load(builder);
 
-			//This is just message serialization stuff. We don't need to make this instance per, it should be stateless.
-			builder.RegisterType<SessionMessageBuildingServiceContext<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer>>()
-				.AsSelf()
-				.SingleInstance();
-
 			builder.RegisterType<InPlaceNetworkMessageDispatchingStrategy<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer>>()
 				.AsImplementedInterfaces()
 				.InstancePerLifetimeScope();

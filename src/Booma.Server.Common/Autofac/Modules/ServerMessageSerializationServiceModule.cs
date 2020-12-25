@@ -61,6 +61,11 @@ namespace Booma
 				.As<ISerializerService>()
 				.SingleInstance()
 				.OnActivated(OnSerializerCreated);
+
+			//This is just message serialization stuff. We don't need to make this instance per, it should be stateless.
+			builder.RegisterType<SessionMessageBuildingServiceContext<TMessageReadType, TMessageWriteType>>()
+				.AsSelf()
+				.SingleInstance();
 		}
 
 		/// <summary>
