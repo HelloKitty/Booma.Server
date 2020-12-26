@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
+using Generic.Math;
 using GladNet;
 
 namespace Booma
@@ -31,9 +32,14 @@ namespace Booma
 		public override Task HandleMessageAsync(SessionMessageContext<TMessageWriteType> context, TMessageReadType message, CancellationToken token = new CancellationToken())
 		{
 			if(Logger.IsInfoEnabled)
-				Logger.Info($"Unhandled: {message.OperationCode}:{message.OperationCode:X4} Type: {message.GetType().Name}");
+				Logger.Info($"Unhandled: {message.OperationCode}:{CalculateOpcodeValue(message):X4} Type: {message.GetType().Name}");
 
 			return Task.CompletedTask;
+		}
+
+		private static short CalculateOpcodeValue(TMessageReadType message)
+		{
+			return GenericMath.Convert<TOperationCodeType, short>(message.OperationCode);
 		}
 	}
 }
