@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Autofac;
 using Booma.Proxy;
@@ -15,6 +16,12 @@ namespace Booma
 	public sealed class GameMessageHandlerServiceModule 
 		: ServerMessageHandlerServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer, DefaultBoomaMessageHandler<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer, GameNetworkOperationCode>>
 	{
-
+		/// <inheritdoc />
+		protected override void RegisterHandlers(ContainerBuilder builder)
+		{
+			//Register all handlers in this assembly.
+			foreach (var handler in GetHandlerTypes(GetType().Assembly))
+				RegisterHandler(builder, handler);
+		}
 	}
 }
