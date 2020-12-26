@@ -10,7 +10,7 @@
     <PackageReference Include="Autofac" Version="6.1.0" />
     <PackageReference Include="Booma.Crypto.Common" Version="0.0.8" />
     <PackageReference Include="Booma.Packet.Game" Version="0.0.8" />
-    <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.1" />
+    <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.2" />
   </ItemGroup>
 
   <ItemGroup>
