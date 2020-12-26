@@ -34,7 +34,11 @@ namespace Booma
 			//And this is the SD database and database services.
 			services.RegisterServiceDiscoveryDatabase(builder =>
 			{
-				builder.UseMySql("server=127.0.0.1;port=3306;Database=guardians.global;Uid=root;Pwd=test;");
+				builder.UseMySql("server=127.0.0.1;port=3306;Database=booma.global;Uid=root;Pwd=test;", optionsBuilder =>
+				{
+					//Required for external migrations to run.
+					optionsBuilder.MigrationsAssembly(GetType().Assembly.FullName);
+				});
 			});
 		}
 
