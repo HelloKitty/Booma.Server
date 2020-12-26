@@ -32,6 +32,7 @@ namespace Booma
 
 			//TODO: Default for game service shouldn't be InPlace but stuff like Auth and Character session can use inplace.
 			builder.RegisterModule<InPlaceMessageDispatchingServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>();
+			builder.RegisterModule<ServerMessagingServicesModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>();
 
 			//This is the Blowfish services/dependencies required for network cryptography.
 			builder.RegisterModule<NetworkCryptoServiceModule>();
