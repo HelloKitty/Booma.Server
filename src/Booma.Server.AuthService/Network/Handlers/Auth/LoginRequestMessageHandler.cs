@@ -10,24 +10,25 @@ using GladNet;
 namespace Booma
 {
 	/// <summary>
-	/// <see cref="BaseGameMessageHandler{TMessageType}"/> for the <see cref="SharedLoginRequest93Payload"/>.
+	/// <see cref="GameRequestMessageHandler{TMessageRequestType,TMessageResponseType}"/> for the <see cref="SharedLoginRequest93Payload"/>.
 	/// </summary>
-	public sealed class LoginRequestMessageHandler : BaseGameMessageHandler<SharedLoginRequest93Payload>
+	public sealed class LoginRequestMessageHandler : GameRequestMessageHandler<SharedLoginRequest93Payload, SharedLoginResponsePayload>
 	{
 		private ILog Logger { get; }
 
-		public LoginRequestMessageHandler([JetBrains.Annotations.NotNull] ILog logger)
+		public LoginRequestMessageHandler([NotNull] ILog logger)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
 		/// <inheritdoc />
-		public override async Task HandleMessageAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, SharedLoginRequest93Payload message, CancellationToken token = default)
+		protected override async Task<SharedLoginResponsePayload> HandleRequestAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, 
+			SharedLoginRequest93Payload message, CancellationToken token = default)
 		{
-			if (Logger.IsInfoEnabled)
+			if(Logger.IsInfoEnabled)
 				Logger.Info($"Sending Auth Response: Banned for test purposes.");
 
-			await context.MessageService.SendMessageAsync(new SharedLoginResponsePayload(AuthenticationResponseCode.LOGIN_93BB_BANNED), token);
+			return new SharedLoginResponsePayload(AuthenticationResponseCode.LOGIN_93BB_BANNED);
 		}
 	}
 }
