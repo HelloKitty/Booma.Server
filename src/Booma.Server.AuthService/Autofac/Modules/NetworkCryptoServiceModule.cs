@@ -36,6 +36,12 @@ namespace Booma
 				.AsSelf()
 				.InstancePerLifetimeScope()
 				.OwnedByLifetimeScope();
+
+			builder.RegisterType<DefaultWelcomeMessageFactory>()
+				.AsSelf()
+				.AsImplementedInterfaces()
+				.InstancePerLifetimeScope()
+				.OwnedByLifetimeScope(); //dispose of internal crypto
 		}
 	}
 }
