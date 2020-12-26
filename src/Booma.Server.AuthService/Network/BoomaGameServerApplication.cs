@@ -36,6 +36,7 @@ namespace Booma
 
 			//This is the Blowfish services/dependencies required for network cryptography.
 			builder.RegisterModule<NetworkCryptoServiceModule>();
+			builder.RegisterModule<ServiceDiscoveryServiceModule>();
 
 			builder
 				.RegisterInstance(BuildNetworkOptions())
