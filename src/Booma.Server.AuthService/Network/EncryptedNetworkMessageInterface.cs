@@ -47,6 +47,13 @@ namespace Booma
 		/// </summary>
 		private readonly object ReadSyncObj = new object();
 
+		//A total hack, but easy to do.
+		/// <summary>
+		/// Indicates if we should encrypt outgoing messages.
+		/// By default we shouldn't.
+		/// </summary>
+		private bool ShouldEncryptOutgoing { get; set; } = false;
+			
 		public EncryptedNetworkMessageInterface(NetworkConnectionOptions networkOptions, 
 			SocketConnection connection, 
 			SessionMessageBuildingServiceContext<TMessageReadType, TMessageWriteType> messageServices,
@@ -140,7 +147,15 @@ namespace Booma
 			//It's not actually threadsafe to encrypt since many threads are allows to send a packet at one time technically
 			//But we should assume this is never called on multiple threads, since caller should worry about Pipelines threadsafety
 			//Now we must encrypt entire payload, including the padding of the block.
-			CryptoService.EncryptionProvider.Crypt(buffer, 0, length);
+			if (ShouldEncryptOutgoing)
+				CryptoService.EncryptionProvider.Crypt(buffer, 0, length);
+			else
+			{
+				//After the first message is sent we should enable outgoing crypto.
+				//It's a total hack to do it this way but it makes it so initialization
+				//doesn't depend on order.
+				ShouldEncryptOutgoing = true;
+			}
 
 			return length;
 		}
