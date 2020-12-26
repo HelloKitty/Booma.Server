@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GladNet;
+using JetBrains.Annotations;
 using Pipelines.Sockets.Unofficial;
 
 namespace Booma
@@ -40,13 +41,29 @@ namespace Booma
 			: base(networkOptions, connection, details, messageServices)
 		{
 			MessageDispatcher = messageDispatcher ?? throw new ArgumentNullException(nameof(messageDispatcher));
+			CachedSessionContext = CreateSessionContext(details);
+		}
+
+		protected BaseBoomaManagedSession(NetworkConnectionOptions networkOptions, SocketConnection connection, SessionDetails details,
+			SessionMessageBuildingServiceContext<TMessageReadType, TMessageWriteType> messageServices,
+			INetworkMessageDispatchingStrategy<TMessageReadType, TMessageWriteType> messageDispatcher,
+			INetworkMessageInterface<TMessageReadType, TMessageWriteType> messageInterface)
+			: base(networkOptions, connection, details, messageServices, messageInterface)
+		{
+			MessageDispatcher = messageDispatcher ?? throw new ArgumentNullException(nameof(messageDispatcher));
+			CachedSessionContext = CreateSessionContext(details);
+		}
+
+		private SessionMessageContext<TMessageWriteType> CreateSessionContext([NotNull] SessionDetails details)
+		{
+			if (details == null) throw new ArgumentNullException(nameof(details));
 
 			//We build the session context 1 time because it should not change
 			//Rather than inject as a dependency, we can build it in here. Really optional to inject
 			//or build it in CTOR
 			//Either way we build a send service and session context that captures it to provide to handling.
 			IMessageSendService<TMessageWriteType> sendService = new QueueBasedMessageSendService<TMessageWriteType>(this.MessageService.OutgoingMessageQueue);
-			CachedSessionContext = new SessionMessageContext<TMessageWriteType>(details, sendService, ConnectionService);
+			return new SessionMessageContext<TMessageWriteType>(details, sendService, ConnectionService);
 		}
 
 		/// <inheritdoc />
