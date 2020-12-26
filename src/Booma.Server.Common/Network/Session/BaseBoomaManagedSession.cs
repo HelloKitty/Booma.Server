@@ -54,6 +54,16 @@ namespace Booma
 			CachedSessionContext = CreateSessionContext(details);
 		}
 
+		protected BaseBoomaManagedSession(NetworkConnectionOptions networkOptions, SocketConnection connection, SessionDetails details,
+			SessionMessageBuildingServiceContext<TMessageReadType, TMessageWriteType> messageServices,
+			INetworkMessageDispatchingStrategy<TMessageReadType, TMessageWriteType> messageDispatcher,
+			SessionMessageInterfaceServiceContext<TMessageReadType, TMessageWriteType> messageInterfaces)
+			: base(networkOptions, connection, details, messageServices, messageInterfaces)
+		{
+			MessageDispatcher = messageDispatcher ?? throw new ArgumentNullException(nameof(messageDispatcher));
+			CachedSessionContext = CreateSessionContext(details);
+		}
+
 		private SessionMessageContext<TMessageWriteType> CreateSessionContext([NotNull] SessionDetails details)
 		{
 			if (details == null) throw new ArgumentNullException(nameof(details));
