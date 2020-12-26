@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Booma.Server.Common\Booma.Server.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Network\Handlers\" />
-  </ItemGroup>
-
 </Project>
