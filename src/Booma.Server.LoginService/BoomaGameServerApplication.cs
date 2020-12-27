@@ -24,27 +24,24 @@ namespace Booma
 		/// <inheritdoc />
 		protected override ContainerBuilder RegisterServices(ContainerBuilder builder)
 		{
-			//Patch service modules
+			//These are the default Game Service Modules
 			builder.RegisterModule<DefaultLoggingServiceModule>()
 				.RegisterModule<GameSerializationServiceModule>()
 				.RegisterModule<GameMessageHandlerServiceModule>()
-				.RegisterModule<ServerSessionServiceModule<BoomaGameManagedSession>>();
+				.RegisterModule<ServerSessionServiceModule<BoomaGameManagedSession>>()
+				.RegisterModule<GameGeneralServiceModule>()
+				.RegisterModule<ServerMessagingServicesModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>()
+				.RegisterModule<NetworkCryptoServiceModule>() //This is the Blowfish services/dependencies required for network cryptography.
+				.RegisterModule<ServiceDiscoveryServiceModule>();
 
-			//TODO: Default for game service shouldn't be InPlace but stuff like Auth and Character session can use inplace.
-			builder.RegisterModule<InPlaceMessageDispatchingServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>();
-			builder.RegisterModule<ServerMessagingServicesModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>();
-
-			//This is the Blowfish services/dependencies required for network cryptography.
-			builder.RegisterModule<NetworkCryptoServiceModule>();
-			builder.RegisterModule<ServiceDiscoveryServiceModule>();
-
-			builder.RegisterModule<LoginServiceModule>();
-			builder.RegisterModule<GameGeneralServiceModule>();
-
-			builder
-				.RegisterInstance(BuildNetworkOptions())
+			builder.RegisterInstance(BuildNetworkOptions())
 				.AsSelf()
 				.SingleInstance();
+
+			//These are the custom service specified modules
+			//TODO: Default for game service shouldn't be InPlace but stuff like Auth and Character session can use inplace.
+			builder.RegisterModule<InPlaceMessageDispatchingServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>();
+			builder.RegisterModule<LoginServiceModule<RedirectCharacterServiceOnLoginResponseEventListener>>();
 
 			return builder;
 		}
