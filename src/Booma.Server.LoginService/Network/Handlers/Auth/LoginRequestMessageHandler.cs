@@ -15,7 +15,7 @@ namespace Booma
 	/// <summary>
 	/// <see cref="GameRequestMessageHandler{TMessageRequestType,TMessageResponseType}"/> for the <see cref="SharedLoginRequest93Payload"/>.
 	/// </summary>
-	public sealed class LoginRequestMessageHandler : GameRequestMessageHandler<SharedLoginRequest93Payload, SharedLoginResponsePayload>
+	public sealed class LoginRequestMessageHandler : GameRequestMessageHandler<SharedLoginRequest93Payload, SharedLoginResponsePayload>, ILoginResponseSentEventSubscribable
 	{
 		/// <summary>
 		/// Logging service.
@@ -31,6 +31,9 @@ namespace Booma
 		/// Factory that can build successful <see cref="SharedLoginResponsePayload"/> messages.
 		/// </summary>
 		private ISuccessfulLogin93ResponseMessageFactory SuccessResponseFactory { get; }
+
+		/// <inheritdoc />
+		public event EventHandler<LoginResponseSentEventArgs> OnLoginResponseSent;
 
 		public LoginRequestMessageHandler([NotNull] ILog logger,
 			[NotNull] IServiceResolver<IAuthenticationService> authenticationServiceResolver,
@@ -102,6 +105,15 @@ namespace Booma
 				//TODO: Handle error cases
 				return new SharedLoginResponsePayload(AuthenticationResponseCode.LOGIN_93BB_BAD_USER_PWD);
 			}
+		}
+
+		/// <inheritdoc />
+		protected override Task OnResponseMessageSendAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, SharedLoginResponsePayload response, SendResult sendResult)
+		{
+			//broadcast the login response.
+			OnLoginResponseSent?.Invoke(this, new LoginResponseSentEventArgs(response.ResponseCode, context));
+
+			return base.OnResponseMessageSendAsync(context, response, sendResult);
 		}
 	}
 }
