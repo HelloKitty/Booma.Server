@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Glader.ASP.ServiceDiscovery;
 using Microsoft.EntityFrameworkCore;
@@ -27,9 +28,21 @@ namespace Booma
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			//https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
+			ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+			ServicePointManager.CheckCertificateRevocationList = false;
+
+			//Don't remember why this is needed, BUT old Auth service had it.
+			services.Configure<IISOptions>(options =>
+			{
+				options.AutomaticAuthentication = false;
+			});
+
 			//Just add the SD controller
 			services.AddControllers()
-				.RegisterServiceDiscoveryController();
+				.RegisterServiceDiscoveryController()
+				.AddNewtonsoftJson();
 
 			//And this is the SD database and database services.
 			services.RegisterServiceDiscoveryDatabase(builder =>
