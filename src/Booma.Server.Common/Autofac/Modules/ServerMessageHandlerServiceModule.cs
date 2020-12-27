@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using Autofac;
 using Common.Logging;
+using Glader.Essentials;
 using GladNet;
 using JetBrains.Annotations;
 using Module = Autofac.Module;
@@ -91,9 +92,14 @@ namespace Booma
 		protected static void RegisterHandler(ContainerBuilder builder, Type handlerType)
 		{
 			//TODO: Throw if invalid handler type.
-			builder.RegisterType(handlerType)
+			var registrationBuilder = builder.RegisterType(handlerType)
 				.As<ITypeBindable<IMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>, TMessageReadType>>()
 				.SingleInstance();
+
+			//TODO: Assert it is assignable to.
+			foreach (var additional in handlerType.GetCustomAttributes<AdditionalRegistrationAsAttribute>())
+				registrationBuilder = registrationBuilder
+					.As(additional.ServiceType);
 		}
 
 		/// <summary>

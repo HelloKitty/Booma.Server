@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Booma.Proxy;
 using Common.Logging;
 using Glader.ASP.Authentication;
+using Glader.Essentials;
 using GladNet;
 using Refit;
 
@@ -15,6 +16,7 @@ namespace Booma
 	/// <summary>
 	/// <see cref="GameRequestMessageHandler{TMessageRequestType,TMessageResponseType}"/> for the <see cref="SharedLoginRequest93Payload"/>.
 	/// </summary>
+	[AdditionalRegistrationAs(typeof(ILoginResponseSentEventSubscribable))]
 	public sealed class LoginRequestMessageHandler : GameRequestMessageHandler<SharedLoginRequest93Payload, SharedLoginResponsePayload>, ILoginResponseSentEventSubscribable
 	{
 		/// <summary>
