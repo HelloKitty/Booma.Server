@@ -51,7 +51,7 @@ namespace Booma
 			CryptoInitializable.EncryptionInitializable.Initialize(serverIV.ToArray());
 			CryptoInitializable.DecryptionInitializable.Initialize(clientIV.ToArray());
 
-			return new SharedWelcomePayload(WelcomeMessage, serverIV, clientIV);
+			return new SharedWelcomePayload(WelcomeMessage, serverIV.ToArray(), clientIV.ToArray());
 		}
 
 		/// <inheritdoc />
