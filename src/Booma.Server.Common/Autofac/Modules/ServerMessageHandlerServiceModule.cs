@@ -67,56 +67,5 @@ namespace Booma
 		{
 
 		}
-
-		/// <summary>
-		/// Registers a bindable <see cref="IMessageHandler{TMessageType,TMessageContext}"/> in the provider container.
-		/// </summary>
-		/// <typeparam name="THandlerType">The handler to register.</typeparam>
-		/// <param name="builder"></param>
-		/// <returns></returns>
-		protected ContainerBuilder RegisterHandler<THandlerType>(ContainerBuilder builder)
-			where THandlerType : IMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>, 
-			ITypeBindable<IMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>, TMessageReadType>
-		{
-			RegisterHandler(builder, typeof(THandlerType));
-			return builder;
-		}
-
-		/// <summary>
-		/// Registers a bindable <see cref="IMessageHandler{TMessageType,TMessageContext}"/> in the provider container.
-		/// </summary>
-		/// <param name="builder"></param>
-		/// <param name="handlerType">Type of handler.</param>
-		/// <exception cref="ArgumentException">Throws if the handler type isn't a message handler.</exception>
-		/// <returns></returns>
-		protected static void RegisterHandler(ContainerBuilder builder, Type handlerType)
-		{
-			//TODO: Throw if invalid handler type.
-			var registrationBuilder = builder.RegisterType(handlerType)
-				.As<ITypeBindable<IMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>, TMessageReadType>>()
-				.SingleInstance();
-
-			//TODO: Assert it is assignable to.
-			foreach (var additional in handlerType.GetCustomAttributes<AdditionalRegistrationAsAttribute>())
-				registrationBuilder = registrationBuilder
-					.As(additional.ServiceType);
-		}
-
-		/// <summary>
-		/// Parses the provided <see cref="Assembly"/> to locate all handler types.
-		/// </summary>
-		/// <param name="assembly">The assembly to parse.</param>
-		/// <returns>Enumerable of all available message handler types.</returns>
-		protected static IEnumerable<Type> GetHandlerTypes([NotNull] Assembly assembly)
-		{
-			if (assembly == null) throw new ArgumentNullException(nameof(assembly));
-
-			return assembly.GetTypes()
-				.Where(t => !t.IsAbstract)
-				.Where(t => !t.IsAssignableTo<TDefaultHandlerType>()) //don't find the default!
-				.Where(t => t.IsAssignableTo<ITypeBindable<IMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>, TMessageReadType>>())
-				.Where(t => t.IsAssignableTo<ITypeBindable<IMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>, TMessageReadType>>())
-				.ToArray();
-		}
 	}
 }

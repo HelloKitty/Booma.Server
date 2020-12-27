@@ -18,7 +18,7 @@ namespace Booma
 			try
 			{
 				//Auth/Login port for some reason is 12000
-				await new BoomaGameServerApplication(new NetworkAddressInfo(Address, 12000), logger)
+				await new BoomaLoginServerApplication(new NetworkAddressInfo(Address, 12000), logger)
 					.BeginListeningAsync();
 			}
 			finally

@@ -19,9 +19,8 @@ namespace Booma
 		/// <inheritdoc />
 		protected override void RegisterHandlers(ContainerBuilder builder)
 		{
-			//Register all handlers in this assembly.
-			foreach (var handler in GetHandlerTypes(typeof(GameMessageHandlerServiceModule).Assembly)) //registers all handlers in the Game project
-				RegisterHandler(builder, handler);
+			base.RegisterHandlers(builder);
+			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(typeof(GameMessageHandlerServiceModule).Assembly));
 		}
 	}
 }
