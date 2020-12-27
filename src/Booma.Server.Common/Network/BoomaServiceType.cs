@@ -23,5 +23,10 @@ namespace Booma
 		/// The Authentication service.
 		/// </summary>
 		AuthService = 2,
+
+		/// <summary>
+		/// The character service.
+		/// </summary>
+		CharacterService = 3,
 	}
 }

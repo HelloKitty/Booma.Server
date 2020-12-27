@@ -32,6 +32,11 @@ namespace Booma
 		public const string BOOMA_PATCH_SERVICE_NAME = "PATCH";
 
 		/// <summary>
+		/// Represents the constant string identifier for a Booma service name.
+		/// </summary>
+		public const string BOOMA_CHARACTER_SERVICE_NAME = "CHARACTER";
+
+		/// <summary>
 		/// Gets a constant service name based on the service type.
 		/// </summary>
 		/// <param name="type">The service name.</param>
@@ -48,6 +53,8 @@ namespace Booma
 					return BOOMA_LOGIN_SERVICE_NAME;
 				case BoomaServiceType.AuthService:
 					return BOOMA_AUTHENTICATION_SERVICE_NAME;
+				case BoomaServiceType.CharacterService:
+					return BOOMA_CHARACTER_SERVICE_NAME;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(type), type, null);
 			}
