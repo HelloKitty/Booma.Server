@@ -27,7 +27,7 @@ namespace Booma
 			//These are the default Game Service Modules
 			builder.RegisterModule<DefaultLoggingServiceModule>()
 				.RegisterModule<GameSerializationServiceModule>()
-				.RegisterModule<GameMessageHandlerServiceModule>()
+				.RegisterModule<SharedGameMessageHandlerServiceModule>()
 				.RegisterModule<ServerSessionServiceModule<BoomaGameManagedSession>>()
 				.RegisterModule<GameGeneralServiceModule>()
 				.RegisterModule<ServerMessagingServicesModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>()

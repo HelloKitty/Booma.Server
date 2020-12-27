@@ -10,17 +10,18 @@ using GladNet;
 namespace Booma
 {
 	/// <summary>
-	/// Game service message handler service module.
+	/// Default Game service message handler service module.
 	/// Registers the services and handling for message handlers.
+	/// Registers all shared/default handlers.
 	/// </summary>
-	public sealed class GameMessageHandlerServiceModule 
+	public sealed class SharedGameMessageHandlerServiceModule 
 		: ServerMessageHandlerServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer, DefaultBoomaMessageHandler<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer, GameNetworkOperationCode>>
 	{
 		/// <inheritdoc />
 		protected override void RegisterHandlers(ContainerBuilder builder)
 		{
 			base.RegisterHandlers(builder);
-			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(typeof(GameMessageHandlerServiceModule).Assembly));
+			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(typeof(SharedGameMessageHandlerServiceModule).Assembly));
 		}
 	}
 }
