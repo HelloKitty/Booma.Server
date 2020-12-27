@@ -33,7 +33,7 @@ namespace Booma
 			//Redirect the session on success
 			await RedirectionFactory
 				.Create()
-				.RedirectAsync(BoomaServiceType.LoginService, args.MessageContext.MessageService);
+				.RedirectAsync(BoomaServiceType.CharacterService, args.MessageContext.MessageService);
 		}
 	}
 }
