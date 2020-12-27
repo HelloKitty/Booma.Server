@@ -39,12 +39,28 @@ namespace Booma
 			//Concept here is to dispatch to the request handler and get a response to send.
 			TMessageResponseType response = await HandleRequestAsync(context, message, token);
 
-			if (AwaitResponseSend)
-				await context.MessageService.SendMessageAsync(response, token);
-			else
+			SendResult result = SendResult.Error;
+			try
+			{
+				if (AwaitResponseSend)
+					result = await context.MessageService.SendMessageAsync(response, token);
+				else
 #pragma warning disable 4014
-				context.MessageService.SendMessageAsync(response, token);
+				{
+					context.MessageService.SendMessageAsync(response, token);
+					result = SendResult.Enqueued; //TODO: This is a hacky guess.
+				}
 #pragma warning restore 4014
+			}
+			catch (Exception e)
+			{
+				result = SendResult.Error;
+				throw;
+			}
+			finally
+			{
+				await OnResponseMessageSendAsync(context, response, result);
+			}
 		}
 
 		/// <summary>
@@ -56,5 +72,20 @@ namespace Booma
 		/// <param name="token">Cancel token.</param>
 		/// <returns></returns>
 		protected abstract Task<TMessageResponseType> HandleRequestAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, TMessageRequestType message, CancellationToken token = default);
+
+		/// <summary>
+		/// Implementer can override this method as a callback/event for when the <see cref="response"/> has been sent to the session.
+		/// Called after <see cref="HandleMessageAsync"/>.
+		///
+		/// Implementers should not await directly within this message as it blocks the request pipeline unless they are absolutely sure they want this to happen.
+		/// </summary>
+		/// <param name="context">The message context.</param>
+		/// <param name="response">The response message sent.</param>
+		/// <param name="sendResult">The sent result of the response message.</param>
+		/// <returns></returns>
+		protected virtual Task OnResponseMessageSendAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, TMessageResponseType response, SendResult sendResult)
+		{
+			return Task.CompletedTask;
+		}
 	}
 }
