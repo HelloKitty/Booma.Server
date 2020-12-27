@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Booma.Server.AuthService", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booma.Server.Game", "src\Booma.Server.Game\Booma.Server.Game.csproj", "{C5AD69AD-9116-4BFD-8F96-137D30A1CE5C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Booma.Server.CharacterService", "src\Booma.Server.CharacterService\Booma.Server.CharacterService.csproj", "{113C3B67-E255-4E47-AD25-4387A02E3181}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{C5AD69AD-9116-4BFD-8F96-137D30A1CE5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5AD69AD-9116-4BFD-8F96-137D30A1CE5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5AD69AD-9116-4BFD-8F96-137D30A1CE5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{113C3B67-E255-4E47-AD25-4387A02E3181}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{113C3B67-E255-4E47-AD25-4387A02E3181}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{113C3B67-E255-4E47-AD25-4387A02E3181}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{113C3B67-E255-4E47-AD25-4387A02E3181}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{9D4CF945-A085-4CAC-BB62-15E3ECB4DB7C} = {7D9FD5C0-739C-4DA0-9F90-F832CBC90100}
 		{BB823FE5-7E0C-4218-B3AA-D60135212C74} = {7D9FD5C0-739C-4DA0-9F90-F832CBC90100}
 		{C5AD69AD-9116-4BFD-8F96-137D30A1CE5C} = {7D9FD5C0-739C-4DA0-9F90-F832CBC90100}
+		{113C3B67-E255-4E47-AD25-4387A02E3181} = {7D9FD5C0-739C-4DA0-9F90-F832CBC90100}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {146E1F83-8720-4378-8D78-F715F01D7FC3}
