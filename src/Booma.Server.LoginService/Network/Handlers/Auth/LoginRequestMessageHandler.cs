@@ -28,12 +28,19 @@ namespace Booma
 		/// </summary>
 		private IServiceResolver<IAuthenticationService> AuthenticationServiceResolver { get; }
 
+		/// <summary>
+		/// Factory that can build successful <see cref="SharedLoginResponsePayload"/> messages.
+		/// </summary>
+		private ISuccessfulLogin93ResponseMessageFactory SuccessResponseFactory { get; }
+
 		public LoginRequestMessageHandler([NotNull] ILog logger,
-			[NotNull] IServiceResolver<IAuthenticationService> authenticationServiceResolver)
+			[NotNull] IServiceResolver<IAuthenticationService> authenticationServiceResolver,
+			[NotNull] ISuccessfulLogin93ResponseMessageFactory successResponseFactory)
 			: base(true)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			AuthenticationServiceResolver = authenticationServiceResolver ?? throw new ArgumentNullException(nameof(authenticationServiceResolver));
+			SuccessResponseFactory = successResponseFactory ?? throw new ArgumentNullException(nameof(successResponseFactory));
 		}
 
 		/// <inheritdoc />
@@ -78,7 +85,7 @@ namespace Booma
 				//TODO: Send more accurate error response.
 				//If token is valid then auth was successful, otherwise something is wrong with credentials.
 				if (authResult.isTokenValid)
-					return new SharedLoginResponsePayload(AuthenticationResponseCode.LOGIN_93BB_OK);
+					return SuccessResponseFactory.Create(new SuccessfulLoginResponseCreationContext(authResult, message));
 				else
 					return new SharedLoginResponsePayload(AuthenticationResponseCode.LOGIN_93BB_BAD_USER_PWD);
 			}
