@@ -32,6 +32,9 @@ namespace Booma
 			builder.RegisterModule<InPlaceMessageDispatchingServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>();
 			builder.RegisterModule<LoginServiceModule>();
 
+			//Character service handlers
+			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(GetType().Assembly));
+
 			return builder;
 		}
 
