@@ -107,7 +107,7 @@ namespace Booma
 			if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
 
 			TServiceType service = RestService
-				.For<TServiceType>($"{endpoint.Address}:{endpoint.Port}");
+				.For<TServiceType>($"{endpoint.Address}:{endpoint.Port}", new RefitSettings() { HttpMessageHandlerFactory = () => new BypassHttpsValidationHandler() });
 
 			return new ServiceResolveResult<TServiceType>(service);
 		}
