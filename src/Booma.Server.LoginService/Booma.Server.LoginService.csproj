@@ -12,16 +12,12 @@
     <PackageReference Include="Booma.Packet.Game" Version="0.0.8" />
     <PackageReference Include="Glader.ASP.Authentication.Client" Version="0.0.2" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.2" />
-    <PackageReference Include="Glader.Essentials.Events" Version="2.2.43" />
+    <PackageReference Include="Glader.Essentials.Events" Version="2.2.44" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Booma.Server.Common\Booma.Server.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
