@@ -39,6 +39,7 @@ namespace Booma
 			builder.RegisterModule<ServiceDiscoveryServiceModule>();
 
 			builder.RegisterModule<LoginServiceModule>();
+			builder.RegisterModule<GameGeneralServiceModule>();
 
 			builder
 				.RegisterInstance(BuildNetworkOptions())
