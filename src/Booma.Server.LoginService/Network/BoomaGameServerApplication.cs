@@ -5,6 +5,7 @@ using System.Text;
 using Autofac;
 using Booma.Proxy;
 using Common.Logging;
+using GladMMO;
 using GladNet;
 using JetBrains.Annotations;
 
@@ -37,6 +38,9 @@ namespace Booma
 			//This is the Blowfish services/dependencies required for network cryptography.
 			builder.RegisterModule<NetworkCryptoServiceModule>();
 			builder.RegisterModule<ServiceDiscoveryServiceModule>();
+
+			//Registers the auth service.
+			builder.RegisterModule(new ServiceDiscoverableServiceModule<IAuthenticationService>(BoomaServiceType.AuthService));
 
 			builder
 				.RegisterInstance(BuildNetworkOptions())
