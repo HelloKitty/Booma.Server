@@ -105,12 +105,20 @@ namespace Booma
 		}
 
 		/// <inheritdoc />
-		protected override TMessageReadType ReadIncomingPacketPayload(in ReadResult result, IPacketHeader header)
+		protected override TMessageReadType ReadIncomingPacketPayload(in ReadOnlySequence<byte> result, IPacketHeader header)
 		{
 			lock (ReadSyncObj)
 			{
 				if (isDisposed)
 					throw new ObjectDisposedException(nameof(IncomingDecryptedPacketBuffer));
+
+				//We have a special case where the payload is empty and so no more bytes will exist.
+				//So only the current buffer is required and it's already decrypted and everything
+				if (result.IsEmpty)
+				{
+					int emptyOffset = 0;
+					return MessageServices.MessageDeserializer.Deserialize(new Span<byte>(IncomingDecryptedPacketBuffer, 0, BlockSize - 2), ref emptyOffset);
+				}
 
 				Span<byte> buffer = new Span<byte>(IncomingDecryptedPacketBuffer);
 				int remainingChunkSize = ConvertToBlocksizeCount(header.PacketSize) - BlockSize;
@@ -118,7 +126,7 @@ namespace Booma
 				//This copy is BAD but it really avoids a lot of API headaches
 				//PacketSize + padding - BlockSize is the remaining buffer
 				//We skip 6 bytes since blocksize - lengthsize is 6. 6 bytes left over from header read operation.
-				result.Buffer.Slice(0, remainingChunkSize).CopyTo(buffer.Slice(6));
+				result.Slice(0, remainingChunkSize).CopyTo(buffer.Slice(6));
 
 				//WARNING: DON'T SKIP BY BLOCKSIZE! ONLY 6 BYTES, SINCE 2 BYTES WERE DROPPED OFF.
 				//Decrypt ONLY the packet AFTER the header block (8 bytes blocksize - 2) skipped since header is decrypted).
