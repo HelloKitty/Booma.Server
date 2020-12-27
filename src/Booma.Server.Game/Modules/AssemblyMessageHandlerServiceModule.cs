@@ -77,7 +77,6 @@ namespace Booma
 
 			return assembly.GetTypes()
 				.Where(t => t.IsAssignableTo<ITypeBindable<IMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>, TMessageReadType>>())
-				.Where(t => t.IsAssignableTo<ITypeBindable<IMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>, TMessageReadType>>())
 				.Where(t => !t.IsAbstract)
 				.Where(t => !t.IsAssignableTo<BaseDefaultMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>>()) //not a default handler
 				.ToArray();
