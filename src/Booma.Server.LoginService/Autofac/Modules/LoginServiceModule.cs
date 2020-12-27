@@ -4,7 +4,7 @@ using System.Text;
 using Autofac;
 using Booma;
 using Booma.Proxy;
-using GladMMO;
+using Glader.ASP.Authentication;
 
 namespace Booma
 {

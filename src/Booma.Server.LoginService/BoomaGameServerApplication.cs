@@ -5,7 +5,6 @@ using System.Text;
 using Autofac;
 using Booma.Proxy;
 using Common.Logging;
-using GladMMO;
 using GladNet;
 using JetBrains.Annotations;
 
