@@ -13,7 +13,7 @@ namespace Booma
 		static async Task Main(string[] args)
 		{
 			ILog logger = new ConsoleLogger(LogLevel.All, true);
-			logger.Info($"Starting Login/Auth Service.");
+			logger.Info($"Starting Login Service.");
 
 			try
 			{
@@ -23,7 +23,7 @@ namespace Booma
 			}
 			finally
 			{
-				logger.Warn($"Shutting down Login/Auth Service.");
+				logger.Warn($"Shutting down Login Service.");
 			}
 		}
 	}
