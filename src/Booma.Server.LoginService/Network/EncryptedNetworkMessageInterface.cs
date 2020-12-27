@@ -72,7 +72,7 @@ namespace Booma
 			//This is just like the base implementation except we decrypt the 8 bytes sometimes and store the left over bytes
 			//from the buffer.
 			IPacketHeader header;
-			using (var context = new PacketHeaderCreationContext(buffer, exactHeaderByteCount))
+			using (var context = new PacketHeaderCreationContext(buffer, BlockSize))
 			{
 				//Decrypt if we need to.
 				Span<byte> headerBuffer = context.GetSpan();
@@ -88,7 +88,7 @@ namespace Booma
 					//Copy the remaining 6 bytes of the header buffer to the decrypted packet buffer.
 					//these bytes will be needed for for the payload.
 					headerBuffer
-						.Slice(2, headerBuffer.Length - 2)
+						.Slice(2, BlockSize - 2)
 						.CopyTo(IncomingDecryptedPacketBuffer);
 				}
 			}
@@ -113,11 +113,16 @@ namespace Booma
 					throw new ObjectDisposedException(nameof(IncomingDecryptedPacketBuffer));
 
 				Span<byte> buffer = new Span<byte>(IncomingDecryptedPacketBuffer);
+				int remainingChunkSize = ConvertToBlocksizeCount(header.PacketSize) - BlockSize;
 
 				//This copy is BAD but it really avoids a lot of API headaches
 				//PacketSize + padding - BlockSize is the remaining buffer
 				//We skip 6 bytes since blocksize - lengthsize is 6. 6 bytes left over from header read operation.
-				result.Buffer.Slice(0, ConvertToBlocksizeCount(header.PacketSize) - BlockSize).CopyTo(buffer.Slice(6));
+				result.Buffer.Slice(0, remainingChunkSize).CopyTo(buffer.Slice(6));
+
+				//WARNING: DON'T SKIP BY BLOCKSIZE! ONLY 6 BYTES, SINCE 2 BYTES WERE DROPPED OFF.
+				//Decrypt ONLY the packet AFTER the header block (8 bytes blocksize - 2) skipped since header is decrypted).
+				CryptoService.DecryptionProvider.Crypt(buffer.Slice(6, remainingChunkSize), 0, remainingChunkSize);
 
 				//It's important we only allow the serializer to see the REAL payload size.
 				//Don't show it the garbage bytes, so we slice at PayloadSize and not blockAdjustedSize.
