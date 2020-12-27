@@ -30,6 +30,7 @@ namespace Booma
 
 		public LoginRequestMessageHandler([NotNull] ILog logger,
 			[NotNull] IServiceResolver<IAuthenticationService> authenticationServiceResolver)
+			: base(true)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			AuthenticationServiceResolver = authenticationServiceResolver ?? throw new ArgumentNullException(nameof(authenticationServiceResolver));
