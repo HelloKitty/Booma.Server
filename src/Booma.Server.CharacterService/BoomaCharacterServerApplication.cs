@@ -30,7 +30,9 @@ namespace Booma
 			//These are the custom service specified modules
 			//TODO: Default for game service shouldn't be InPlace but stuff like Auth and Character session can use inplace.
 			builder.RegisterModule<InPlaceMessageDispatchingServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>();
-			builder.RegisterModule<LoginServiceModule>();
+
+			//Login module that redirects to the ship list if they're on that stage.
+			builder.RegisterModule<LoginServiceModule<RedirectShipListLoginResponseEventListener>>();
 
 			//Character service handlers
 			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(GetType().Assembly));

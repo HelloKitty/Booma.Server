@@ -12,10 +12,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Events\Listeners\" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
   </ItemGroup>
 
