@@ -13,7 +13,6 @@
   
   <ItemGroup>
     <Folder Include="Events\Listeners\" />
-    <Folder Include="Modules\" />
   </ItemGroup>
   
   <ItemGroup>
