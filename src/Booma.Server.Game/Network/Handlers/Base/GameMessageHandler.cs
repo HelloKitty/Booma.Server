@@ -10,7 +10,7 @@ namespace Booma
 	/// Base <see cref="BaseSpecificMessageHandler{TMessageType,TBaseMessageType,TMessageContext}"/> for <see cref="PSOBBGamePacketPayloadClient"/>s.
 	/// </summary>
 	/// <typeparam name="TMessageType">The specific client message.</typeparam>
-	public abstract class BaseGameMessageHandler<TMessageType> : BaseSpecificMessageHandler<TMessageType, PSOBBGamePacketPayloadClient, SessionMessageContext<PSOBBGamePacketPayloadServer>> 
+	public abstract class GameMessageHandler<TMessageType> : BaseSpecificMessageHandler<TMessageType, PSOBBGamePacketPayloadClient, SessionMessageContext<PSOBBGamePacketPayloadServer>> 
 		where TMessageType : PSOBBGamePacketPayloadClient
 	{
 

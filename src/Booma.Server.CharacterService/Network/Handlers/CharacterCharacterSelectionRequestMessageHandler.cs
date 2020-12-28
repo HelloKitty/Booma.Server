@@ -13,7 +13,7 @@ namespace Booma
 	/// <see cref="CharacterCharacterSelectionRequestPayload"/> message handler.
 	/// Character screen sends this to select or preview information about the character.
 	/// </summary>
-	public sealed class CharacterCharacterSelectionRequestMessageHandler : BaseGameMessageHandler<CharacterCharacterSelectionRequestPayload>
+	public sealed class CharacterCharacterSelectionRequestMessageHandler : GameMessageHandler<CharacterCharacterSelectionRequestPayload>
 	{
 		private ILog Logger { get; }
 

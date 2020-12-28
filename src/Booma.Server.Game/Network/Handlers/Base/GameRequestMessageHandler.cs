@@ -9,11 +9,11 @@ using GladNet;
 namespace Booma
 {
 	/// <summary>
-	/// Special <see cref="BaseGameMessageHandler{TMessageType}"/> that implements request/response type semantics.
+	/// Special <see cref="GameMessageHandler{TMessageType}"/> that implements request/response type semantics.
 	/// </summary>
 	/// <typeparam name="TMessageRequestType"></typeparam>
 	/// <typeparam name="TMessageResponseType"></typeparam>
-	public abstract class GameRequestMessageHandler<TMessageRequestType, TMessageResponseType> : BaseGameMessageHandler<TMessageRequestType> 
+	public abstract class GameRequestMessageHandler<TMessageRequestType, TMessageResponseType> : GameMessageHandler<TMessageRequestType> 
 		where TMessageRequestType : PSOBBGamePacketPayloadClient
 		where TMessageResponseType : PSOBBGamePacketPayloadServer
 	{
