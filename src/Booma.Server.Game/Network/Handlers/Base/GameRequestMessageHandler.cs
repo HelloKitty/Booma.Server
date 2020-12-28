@@ -39,6 +39,10 @@ namespace Booma
 			//Concept here is to dispatch to the request handler and get a response to send.
 			TMessageResponseType response = await HandleRequestAsync(context, message, token);
 
+			//Support returning nothing
+			if (response == default)
+				return;
+
 			SendResult result = SendResult.Error;
 			try
 			{
