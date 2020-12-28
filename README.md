@@ -12,6 +12,13 @@ Utilizing [GladNet4](https://github.com/HelloKitty/GladNet3/tree/gladnet4) and t
 
 This service is unfortunately low priority and of low usefulness and so minimal emulation for the PSOBB patching protocol will be implemented. It's suggested a non-emulated patching solution be utilized for patching the client instead.
 
+### Login
+
+**[Login Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.LoginService)**: TCP Server Application that defaults to running on port 12000. Protocol based on [Booma.Packet.Game](https://github.com/HelloKitty/Booma.Proxy/tree/master/src/Booma.Packet.Game). See the [documentation](https://github.com/HelloKitty/Booma.Proxy/blob/master/docs/GamePacketDocumentation.md) for valid message/packet types.
+
+This service is redirected to by the Patch Service and acts as a TCP endpoint for PSOBB clients to **initially** authenticate through. The process for logging into a TCP service on the PSOBB backend is the same across almost all services, this process is not exclusive to the Login Service. The client sends a [Login93](https://github.com/HelloKitty/Booma.Proxy/blob/00e5a01b62ebc97d15c2d62eee6d416464b867cf/src/Booma.Packet.Game/Shared/Payloads/Client/SharedLoginRequest93Payload.cs) packet after the [Welcome Packet](https://github.com/HelloKitty/Booma.Proxy/blob/3cb7d5de7acd241fd99d834222aa1aafa3df69e2/src/Booma.Packet.Game/Shared/Payloads/Server/SharedWelcomePayload.cs) from the service is sent. These two packets are critical to establishing a valid session from the server and PSOBB client. They initialize the crytography for the session and authenticate the user.
+
+The Login Service exists only to validate the credentials of the user or send them back to the Titlescreen. If authentication is successful it will [Redirect](https://github.com/HelloKitty/Booma.Proxy/blob/00e5a01b62ebc97d15c2d62eee6d416464b867cf/src/Booma.Packet.Game/Shared/Payloads/Server/SharedConnectionRedirectPayload.cs) them to the Character Service. This login process happens across all services and the Login Service itself does not actually perform the authentication of the session. The Auth Service does this.
 
 ## Credits
 
