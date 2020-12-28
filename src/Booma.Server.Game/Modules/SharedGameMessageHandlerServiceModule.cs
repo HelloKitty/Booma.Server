@@ -15,7 +15,7 @@ namespace Booma
 	/// Registers all shared/default handlers.
 	/// </summary>
 	public sealed class SharedGameMessageHandlerServiceModule 
-		: ServerMessageHandlerServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer, DefaultBoomaMessageHandler<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer, GameNetworkOperationCode>>
+		: ServerMessageHandlerServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer, DefaultGameBoomaMessageHandler>
 	{
 		/// <inheritdoc />
 		protected override void RegisterHandlers(ContainerBuilder builder)

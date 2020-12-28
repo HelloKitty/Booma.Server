@@ -14,7 +14,8 @@ namespace Booma
 	/// </summary>
 	/// <typeparam name="TMessageReadType">Read type.</typeparam>
 	/// <typeparam name="TMessageWriteType">Write type.</typeparam>
-	public sealed class DefaultBoomaMessageHandler<TMessageReadType, TMessageWriteType, TOperationCodeType> : BaseDefaultMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>> 
+	/// <typeparam name="TOperationCodeType"></typeparam>
+	public class DefaultBoomaMessageHandler<TMessageReadType, TMessageWriteType, TOperationCodeType> : BaseDefaultMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>> 
 		where TMessageReadType : class, IOperationCodeable<TOperationCodeType>
 		where TMessageWriteType : class
 		where TOperationCodeType : Enum
