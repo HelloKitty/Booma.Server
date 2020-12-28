@@ -26,6 +26,12 @@ The Login Service exists only to validate the credentials of the user or send th
 
 This service is responible for actually authenticating a user based on credentials provided. Issues JWT (Java Web Tokens) for authorizing against other authorization required services. Services that require Authentication should send requests to this service. Login processses across all backend services depend on this service.
 
+### Service Discovery
+
+**[Service Discovery Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.ServiceDiscoveryService)**: A stateless scalable ASP Core HTTP API for discovering named services and routing. Based on the [Glader.ASP.ServiceDiscovery](https://github.com/HelloKitty/Glader.ASP.ServiceDiscovery) library.
+
+This service is responible for allowing the backend services to discover eachother by service type/name. For example, the **Login Service** asks the **Service Discovery Service**  the endpoint for the **Auth Service** so it can perform authentication. It acts as the "Service Registry" as described by [NGINX's article Service Discovery in a Microservices Architecture](https://www.nginx.com/blog/service-discovery-in-a-microservices-architecture/).
+
 ## Credits
 
 This project is built on top of **20 years** of reverse engineering work done by many in the PSO community. Much was learned and owed to some of the following projects such as: Sodaboy's proxy, [Sylverant's opensource C++ DC/BB/GC server implementation](https://github.com/Sylverant/) and one of the [most recent public Tethella releases](https://github.com/justnoxx/psobb-tethealla/).
