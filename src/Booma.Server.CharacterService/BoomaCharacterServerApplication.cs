@@ -35,6 +35,9 @@ namespace Booma
 			//Character service handlers
 			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(GetType().Assembly));
 
+			//Parameter content
+			builder.RegisterModule<ParameterContentServiceModule>();
+
 			return builder;
 		}
 
