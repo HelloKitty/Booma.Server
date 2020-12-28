@@ -30,11 +30,20 @@ namespace Booma
 					await HandlePreviewCharacterAsync(context, message.SlotSelected);
 					break;
 				case CharacterSelectionType.PlaySelection:
+					await HandleSelectCharacterAsync(context, message.SlotSelected, token);
 					break;
 				default:
 					await HandleInvalidSelectionTypeAsync(context, message.SelectionType);
 					break;
 			}
+		}
+
+		private async Task HandleSelectCharacterAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int slot, CancellationToken token = default)
+		{
+			//This is kinda dumb but we just assume the client isn't lying.
+			//Some other point before entering a block they'll be caught
+			//So no reason to mitigate anything spoofed/hacked here
+			await context.MessageService.SendMessageAsync(new CharacterCharacterSelectionAckPayload(slot, CharacterSelectionAckType.BB_CHAR_ACK_SELECT), token);
 		}
 
 		private async Task HandlePreviewCharacterAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int slot)
