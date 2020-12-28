@@ -28,5 +28,10 @@ namespace Booma
 		/// The character service.
 		/// </summary>
 		CharacterService = 3,
+
+		/// <summary>
+		/// Service for listing the available gameservers/ships.
+		/// </summary>
+		GameServerListService = 4,
 	}
 }
