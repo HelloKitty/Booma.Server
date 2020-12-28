@@ -63,7 +63,7 @@ namespace Booma
 			}
 			finally
 			{
-				await OnResponseMessageSendAsync(context, response, result);
+				await OnResponseMessageSendAsync(context, message, response, result);
 			}
 		}
 
@@ -80,14 +80,15 @@ namespace Booma
 		/// <summary>
 		/// Implementer can override this method as a callback/event for when the <see cref="response"/> has been sent to the session.
 		/// Called after <see cref="HandleMessageAsync"/>.
-		///
+		/// 
 		/// Implementers should not await directly within this message as it blocks the request pipeline unless they are absolutely sure they want this to happen.
 		/// </summary>
 		/// <param name="context">The message context.</param>
+		/// <param name="request">The original request message.</param>
 		/// <param name="response">The response message sent.</param>
 		/// <param name="sendResult">The sent result of the response message.</param>
 		/// <returns></returns>
-		protected virtual Task OnResponseMessageSendAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, TMessageResponseType response, SendResult sendResult)
+		protected virtual Task OnResponseMessageSendAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, TMessageRequestType request, TMessageResponseType response, SendResult sendResult)
 		{
 			return Task.CompletedTask;
 		}
