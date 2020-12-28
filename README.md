@@ -20,6 +20,12 @@ This service is redirected to by the Patch Service and acts as a TCP endpoint fo
 
 The Login Service exists only to validate the credentials of the user or send them back to the Titlescreen. If authentication is successful it will [Redirect](https://github.com/HelloKitty/Booma.Proxy/blob/00e5a01b62ebc97d15c2d62eee6d416464b867cf/src/Booma.Packet.Game/Shared/Payloads/Server/SharedConnectionRedirectPayload.cs) them to the Character Service. This login process happens across all services and the Login Service itself does not actually perform the authentication of the session. The Auth Service does this.
 
+### Auth
+
+**[Auth Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.AuthService)**: A stateless scalable ASP Core HTTP API for OAuth/JWT authentication and authorization. Based on the [Glader.ASP.Authentication](https://github.com/HelloKitty/Glader.ASP.Authentication) library.
+
+This service is responible for actually authenticating a user based on credentials provided. Issues JWT (Java Web Tokens) for authorizing against other authorization required services. Services that require Authentication should send requests to this service. Login processses across all backend services depend on this service.
+
 ## Credits
 
 This project is built on top of **20 years** of reverse engineering work done by many in the PSO community. Much was learned and owed to some of the following projects such as: Sodaboy's proxy, [Sylverant's opensource C++ DC/BB/GC server implementation](https://github.com/Sylverant/) and one of the [most recent public Tethella releases](https://github.com/justnoxx/psobb-tethealla/).
