@@ -27,21 +27,18 @@ namespace Booma
 				.As<INetworkCryptoService>()
 				.As<INetworkCryptoInitializable>()
 				.AsSelf()
-				.InstancePerLifetimeScope()
-				.OwnedByLifetimeScope();
+				.InstancePerLifetimeScope();
 
 			//Another case of needing a unique instance per lifetimescope.
 			builder.RegisterType<EncryptedNetworkMessageInterface<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>()
 				.As<INetworkMessageInterface<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>()
 				.AsSelf()
-				.InstancePerLifetimeScope()
-				.OwnedByLifetimeScope();
+				.InstancePerLifetimeScope();
 
 			builder.RegisterType<DefaultWelcomeMessageFactory>()
 				.AsSelf()
 				.AsImplementedInterfaces()
-				.InstancePerLifetimeScope()
-				.OwnedByLifetimeScope(); //dispose of internal crypto
+				.InstancePerLifetimeScope(); //dispose of internal crypto
 		}
 	}
 }

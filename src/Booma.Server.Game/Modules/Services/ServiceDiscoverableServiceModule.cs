@@ -5,6 +5,7 @@ using System.Text;
 using Autofac;
 using Common.Logging;
 using Glader.ASP.ServiceDiscovery;
+using Glader.Essentials;
 
 namespace Booma
 {
@@ -37,11 +38,10 @@ namespace Booma
 			//It also means if a service dies or gets removed, reconnecting will yield another service on connection.
 			builder.Register<ServiceDiscoveryServiceResolver<TServiceType>>(context =>
 				{
-					return new ServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>());
+					return new ServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>(), context.Resolve<IReadonlyAuthTokenRepository>());
 				})
 				.As<IServiceResolver<TServiceType>>()
-				.InstancePerLifetimeScope()
-				.OwnedByLifetimeScope();
+				.InstancePerLifetimeScope();
 		}
 	}
 }

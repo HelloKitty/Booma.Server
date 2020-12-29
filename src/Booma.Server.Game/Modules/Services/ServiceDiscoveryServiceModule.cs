@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using Autofac;
 using Glader.ASP.ServiceDiscovery;
+using Glader.Essentials;
 using Refit;
 
 namespace Booma

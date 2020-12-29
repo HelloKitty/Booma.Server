@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
 using Glader.ASP.ServiceDiscovery;
+using Glader.Essentials;
 using JetBrains.Annotations;
 using Nito.AsyncEx;
 using Refit;
@@ -45,15 +47,19 @@ namespace Booma
 		/// </summary>
 		private ILog Logger { get; }
 
+		private IReadonlyAuthTokenRepository TokenRepository { get; }
+
 		public ServiceDiscoveryServiceResolver([NotNull] IServiceDiscoveryService discoveryClient, 
 			BoomaServiceType serviceType, 
-			ILog logger)
+			ILog logger,
+			[NotNull] IReadonlyAuthTokenRepository tokenRepository)
 		{
 			if(!Enum.IsDefined(typeof(BoomaServiceType), serviceType)) throw new InvalidEnumArgumentException(nameof(serviceType), (int)serviceType, typeof(BoomaServiceType));
 
 			DiscoveryClient = discoveryClient ?? throw new ArgumentNullException(nameof(discoveryClient));
 			ServiceType = serviceType;
 			Logger = logger;
+			TokenRepository = tokenRepository ?? throw new ArgumentNullException(nameof(tokenRepository));
 		}
 
 		public async Task<ServiceResolveResult<TServiceType>> Create(CancellationToken context)
@@ -107,9 +113,14 @@ namespace Booma
 			if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
 
 			TServiceType service = RestService
-				.For<TServiceType>($"{endpoint.Address}:{endpoint.Port}", new RefitSettings() { HttpMessageHandlerFactory = () => new BypassHttpsValidationHandler() });
+				.For<TServiceType>($"{endpoint.Address}:{endpoint.Port}", new RefitSettings() { HttpMessageHandlerFactory = BuildHttpClientHandler });
 
 			return new ServiceResolveResult<TServiceType>(service);
+		}
+
+		private HttpMessageHandler BuildHttpClientHandler()
+		{
+			return new AuthenticatedHttpClientHandler(TokenRepository, new BypassHttpsValidationHandler());
 		}
 	}
 }

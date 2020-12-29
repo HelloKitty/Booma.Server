@@ -37,14 +37,19 @@ namespace Booma
 		/// <inheritdoc />
 		public event EventHandler<LoginResponseSentEventArgs> OnLoginResponseSent;
 
+		//TODO: ASSERT INSTANCE PER LIFETIME SCOPE!!
+		private IAuthTokenRepository TokenRepository { get; }
+
 		public LoginRequestMessageHandler([NotNull] ILog logger,
 			[NotNull] IServiceResolver<IAuthenticationService> authenticationServiceResolver,
-			[NotNull] ISuccessfulLogin93ResponseMessageFactory successResponseFactory)
+			[NotNull] ISuccessfulLogin93ResponseMessageFactory successResponseFactory,
+			[NotNull] IAuthTokenRepository tokenRepository)
 			: base(true)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			AuthenticationServiceResolver = authenticationServiceResolver ?? throw new ArgumentNullException(nameof(authenticationServiceResolver));
 			SuccessResponseFactory = successResponseFactory ?? throw new ArgumentNullException(nameof(successResponseFactory));
+			TokenRepository = tokenRepository ?? throw new ArgumentNullException(nameof(tokenRepository));
 		}
 
 		/// <inheritdoc />
@@ -89,7 +94,10 @@ namespace Booma
 				//TODO: Send more accurate error response.
 				//If token is valid then auth was successful, otherwise something is wrong with credentials.
 				if (authResult.isTokenValid)
+				{
+					TokenRepository.Update(authResult.AccessToken);
 					return SuccessResponseFactory.Create(new SuccessfulLoginResponseCreationContext(authResult, message));
+				}
 				else
 					return new SharedLoginResponsePayload(AuthenticationResponseCode.LOGIN_93BB_BAD_USER_PWD);
 			}

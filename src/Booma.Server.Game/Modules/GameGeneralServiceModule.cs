@@ -18,6 +18,11 @@ namespace Booma
 			builder.RegisterType<DefaultSessionRedirectorFactory>()
 				.As<ISessionRedirectorFactory>()
 				.SingleInstance();
+
+			builder.RegisterType<MutableSessionTokenStorageRepository>()
+				.AsImplementedInterfaces()
+				.AsSelf()
+				.InstancePerLifetimeScope();
 		}
 	}
 }
