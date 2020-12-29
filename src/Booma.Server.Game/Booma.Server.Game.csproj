@@ -10,7 +10,7 @@
     <PackageReference Include="Booma.Packet.Game" Version="0.0.21" />
     <PackageReference Include="Glader.ASP.Authentication.Client" Version="0.0.2" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.2" />
-    <PackageReference Include="Glader.Essentials.Events" Version="2.2.44" />
+    <PackageReference Include="Glader.Essentials.Events" Version="2.2.46" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
   </ItemGroup>
 
