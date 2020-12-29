@@ -55,10 +55,11 @@ namespace Booma
 		/// <returns></returns>
 		private static void RegisterHandler(ContainerBuilder builder, Type handlerType)
 		{
-			// TODO: Throw if invalid handler type.
+			//New design will give a unique handler per session.
+			//Makes this SO much easier in some cases.
 			var registrationBuilder = builder.RegisterType(handlerType)
 				.As<ITypeBindable<IMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>, TMessageReadType>>()
-				.SingleInstance();
+				.InstancePerLifetimeScope();
 
 			//TODO: Assert it is assignable to.
 			foreach(var additional in handlerType.GetCustomAttributes<AdditionalRegistrationAsAttribute>())
