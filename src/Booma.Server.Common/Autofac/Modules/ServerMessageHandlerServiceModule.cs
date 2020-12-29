@@ -37,7 +37,7 @@ namespace Booma
 				.As<BaseDefaultMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>>()
 				.SingleInstance();
 
-			//New Design makes these handlers NOT stateless. It makes certain things WAY easier to deal with.
+			//Handlers AND handler service should be stateless so we only need single instance.
 			builder
 				.RegisterType<DefaultMessageHandlerService<TMessageReadType, SessionMessageContext<TMessageWriteType>>>()
 				.As<IMessageHandlerService<TMessageReadType, SessionMessageContext<TMessageWriteType>>>()
@@ -54,7 +54,7 @@ namespace Booma
 						bindable.BindTo(args.Instance);
 					}
 				})
-				.InstancePerLifetimeScope();
+				.SingleInstance();
 
 			RegisterHandlers(builder);
 		}
