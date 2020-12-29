@@ -42,6 +42,11 @@ namespace Booma
 		public const string BOOMA_GAME_SERVER_LIST_SERVICE_NAME = "SERVERLIST";
 
 		/// <summary>
+		/// Represents the constant string identifier for a Booma service name.
+		/// </summary>
+		public const string BOOMA_CHARACTER_DATA_SERVICE_NAME = "CHARACTERDATA";
+
+		/// <summary>
 		/// Gets a constant service name based on the service type.
 		/// </summary>
 		/// <param name="type">The service name.</param>
@@ -62,6 +67,8 @@ namespace Booma
 					return BOOMA_CHARACTER_SERVICE_NAME;
 				case BoomaServiceType.GameServerListService:
 					return BOOMA_GAME_SERVER_LIST_SERVICE_NAME;
+				case BoomaServiceType.CharacterDataService:
+					return BOOMA_CHARACTER_DATA_SERVICE_NAME;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(type), type, null);
 			}
