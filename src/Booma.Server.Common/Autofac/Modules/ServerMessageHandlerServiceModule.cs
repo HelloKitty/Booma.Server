@@ -37,7 +37,7 @@ namespace Booma
 				.As<BaseDefaultMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>>()
 				.SingleInstance();
 
-			//Handlers AND handler service should be stateless so we only need single instance.
+			//New Design makes these handlers NOT stateless. It makes certain things WAY easier to deal with.
 			builder
 				.RegisterType<DefaultMessageHandlerService<TMessageReadType, SessionMessageContext<TMessageWriteType>>>()
 				.As<IMessageHandlerService<TMessageReadType, SessionMessageContext<TMessageWriteType>>>()
@@ -46,7 +46,7 @@ namespace Booma
 					//Bind one of the default handlers
 					var handler = args.Context.Resolve<TDefaultHandlerType>();
 					args.Instance.Bind<TMessageReadType>(handler);
-					
+
 					//Now we resolve ALL bindable handlers
 					//Any handler that is registered will now be bound to this handler service.
 					foreach (var bindable in args.Context.Resolve<IEnumerable<ITypeBindable<IMessageHandler<TMessageReadType, SessionMessageContext<TMessageWriteType>>, TMessageReadType>>>())
@@ -54,7 +54,7 @@ namespace Booma
 						bindable.BindTo(args.Instance);
 					}
 				})
-				.SingleInstance();
+				.InstancePerLifetimeScope();
 
 			RegisterHandlers(builder);
 		}

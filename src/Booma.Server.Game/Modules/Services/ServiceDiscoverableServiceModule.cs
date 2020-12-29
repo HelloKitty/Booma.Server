@@ -32,12 +32,16 @@ namespace Booma
 		{
 			base.Load(builder);
 
+			//I know this seems strange, but having the service provider be unique to the
+			//lifetimescope means we can inject Auth tokens into it and not worry about sharing this resource.
+			//It also means if a service dies or gets removed, reconnecting will yield another service on connection.
 			builder.Register<ServiceDiscoveryServiceResolver<TServiceType>>(context =>
 				{
 					return new ServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>());
 				})
 				.As<IServiceResolver<TServiceType>>()
-				.SingleInstance();
+				.InstancePerLifetimeScope()
+				.OwnedByLifetimeScope();
 		}
 	}
 }
