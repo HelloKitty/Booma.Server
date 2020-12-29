@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Booma.Server.CharacterServi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Booma.Server.GameServerListService", "src\Booma.Server.GameServerListService\Booma.Server.GameServerListService.csproj", "{E38038AA-83C0-4496-8A03-370C28A8537F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booma.Server.CharacterDataService", "src\Booma.Server.CharacterDataService\Booma.Server.CharacterDataService.csproj", "{2E6061E2-EC16-4155-BCFF-2722A2102B1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{E38038AA-83C0-4496-8A03-370C28A8537F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E38038AA-83C0-4496-8A03-370C28A8537F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E38038AA-83C0-4496-8A03-370C28A8537F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E6061E2-EC16-4155-BCFF-2722A2102B1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E6061E2-EC16-4155-BCFF-2722A2102B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E6061E2-EC16-4155-BCFF-2722A2102B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E6061E2-EC16-4155-BCFF-2722A2102B1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +78,7 @@ Global
 		{C5AD69AD-9116-4BFD-8F96-137D30A1CE5C} = {7D9FD5C0-739C-4DA0-9F90-F832CBC90100}
 		{113C3B67-E255-4E47-AD25-4387A02E3181} = {7D9FD5C0-739C-4DA0-9F90-F832CBC90100}
 		{E38038AA-83C0-4496-8A03-370C28A8537F} = {7D9FD5C0-739C-4DA0-9F90-F832CBC90100}
+		{2E6061E2-EC16-4155-BCFF-2722A2102B1B} = {7D9FD5C0-739C-4DA0-9F90-F832CBC90100}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {146E1F83-8720-4378-8D78-F715F01D7FC3}
