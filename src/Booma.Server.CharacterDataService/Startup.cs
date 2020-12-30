@@ -63,7 +63,7 @@ namespace Booma.Server.CharacterDataService
 
 					//TODO: This audience stuff is ALL WRONG.
 					options.Audience = "auth-server";
-					options.TokenValidationParameters.ValidIssuer = "https://localhost:5003/";
+					options.TokenValidationParameters.ValidIssuers = new [] {"https://localhost:5003/", "https://127.0.0.1:5003/"};
 				});
 		}
 
