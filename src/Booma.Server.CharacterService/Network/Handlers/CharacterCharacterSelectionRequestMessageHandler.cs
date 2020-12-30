@@ -73,10 +73,5 @@ namespace Booma
 			//We disconnect because we cannot handle this
 			await context.ConnectionService.DisconnectAsync();
 		}
-
-		private PlayerCharacterDataModel BuildDefaultCharacterData()
-		{
-			return new PlayerCharacterDataModel(new CharacterProgress(0, 1), String.Empty, new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), SectionId.Redria, CharacterClass.HUmar, new CharacterVersionData(0, 0, 0), new CharacterCustomizationInfo(0, 0, 0, 0, 0, new Vector3<ushort>(0, 0, 0), new Vector2<float>(0, 0)), "Glader", 0);
-		}
 	}
 }
