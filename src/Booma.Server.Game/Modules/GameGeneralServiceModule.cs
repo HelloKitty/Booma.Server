@@ -23,6 +23,10 @@ namespace Booma
 				.AsImplementedInterfaces()
 				.AsSelf()
 				.InstancePerLifetimeScope();
+
+			builder.RegisterType<GameEngineFrameworkManager>()
+				.AsSelf()
+				.InstancePerLifetimeScope();
 		}
 	}
 }

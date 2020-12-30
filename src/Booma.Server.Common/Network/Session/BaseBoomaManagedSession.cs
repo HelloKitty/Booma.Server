@@ -77,7 +77,7 @@ namespace Booma
 		}
 
 		/// <inheritdoc />
-		public sealed override async Task OnNetworkMessageReceivedAsync(NetworkIncomingMessage<TMessageReadType> message, CancellationToken token = default)
+		public override async Task OnNetworkMessageReceivedAsync(NetworkIncomingMessage<TMessageReadType> message, CancellationToken token = default)
 		{
 			//Dispatcher will route and/or handle messages incoming.
 			await MessageDispatcher.DispatchNetworkMessageAsync(CachedSessionContext, message, token);

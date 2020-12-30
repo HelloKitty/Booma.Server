@@ -19,14 +19,18 @@ namespace Booma
 	{
 		private IWelcomeMessageFactory WelcomeMessageFactory { get; }
 
+		private GameEngineFrameworkManager Engine { get; }
+
 		public BoomaGameManagedSession(NetworkConnectionOptions networkOptions, SocketConnection connection, SessionDetails details, 
 			SessionMessageBuildingServiceContext<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer> messageServices, 
 			INetworkMessageDispatchingStrategy<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer> messageDispatcher,
 			SessionMessageInterfaceServiceContext<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer> messageInterfaces,
-			[NotNull] IWelcomeMessageFactory welcomeMessageFactory)
+			[NotNull] IWelcomeMessageFactory welcomeMessageFactory,
+			[NotNull] GameEngineFrameworkManager engine)
 			: base(networkOptions, connection, details, messageServices, messageDispatcher, messageInterfaces)
 		{
 			WelcomeMessageFactory = welcomeMessageFactory ?? throw new ArgumentNullException(nameof(welcomeMessageFactory));
+			Engine = engine ?? throw new ArgumentNullException(nameof(engine));
 		}
 
 		/// <inheritdoc />
@@ -34,8 +38,19 @@ namespace Booma
 		{
 			base.OnSessionInitialized();
 
-			//Send the client the expected welcome message.
-			SendService.SendMessageAsync(WelcomeMessageFactory.Create(EmptyFactoryContext.Instance));
+			Task.Run(async () =>
+			{
+				//TODO: If this throws the session could handle, since Engine task will never set an exception and exception won't bubble up.
+				await SendService.SendMessageAsync(WelcomeMessageFactory.Create());
+				await Engine.OnGameInitialized();
+			});
+		}
+
+		public override async Task OnNetworkMessageReceivedAsync(NetworkIncomingMessage<PSOBBGamePacketPayloadClient> message, CancellationToken token = default)
+		{
+			//Must wait for the engine to be initialized before we can handle any incoming messages.
+			await Engine.Initialized;
+			await base.OnNetworkMessageReceivedAsync(message, token);
 		}
 	}
 }

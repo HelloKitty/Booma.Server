@@ -5,6 +5,7 @@ using Autofac;
 using Booma;
 using Booma.Proxy;
 using Glader.ASP.Authentication;
+using Glader.Essentials;
 
 namespace Booma
 {
@@ -47,8 +48,9 @@ namespace Booma
 			//It should start-off the whole session or redirect it or something.
 			//Each service may have a different explicit next step after login/auth.
 			builder.RegisterType<TLoginResponseHandlingStrategyType>()
-				.SingleInstance()
-				.AutoActivate();
+				.AsSelf()
+				.As<IGameInitializable>()
+				.InstancePerLifetimeScope();
 		}
 	}
 }
