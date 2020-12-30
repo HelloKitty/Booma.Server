@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Autofac;
+using Glader.Essentials;
 
 namespace Booma
 {
@@ -26,6 +27,10 @@ namespace Booma
 
 			builder.RegisterType<GameEngineFrameworkManager>()
 				.AsSelf()
+				.InstancePerLifetimeScope();
+
+			builder.RegisterType<SharedWelcomeMessageInitializable>()
+				.As<IGameInitializable>()
 				.InstancePerLifetimeScope();
 		}
 	}

@@ -17,19 +17,15 @@ namespace Booma
 	/// </summary>
 	public sealed class BoomaGameManagedSession : BaseBoomaManagedSession<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>
 	{
-		private IWelcomeMessageFactory WelcomeMessageFactory { get; }
-
 		private GameEngineFrameworkManager Engine { get; }
 
 		public BoomaGameManagedSession(NetworkConnectionOptions networkOptions, SocketConnection connection, SessionDetails details, 
 			SessionMessageBuildingServiceContext<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer> messageServices, 
 			INetworkMessageDispatchingStrategy<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer> messageDispatcher,
 			SessionMessageInterfaceServiceContext<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer> messageInterfaces,
-			[NotNull] IWelcomeMessageFactory welcomeMessageFactory,
 			[NotNull] GameEngineFrameworkManager engine)
 			: base(networkOptions, connection, details, messageServices, messageDispatcher, messageInterfaces)
 		{
-			WelcomeMessageFactory = welcomeMessageFactory ?? throw new ArgumentNullException(nameof(welcomeMessageFactory));
 			Engine = engine ?? throw new ArgumentNullException(nameof(engine));
 		}
 
@@ -40,8 +36,6 @@ namespace Booma
 
 			Task.Run(async () =>
 			{
-				//TODO: If this throws the session could handle, since Engine task will never set an exception and exception won't bubble up.
-				await SendService.SendMessageAsync(WelcomeMessageFactory.Create());
 				await Engine.OnGameInitialized();
 			});
 		}
