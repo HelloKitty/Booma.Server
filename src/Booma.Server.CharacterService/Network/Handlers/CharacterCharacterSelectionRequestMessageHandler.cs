@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Booma.Proxy;
 using Common.Logging;
+using Glader.ASP.RPGCharacter;
 using GladNet;
 
 namespace Booma
@@ -17,17 +19,22 @@ namespace Booma
 	{
 		private ILog Logger { get; }
 
-		public CharacterCharacterSelectionRequestMessageHandler([JetBrains.Annotations.NotNull] ILog logger)
+		private ICharacterDataRepository CharacterDataRepository { get; }
+
+		public CharacterCharacterSelectionRequestMessageHandler([NotNull] ILog logger,
+			[NotNull] ICharacterDataRepository characterDataRepository)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+			CharacterDataRepository = characterDataRepository ?? throw new ArgumentNullException(nameof(characterDataRepository));
 		}
 
+		/// <inheritdoc />
 		public override async Task HandleMessageAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, CharacterCharacterSelectionRequestPayload message, CancellationToken token = new CancellationToken())
 		{
 			switch (message.SelectionType)
 			{
 				case CharacterSelectionType.Preview:
-					await HandlePreviewCharacterAsync(context, message.SlotSelected);
+					await HandlePreviewCharacterAsync(context, message.SlotSelected, token);
 					break;
 				case CharacterSelectionType.PlaySelection:
 					await HandleSelectCharacterAsync(context, message.SlotSelected, token);
@@ -46,17 +53,14 @@ namespace Booma
 			await context.MessageService.SendMessageAsync(new CharacterCharacterSelectionAckPayload(slot, CharacterSelectionAckType.BB_CHAR_ACK_SELECT), token);
 		}
 
-		private async Task HandlePreviewCharacterAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int slot)
+		private async Task HandlePreviewCharacterAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int slot, CancellationToken token = default)
 		{
-			//TODO: This is a demo/test character
-			if (slot == 0)
-			{
-				await context.MessageService.SendMessageAsync(new CharacterCharacterUpdateResponsePayload((byte)slot, BuildDefaultCharacterData()));
-				return;
-			}
-			
-			//Client expects 0xE5 to be sent. This is CharacterCharacterUpdateResponsePayload.
-			await context.MessageService.SendMessageAsync(new CharacterCharacterSelectionAckPayload(slot, CharacterSelectionAckType.BB_CHAR_ACK_NONEXISTANT));
+			//Otherwise we should send the character.
+			if (!await CharacterDataRepository.ContainsAsync(slot, token))
+				await context.MessageService.SendMessageAsync(new CharacterCharacterSelectionAckPayload(slot, CharacterSelectionAckType.BB_CHAR_ACK_NONEXISTANT), token);
+
+			PlayerCharacterDataModel data = await CharacterDataRepository.RetrieveAsync(slot, token);
+			await context.MessageService.SendMessageAsync(new CharacterCharacterUpdateResponsePayload((byte)slot, data), token);
 		}
 
 		private async Task HandleInvalidSelectionTypeAsync([NotNull] SessionMessageContext<PSOBBGamePacketPayloadServer> context, CharacterSelectionType messageSelectionType)
