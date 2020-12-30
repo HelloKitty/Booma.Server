@@ -43,7 +43,7 @@ namespace Booma
 		{
 			RPGCharacterData[] characters = await LoadCharactersAsync(token);
 
-			return characters != null && characters.Length - 1 > slot;
+			return characters != null && characters.Length > slot;
 		}
 
 		private async Task<RPGCharacterData[]> LoadCharactersAsync(CancellationToken token)
