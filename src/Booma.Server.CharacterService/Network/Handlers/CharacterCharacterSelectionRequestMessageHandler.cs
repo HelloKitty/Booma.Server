@@ -58,9 +58,11 @@ namespace Booma
 			//Otherwise we should send the character.
 			if (!await CharacterDataRepository.ContainsAsync(slot, token))
 				await context.MessageService.SendMessageAsync(new CharacterCharacterSelectionAckPayload(slot, CharacterSelectionAckType.BB_CHAR_ACK_NONEXISTANT), token);
-
-			PlayerCharacterDataModel data = await CharacterDataRepository.RetrieveAsync(slot, token);
-			await context.MessageService.SendMessageAsync(new CharacterCharacterUpdateResponsePayload((byte)slot, data), token);
+			else
+			{
+				PlayerCharacterDataModel data = await CharacterDataRepository.RetrieveAsync(slot, token);
+				await context.MessageService.SendMessageAsync(new CharacterCharacterUpdateResponsePayload((byte)slot, data), token);
+			}
 		}
 
 		private async Task HandleInvalidSelectionTypeAsync([NotNull] SessionMessageContext<PSOBBGamePacketPayloadServer> context, CharacterSelectionType messageSelectionType)
