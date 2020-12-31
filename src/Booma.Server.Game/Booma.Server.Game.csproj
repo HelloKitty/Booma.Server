@@ -9,7 +9,7 @@
     <PackageReference Include="Booma.Crypto.Common" Version="0.0.23" />
     <PackageReference Include="Booma.Packet.Game" Version="0.0.23" />
     <PackageReference Include="Glader.ASP.Authentication.Client" Version="0.0.2" />
-    <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.3" />
+    <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.4" />
     <PackageReference Include="Glader.Essentials.Events" Version="2.2.48" />
     <PackageReference Include="Glader.Essentials.GameFramework" Version="2.2.48" />
     <PackageReference Include="Glader.Essentials.Refit" Version="2.2.48" />
