@@ -5,7 +5,7 @@ using Autofac;
 
 namespace Booma
 {
-	public sealed class ShipListDataServiceModule : Module
+	public sealed class GameServerDataServiceModule : Module
 	{
 		protected override void Load(ContainerBuilder builder)
 		{

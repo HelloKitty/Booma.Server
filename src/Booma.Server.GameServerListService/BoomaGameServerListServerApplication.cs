@@ -38,7 +38,7 @@ namespace Booma
 			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(GetType().Assembly));
 
 			//Ship list services.
-			builder.RegisterModule<ShipListDataServiceModule>();
+			builder.RegisterModule<GameServerDataServiceModule>();
 
 			return builder;
 		}
