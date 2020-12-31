@@ -11,18 +11,18 @@ using Glader.ASP.ServiceDiscovery;
 
 namespace Booma
 {
-	public sealed class ShipListWelcomeEventListener : LoginResponseSentEventListener
+	public sealed class ServerListLoginEventListener : LoginResponseSentEventListener
 	{
-		private IGameServerEntryRepository ShipRepository { get; }
+		private IGameServerEntryRepository ServerRepository { get; }
 
 		private GameServerListNetworkedMenu ServerListMenu { get; }
 
-		public ShipListWelcomeEventListener(ILoginResponseSentEventSubscribable subscriptionService, 
-			IGameServerEntryRepository shipRepository, 
+		public ServerListLoginEventListener(ILoginResponseSentEventSubscribable subscriptionService, 
+			IGameServerEntryRepository serverRepository, 
 			GameServerListNetworkedMenu serverListMenu) 
 			: base(subscriptionService)
 		{
-			ShipRepository = shipRepository ?? throw new ArgumentNullException(nameof(shipRepository));
+			ServerRepository = serverRepository ?? throw new ArgumentNullException(nameof(serverRepository));
 			ServerListMenu = serverListMenu ?? throw new ArgumentNullException(nameof(serverListMenu));
 		}
 
@@ -32,12 +32,12 @@ namespace Booma
 			if (args.ResponseCode != AuthenticationResponseCode.LOGIN_93BB_OK)
 				return;
 
-			//Client authed, send them the scrolling marquee and the ship list.
+			//Client authed, send them the scrolling marquee and the server list.
 			await args.MessageContext.MessageService.SendMessageAsync(new CharacterTimestampEventPayload(String.Empty));
 			await args.MessageContext.MessageService.SendMessageAsync(new SharedMarqueeScrollChangeEventPayload("Hello World, welcome to GladerServ? No that's terrible name!"));
 
 			//Demo ship list
-			ConnectionEntry[] entries = await ShipRepository
+			ConnectionEntry[] entries = await ServerRepository
 				.RetrieveAllAsync();
 
 			MenuListing[] menu = ServerListMenu.Create(entries);
