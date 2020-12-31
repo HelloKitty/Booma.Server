@@ -32,7 +32,7 @@ namespace Booma
 		/// <inheritdoc />
 		public async Task<ShipEntry[]> RetrieveAllAsync(CancellationToken token = default)
 		{
-			string shipServiceType = BoomaEndpointConstants.GetServiceIdentifier(BoomaServiceType.CharacterDataService);
+			string shipServiceType = BoomaEndpointConstants.GetServiceIdentifier(BoomaServiceType.ShipService);
 			var discoveryResponse = await ServiceDiscoveryClient.DiscoverServicesAsync(shipServiceType, token);
 
 			if (!discoveryResponse.isSuccessful)
