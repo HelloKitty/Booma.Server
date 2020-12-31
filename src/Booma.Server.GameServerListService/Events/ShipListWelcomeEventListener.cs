@@ -38,10 +38,7 @@ namespace Booma
 
 			if (entries.Any())
 			{
-				await args.MessageContext.MessageService.SendMessageAsync(new SharedShipListEventPayload(entries.Select(s =>
-				{
-					return new MenuListing(new MenuItemIdentifier(0, 1), 0, s.Name);
-				}).ToArray()));
+				await args.MessageContext.MessageService.SendMessageAsync(new SharedShipListEventPayload(CreateShipList(entries)));
 			}
 			else
 			{
@@ -49,12 +46,21 @@ namespace Booma
 			}
 		}
 
+		private MenuListing[] CreateShipList(ShipEntry[] entries)
+		{
+			return entries.Select(s =>
+				{
+					return new MenuListing(new MenuItemIdentifier(0, 1), 0, s.Name);
+				})
+				.Concat(BuildEmptyShipListMenu())
+				.ToArray();
+		}
+
 		private MenuListing[] BuildEmptyShipListMenu()
 		{
 			return new[]
 			{
-				new MenuListing(new MenuItemIdentifier(0, 1), ushort.MaxValue, "None"),
-				new MenuListing(new MenuItemIdentifier(0, 2), 0, "Refresh List"),
+				new MenuListing(new MenuItemIdentifier(0, 1), 0, "Refresh List"),
 			};
 		}
 	}
