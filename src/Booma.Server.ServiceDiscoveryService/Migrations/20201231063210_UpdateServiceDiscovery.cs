@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Booma.Server.ServiceDiscoveryService.Migrations
 {
-    public partial class InitialCreateSD : Migration
+    public partial class UpdateServiceDiscovery : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,12 +13,12 @@ namespace Booma.Server.ServiceDiscoveryService.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ServiceName = table.Column<string>(nullable: false)
+                    ServiceType = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_services", x => x.Id);
-                    table.UniqueConstraint("AK_services_ServiceName", x => x.ServiceName);
+                    table.UniqueConstraint("AK_services_ServiceType", x => x.ServiceType);
                 });
 
             migrationBuilder.CreateTable(
@@ -26,12 +26,13 @@ namespace Booma.Server.ServiceDiscoveryService.Migrations
                 columns: table => new
                 {
                     ServiceId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Endpoint_Address = table.Column<string>(nullable: true),
                     Endpoint_Port = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_service_endpoints", x => x.ServiceId);
+                    table.PrimaryKey("PK_service_endpoints", x => new { x.ServiceId, x.Name });
                     table.ForeignKey(
                         name: "FK_service_endpoints_services_ServiceId",
                         column: x => x.ServiceId,

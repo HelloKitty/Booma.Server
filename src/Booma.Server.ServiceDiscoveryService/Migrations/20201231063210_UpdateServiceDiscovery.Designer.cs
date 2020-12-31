@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Booma.Server.ServiceDiscoveryService.Migrations
 {
     [DbContext(typeof(ServiceDiscoveryDatabaseContext))]
-    [Migration("20201226103328_InitialCreateSD")]
-    partial class InitialCreateSD
+    [Migration("20201231063210_UpdateServiceDiscovery")]
+    partial class UpdateServiceDiscovery
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,7 +23,10 @@ namespace Booma.Server.ServiceDiscoveryService.Migrations
                     b.Property<int>("ServiceId")
                         .HasColumnType("int");
 
-                    b.HasKey("ServiceId");
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.HasKey("ServiceId", "Name");
 
                     b.ToTable("service_endpoints");
                 });
@@ -35,13 +38,13 @@ namespace Booma.Server.ServiceDiscoveryService.Migrations
                         .HasColumnName("Id")
                         .HasColumnType("int");
 
-                    b.Property<string>("ServiceName")
+                    b.Property<string>("ServiceType")
                         .IsRequired()
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("ServiceId");
 
-                    b.HasAlternateKey("ServiceName");
+                    b.HasAlternateKey("ServiceType");
 
                     b.ToTable("services");
                 });
@@ -59,18 +62,21 @@ namespace Booma.Server.ServiceDiscoveryService.Migrations
                             b1.Property<int>("ServiceEndpointModelServiceId")
                                 .HasColumnType("int");
 
+                            b1.Property<string>("ServiceEndpointModelName")
+                                .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
                             b1.Property<string>("Address")
                                 .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                             b1.Property<int>("Port")
                                 .HasColumnType("int");
 
-                            b1.HasKey("ServiceEndpointModelServiceId");
+                            b1.HasKey("ServiceEndpointModelServiceId", "ServiceEndpointModelName");
 
                             b1.ToTable("service_endpoints");
 
                             b1.WithOwner()
-                                .HasForeignKey("ServiceEndpointModelServiceId");
+                                .HasForeignKey("ServiceEndpointModelServiceId", "ServiceEndpointModelName");
                         });
                 });
 #pragma warning restore 612, 618
