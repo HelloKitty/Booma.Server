@@ -38,6 +38,12 @@ This service is responible for allowing the backend services to discover eachoth
 
 This service is responible for serving the the PSOBB client data about: Parameter Structures, Characters and the account Guild Card data. It is a proxy for the PSOBB server to access character data to generate the character list as well as create a character. However the actual actions and data are not handled on this service. That is handled on the **Character Data Service**.
 
+### Character Data
+
+**[Character Data Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.CharacterDataService)**: A stateless scalable ASP Core HTTP API for RPG character data. Based on the [Glader.ASP.RPGCharacter](https://github.com/HelloKitty/Glader.ASP.RPGCharacter) library.
+
+This service is the service actually responsible for character data. Allowing the backend to create, modify, enumerate and query data about characters. In PSOBB the character data is global but this is not encoded into the design of the **Character Data Service**. The service can run as either a global service or within a GameServer cluster.
+
 ## Credits
 
 This project is built on top of **20 years** of reverse engineering work done by many in the PSO community. Much was learned and owed to some of the following projects such as: Sodaboy's proxy, [Sylverant's opensource C++ DC/BB/GC server implementation](https://github.com/Sylverant/) and one of the [most recent public Tethella releases](https://github.com/justnoxx/psobb-tethealla/).
