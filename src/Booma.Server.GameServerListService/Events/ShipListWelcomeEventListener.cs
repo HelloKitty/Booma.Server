@@ -15,11 +15,15 @@ namespace Booma
 	{
 		private IShipEntryRepository ShipRepository { get; }
 
+		private GameServerListNetworkedMenu ServerListMenu { get; }
+
 		public ShipListWelcomeEventListener(ILoginResponseSentEventSubscribable subscriptionService, 
-			IShipEntryRepository shipRepository) 
+			IShipEntryRepository shipRepository, 
+			GameServerListNetworkedMenu serverListMenu) 
 			: base(subscriptionService)
 		{
 			ShipRepository = shipRepository ?? throw new ArgumentNullException(nameof(shipRepository));
+			ServerListMenu = serverListMenu ?? throw new ArgumentNullException(nameof(serverListMenu));
 		}
 
 		protected override async Task OnEventFiredAsync(object source, LoginResponseSentEventArgs args)
@@ -36,32 +40,8 @@ namespace Booma
 			ShipEntry[] entries = await ShipRepository
 				.RetrieveAllAsync();
 
-			if (entries.Any())
-			{
-				await args.MessageContext.MessageService.SendMessageAsync(new SharedShipListEventPayload(CreateShipList(entries)));
-			}
-			else
-			{
-				await args.MessageContext.MessageService.SendMessageAsync(new SharedShipListEventPayload(BuildEmptyShipListMenu()));
-			}
-		}
-
-		private MenuListing[] CreateShipList(ShipEntry[] entries)
-		{
-			return entries.Select(s =>
-				{
-					return new MenuListing(new MenuItemIdentifier(0, 1), 0, s.Name);
-				})
-				.Concat(BuildEmptyShipListMenu())
-				.ToArray();
-		}
-
-		private MenuListing[] BuildEmptyShipListMenu()
-		{
-			return new[]
-			{
-				new MenuListing(new MenuItemIdentifier(0, 1), 0, "Refresh List"),
-			};
+			MenuListing[] menu = ServerListMenu.Create(entries);
+			await args.MessageContext.MessageService.SendMessageAsync(new SharedShipListEventPayload(menu));
 		}
 	}
 }
