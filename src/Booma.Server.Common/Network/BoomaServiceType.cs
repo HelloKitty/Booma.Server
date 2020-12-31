@@ -43,5 +43,10 @@ namespace Booma
 		/// The ship service type.
 		/// </summary>
 		ShipService = 6,
+
+		/// <summary>
+		/// The Block/Channel service type.
+		/// </summary>
+		BlockService = 7
 	}
 }
