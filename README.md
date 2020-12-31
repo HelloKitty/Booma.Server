@@ -32,6 +32,12 @@ This service is responible for actually authenticating a user based on credentia
 
 This service is responible for allowing the backend services to discover eachother by service type/name. For example, the **Login Service** asks the **Service Discovery Service**  the endpoint for the **Auth Service** so it can perform authentication. It acts as the "Service Registry" as described by [NGINX's article Service Discovery in a Microservices Architecture](https://www.nginx.com/blog/service-discovery-in-a-microservices-architecture/).
 
+### Character
+
+**[Character Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.CharacterService)**: TCP Server Application. Protocol based on [Booma.Packet.Game](https://github.com/HelloKitty/Booma.Proxy/tree/master/src/Booma.Packet.Game). See the [documentation](https://github.com/HelloKitty/Booma.Proxy/blob/master/docs/GamePacketDocumentation.md) for valid message/packet types.
+
+This service is responible for serving the the PSOBB client data about: Parameter Structures, Characters and the account Guild Card data. It is a proxy for the PSOBB server to access character data to generate the character list as well as create a character. However the actual actions and data are not handled on this service. That is handled on the **Character Data Service**.
+
 ## Credits
 
 This project is built on top of **20 years** of reverse engineering work done by many in the PSO community. Much was learned and owed to some of the following projects such as: Sodaboy's proxy, [Sylverant's opensource C++ DC/BB/GC server implementation](https://github.com/Sylverant/) and one of the [most recent public Tethella releases](https://github.com/justnoxx/psobb-tethealla/).
