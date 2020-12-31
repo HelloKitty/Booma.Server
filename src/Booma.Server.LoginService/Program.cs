@@ -6,25 +6,21 @@ using GladNet;
 
 namespace Booma
 {
-	class Program
+	class Program : ServiceProgram
 	{
 		public static IPAddress Address { get; } = IPAddress.Parse("127.0.0.1");
 
+		public static short Port { get; } = 12000;
+
 		static async Task Main(string[] args)
 		{
-			ILog logger = new ConsoleLogger(LogLevel.All, true);
-			logger.Info($"Starting Login Service.");
+			await StartServiceAsync(BoomaServiceType.LoginService, CreateApplication());
+		}
 
-			try
-			{
-				//Auth/Login port for some reason is 12000
-				await new BoomaLoginServerApplication(new NetworkAddressInfo(Address, 12000), logger)
-					.BeginListeningAsync();
-			}
-			finally
-			{
-				logger.Warn($"Shutting down Login Service.");
-			}
+		static BoomaLoginServerApplication CreateApplication()
+		{
+			ILog logger = new ConsoleLogger(LogLevel.All, true);
+			return new BoomaLoginServerApplication(new NetworkAddressInfo(Address, Port), logger);
 		}
 	}
 }

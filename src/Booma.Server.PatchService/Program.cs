@@ -6,24 +6,21 @@ using GladNet;
 
 namespace Booma
 {
-	class Program
+	class Program : ServiceProgram
 	{
 		public static IPAddress Address { get; } = IPAddress.Parse("127.0.0.1");
 
+		public static short Port { get; } = 11000;
+
 		static async Task Main(string[] args)
 		{
-			ILog logger = new ConsoleLogger(LogLevel.All, true);
-			logger.Info($"Starting Patch Service.");
+			await StartServiceAsync(BoomaServiceType.PatchService, CreateApplication());
+		}
 
-			try
-			{
-				await new BoomaPatchServerApplication(new NetworkAddressInfo(Address, 11000), logger)
-					.BeginListeningAsync();
-			}
-			finally
-			{
-				logger.Warn($"Shutting down Patch Service.");
-			}
+		static BoomaPatchServerApplication CreateApplication()
+		{
+			ILog logger = new ConsoleLogger(LogLevel.All, true);
+			return new BoomaPatchServerApplication(new NetworkAddressInfo(Address, Port), logger);
 		}
 	}
 }

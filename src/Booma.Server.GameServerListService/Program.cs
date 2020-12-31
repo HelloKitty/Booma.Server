@@ -6,25 +6,21 @@ using GladNet;
 
 namespace Booma
 {
-	class Program
+	class Program : ServiceProgram
 	{
 		public static IPAddress Address { get; } = IPAddress.Parse("127.0.0.1");
 
+		public static short Port { get; } = 12002;
+
 		static async Task Main(string[] args)
 		{
-			ILog logger = new ConsoleLogger(LogLevel.All, true);
-			logger.Info($"Starting Character Service.");
+			await StartServiceAsync(BoomaServiceType.GameServerListService, CreateApplication());
+		}
 
-			try
-			{
-				//Ship List port for some reason is 12002
-				await new BoomaGameServerListServerApplication(new NetworkAddressInfo(Address, 12002), logger)
-					.BeginListeningAsync();
-			}
-			finally
-			{
-				logger.Warn($"Shutting down Character Service.");
-			}
+		static BoomaGameServerListServerApplication CreateApplication()
+		{
+			ILog logger = new ConsoleLogger(LogLevel.All, true);
+			return new BoomaGameServerListServerApplication(new NetworkAddressInfo(Address, Port), logger);
 		}
 	}
 }
