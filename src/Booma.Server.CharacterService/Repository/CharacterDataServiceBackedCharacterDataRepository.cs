@@ -37,11 +37,13 @@ namespace Booma
 
 		public CharacterDataServiceBackedCharacterDataRepository(IServiceResolver<ICharacterDataQueryService> characterDataServiceResolver,
 			ILog logger,
-			SessionDetails details)
+			SessionDetails details, 
+			IServiceResolver<ICharacterCreationService> characterCreationServiceResolver)
 		{
 			CharacterDataServiceResolver = characterDataServiceResolver ?? throw new ArgumentNullException(nameof(characterDataServiceResolver));
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			Details = details ?? throw new ArgumentNullException(nameof(details));
+			CharacterCreationServiceResolver = characterCreationServiceResolver ?? throw new ArgumentNullException(nameof(characterCreationServiceResolver));
 		}
 
 		public async Task<bool> ContainsAsync(int slot, CancellationToken token = default)
