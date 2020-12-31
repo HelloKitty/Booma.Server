@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booma.Server.CharacterDataS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{5A6F4EE0-EB75-4FC7-BF72-61ABB0DF166D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booma.Server.ChannelServerListService", "src\Booma.Server.ChannelServerListService\Booma.Server.ChannelServerListService.csproj", "{D78FF20C-A748-4F6F-B1FA-1F20BB4E191C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{2E6061E2-EC16-4155-BCFF-2722A2102B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E6061E2-EC16-4155-BCFF-2722A2102B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E6061E2-EC16-4155-BCFF-2722A2102B1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D78FF20C-A748-4F6F-B1FA-1F20BB4E191C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D78FF20C-A748-4F6F-B1FA-1F20BB4E191C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D78FF20C-A748-4F6F-B1FA-1F20BB4E191C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D78FF20C-A748-4F6F-B1FA-1F20BB4E191C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +88,7 @@ Global
 		{E38038AA-83C0-4496-8A03-370C28A8537F} = {5A6F4EE0-EB75-4FC7-BF72-61ABB0DF166D}
 		{2E6061E2-EC16-4155-BCFF-2722A2102B1B} = {5A6F4EE0-EB75-4FC7-BF72-61ABB0DF166D}
 		{5A6F4EE0-EB75-4FC7-BF72-61ABB0DF166D} = {7D9FD5C0-739C-4DA0-9F90-F832CBC90100}
+		{D78FF20C-A748-4F6F-B1FA-1F20BB4E191C} = {5A6F4EE0-EB75-4FC7-BF72-61ABB0DF166D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {146E1F83-8720-4378-8D78-F715F01D7FC3}
