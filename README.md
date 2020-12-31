@@ -6,19 +6,23 @@ Utilizing [GladNet4](https://github.com/HelloKitty/GladNet3/tree/gladnet4) and t
 
 ## Services
 
+_____________________________________
 ### Patch
 
 **[Patch Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.PatchService)**: TCP Server Application that defaults to running on port 11000. Protocol based on [Booma.Packet.Patch](https://github.com/HelloKitty/Booma.Proxy/tree/master/src/Booma.Packet.Patch). See the [documentation](https://github.com/HelloKitty/Booma.Proxy/blob/master/docs/PatchPacketDocumentation.md) for valid message/packet types.
 
 This service is unfortunately low priority and of low usefulness and so minimal emulation for the PSOBB patching protocol will be implemented. It's suggested a non-emulated patching solution be utilized for patching the client instead.
 
+_____________________________________
 ### Login
+
 
 **[Login Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.LoginService)**: TCP Server Application that defaults to running on port 12000. Protocol based on [Booma.Packet.Game](https://github.com/HelloKitty/Booma.Proxy/tree/master/src/Booma.Packet.Game). See the [documentation](https://github.com/HelloKitty/Booma.Proxy/blob/master/docs/GamePacketDocumentation.md) for valid message/packet types.
 
 This service is redirected to by the Patch Service and acts as a TCP endpoint for PSOBB clients to **initially** authenticate through. The process for logging into a TCP service on the PSOBB backend is the same across almost all services, this process is not exclusive to the Login Service. The client sends a [Login93](https://github.com/HelloKitty/Booma.Proxy/blob/00e5a01b62ebc97d15c2d62eee6d416464b867cf/src/Booma.Packet.Game/Shared/Payloads/Client/SharedLoginRequest93Payload.cs) packet after the [Welcome Packet](https://github.com/HelloKitty/Booma.Proxy/blob/3cb7d5de7acd241fd99d834222aa1aafa3df69e2/src/Booma.Packet.Game/Shared/Payloads/Server/SharedWelcomePayload.cs) from the service is sent. These two packets are critical to establishing a valid session from the server and PSOBB client. They initialize the crytography for the session and authenticate the user.
 
 The Login Service exists only to validate the credentials of the user or send them back to the Titlescreen. If authentication is successful it will [Redirect](https://github.com/HelloKitty/Booma.Proxy/blob/00e5a01b62ebc97d15c2d62eee6d416464b867cf/src/Booma.Packet.Game/Shared/Payloads/Server/SharedConnectionRedirectPayload.cs) them to the Character Service. This login process happens across all services and the Login Service itself does not actually perform the authentication of the session. The Auth Service does this.
+_____________________________________
 
 ### Auth
 
@@ -26,11 +30,15 @@ The Login Service exists only to validate the credentials of the user or send th
 
 This service is responible for actually authenticating a user based on credentials provided. Issues JWT (Java Web Tokens) for authorizing against other authorization required services. Services that require Authentication should send requests to this service. Login processses across all backend services depend on this service.
 
+_____________________________________
+
 ### Service Discovery
 
 **[Service Discovery Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.ServiceDiscoveryService)**: A stateless scalable ASP Core HTTP API for discovering named services and routing. Based on the [Glader.ASP.ServiceDiscovery](https://github.com/HelloKitty/Glader.ASP.ServiceDiscovery) library.
 
 This service is responible for allowing the backend services to discover eachother by service type/name. For example, the **Login Service** asks the **Service Discovery Service**  the endpoint for the **Auth Service** so it can perform authentication. It acts as the "Service Registry" as described by [NGINX's article Service Discovery in a Microservices Architecture](https://www.nginx.com/blog/service-discovery-in-a-microservices-architecture/).
+
+_____________________________________
 
 ### Character
 
@@ -38,11 +46,24 @@ This service is responible for allowing the backend services to discover eachoth
 
 This service is responible for serving the the PSOBB client data about: Parameter Structures, Characters and the account Guild Card data. It is a proxy for the PSOBB server to access character data to generate the character list as well as create a character. However the actual actions and data are not handled on this service. That is handled on the **Character Data Service**.
 
+_____________________________________
+
 ### Character Data
 
 **[Character Data Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.CharacterDataService)**: A stateless scalable ASP Core HTTP API for RPG character data. Based on the [Glader.ASP.RPGCharacter](https://github.com/HelloKitty/Glader.ASP.RPGCharacter) library.
 
 This service is the service actually responsible for character data. Allowing the backend to create, modify, enumerate and query data about characters. In PSOBB the character data is global but this is not encoded into the design of the **Character Data Service**. The service can run as either a global service or within a GameServer cluster.
+
+_____________________________________
+
+
+### Game Server List
+
+**[Game Server List Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.CharacterService)**: TCP Server Application. Protocol based on [Booma.Packet.Game](https://github.com/HelloKitty/Booma.Proxy/tree/master/src/Booma.Packet.Game). See the [documentation](https://github.com/HelloKitty/Booma.Proxy/blob/master/docs/GamePacketDocumentation.md) for valid message/packet types.
+
+This service is responsible for delivering the Game Server (Ship in PSOBB terminology) list to the client. It utilizes the global **Service Discovery Service* to enumerate all known Ship endpoints and delivery them to the PSOBB client. It acts just as a TCP proxy for **SHIP** ServiceType service discovery.
+
+_____________________________________
 
 ## Credits
 
