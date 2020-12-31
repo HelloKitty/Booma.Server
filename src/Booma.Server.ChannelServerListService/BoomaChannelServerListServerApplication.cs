@@ -32,10 +32,11 @@ namespace Booma
 			builder.RegisterModule<InPlaceMessageDispatchingServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>>();
 
 			//Login module that sends ship list on login/auth.
-			builder.RegisterModule<LoginServiceModule>();
+			builder.RegisterModule<LoginServiceModule<ChannelListWelcomeEventListener>>();
 
 			//GameServerList service handlers
 			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(GetType().Assembly));
+			builder.RegisterModule<GameServerDataServiceModule>();
 
 			return builder;
 		}

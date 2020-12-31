@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Booma.Server.GameServerListService\Booma.Server.GameServerListService.csproj" />
     <ProjectReference Include="..\Booma.Server.Game\Booma.Server.Game.csproj" />
   </ItemGroup>
 
