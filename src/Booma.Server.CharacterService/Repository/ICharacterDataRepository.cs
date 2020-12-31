@@ -27,5 +27,13 @@ namespace Booma
 		/// <param name="token"></param>
 		/// <returns>True if the character exists.</returns>
 		Task<PlayerCharacterDataModel> RetrieveAsync(int slot, CancellationToken token = default);
+
+		/// <summary>
+		/// Attempts to create a character with the specified input <see cref="data"/>.
+		/// </summary>
+		/// <param name="data">The character data to base creation on.</param>
+		/// <param name="token"></param>
+		/// <returns>True if creation was successful.</returns>
+		Task<bool> CreateAsync(PlayerCharacterDataModel data, CancellationToken token = default);
 	}
 }

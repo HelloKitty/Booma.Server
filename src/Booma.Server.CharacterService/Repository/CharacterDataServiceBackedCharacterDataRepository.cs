@@ -21,6 +21,11 @@ namespace Booma
 		private IServiceResolver<ICharacterDataQueryService> CharacterDataServiceResolver { get; }
 
 		/// <summary>
+		/// The service resolver for the character creation
+		/// </summary>
+		private IServiceResolver<ICharacterCreationService> CharacterCreationServiceResolver { get; }
+
+		/// <summary>
 		/// Logger.
 		/// </summary>
 		private ILog Logger { get; }
@@ -72,6 +77,34 @@ namespace Booma
 
 			//TODO: Use an Object Mapper
 			return this.Convert(characters[slot]);
+		}
+
+		private async Task<ICharacterCreationService> GetCharacterCreationServiceAsync(CancellationToken token = default)
+		{
+			ServiceResolveResult<ICharacterCreationService> serviceResolutionResult
+				= await CharacterCreationServiceResolver.Create(token);
+
+			if(!serviceResolutionResult.isAvailable)
+			{
+				if(Logger.IsErrorEnabled)
+					Logger.Error($"Service unavailable: {nameof(ICharacterCreationService)}. Disconnecting Client: {Details.ConnectionId}");
+
+				throw new InvalidOperationException($"Service unavailable: {nameof(ICharacterCreationService)}. Disconnecting Client: {Details.ConnectionId}");
+			}
+
+			return serviceResolutionResult.Instance;
+		}
+
+		public async Task<bool> CreateAsync(PlayerCharacterDataModel data, CancellationToken token = default)
+		{
+			ICharacterCreationService creationService = await GetCharacterCreationServiceAsync(token);
+			var creationResult = await creationService.CreateCharacterAsync(new RPGCharacterCreationRequest(data.CharacterName), token);
+
+			if (!creationResult.isSuccessful)
+				if (Logger.IsWarnEnabled)
+					Logger.Warn($"Failed to create character. Reason: {creationResult.ResultCode}");
+
+			return creationResult.isSuccessful;
 		}
 
 		//TODO: use object mapper.
