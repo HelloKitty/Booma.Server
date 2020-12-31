@@ -59,9 +59,9 @@ _____________________________________
 
 ### Game Server List
 
-**[Game Server List Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.CharacterService)**: TCP Server Application. Protocol based on [Booma.Packet.Game](https://github.com/HelloKitty/Booma.Proxy/tree/master/src/Booma.Packet.Game). See the [documentation](https://github.com/HelloKitty/Booma.Proxy/blob/master/docs/GamePacketDocumentation.md) for valid message/packet types.
+**[Game Server List Service](https://github.com/HelloKitty/Booma.Server/tree/master/src/Booma.Server.GameServerListService)**: TCP Server Application. Protocol based on [Booma.Packet.Game](https://github.com/HelloKitty/Booma.Proxy/tree/master/src/Booma.Packet.Game). See the [documentation](https://github.com/HelloKitty/Booma.Proxy/blob/master/docs/GamePacketDocumentation.md) for valid message/packet types.
 
-This service is responsible for delivering the Game Server (Ship in PSOBB terminology) list to the client. It utilizes the global **Service Discovery Service* to enumerate all known Ship endpoints and delivery them to the PSOBB client. It acts just as a TCP proxy for **SHIP** ServiceType service discovery.
+This service is responsible for delivering the Game Server (Ship in PSOBB terminology) list to the client. It utilizes the global **Service Discovery Service** to enumerate all known Ship endpoints and delivery them to the PSOBB client. It acts just as a TCP proxy for **SHIP** ServiceType service discovery.
 
 _____________________________________
 
