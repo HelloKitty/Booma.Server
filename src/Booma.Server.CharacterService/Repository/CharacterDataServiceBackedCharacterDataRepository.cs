@@ -30,9 +30,9 @@ namespace Booma
 		/// </summary>
 		private SessionDetails Details { get; }
 
-		public CharacterDataServiceBackedCharacterDataRepository([NotNull] IServiceResolver<ICharacterDataQueryService> characterDataServiceResolver,
-			[NotNull] ILog logger,
-			[NotNull] SessionDetails details)
+		public CharacterDataServiceBackedCharacterDataRepository(IServiceResolver<ICharacterDataQueryService> characterDataServiceResolver,
+			ILog logger,
+			SessionDetails details)
 		{
 			CharacterDataServiceResolver = characterDataServiceResolver ?? throw new ArgumentNullException(nameof(characterDataServiceResolver));
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -75,7 +75,7 @@ namespace Booma
 		}
 
 		//TODO: use object mapper.
-		private PlayerCharacterDataModel Convert([NotNull] RPGCharacterData character)
+		private PlayerCharacterDataModel Convert(RPGCharacterData character)
 		{
 			if (character == null) throw new ArgumentNullException(nameof(character));
 

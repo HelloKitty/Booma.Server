@@ -17,7 +17,7 @@ namespace Booma
 
 		public Task Initialized => EngineInitializationCompletionSource.Task;
 
-		public GameEngineFrameworkManager([NotNull] IEnumerable<IGameInitializable> initializables)
+		public GameEngineFrameworkManager(IEnumerable<IGameInitializable> initializables)
 		{
 			if (initializables == null) throw new ArgumentNullException(nameof(initializables));
 			Initializables = initializables.ToArray();

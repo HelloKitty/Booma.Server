@@ -57,7 +57,7 @@ namespace Booma
 		public EncryptedNetworkMessageInterface(NetworkConnectionOptions networkOptions, 
 			SocketConnection connection, 
 			SessionMessageBuildingServiceContext<TMessageReadType, TMessageWriteType> messageServices,
-			[NotNull] INetworkCryptoService cryptoService) 
+			INetworkCryptoService cryptoService) 
 			: base(networkOptions, connection, messageServices)
 		{
 			CryptoService = cryptoService ?? throw new ArgumentNullException(nameof(cryptoService));
@@ -140,7 +140,7 @@ namespace Booma
 		}
 
 		/// <inheritdoc />
-		protected override int ComputeIncomingPayloadBytesRead([NotNull] IPacketHeader header)
+		protected override int ComputeIncomingPayloadBytesRead(IPacketHeader header)
 		{
 			if (header == null) throw new ArgumentNullException(nameof(header));
 

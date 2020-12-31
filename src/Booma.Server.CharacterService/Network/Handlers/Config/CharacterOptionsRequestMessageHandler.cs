@@ -16,7 +16,7 @@ namespace Booma
 	{
 		private ILog Logger { get; }
 
-		public CharacterOptionsRequestMessageHandler([NotNull] ILog logger)
+		public CharacterOptionsRequestMessageHandler(ILog logger)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}

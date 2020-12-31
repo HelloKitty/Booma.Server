@@ -15,7 +15,7 @@ namespace Booma
 	public sealed class PatchSerializationServiceModule 
 		: ServerMessageSerializationServiceModule<PSOBBPatchPacketPayloadClient, PSOBBPatchPacketPayloadServer, PatchPacketHeaderFactory, PatchPacketHeaderSerializer>
 	{
-		protected override void OnSerializerCreated([NotNull] IActivatedEventArgs<SerializerService> serializerActivatedEventArgs)
+		protected override void OnSerializerCreated(IActivatedEventArgs<SerializerService> serializerActivatedEventArgs)
 		{
 			if (serializerActivatedEventArgs == null) throw new ArgumentNullException(nameof(serializerActivatedEventArgs));
 

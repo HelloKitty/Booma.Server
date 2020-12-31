@@ -18,7 +18,7 @@ namespace Booma
 	{
 		private Assembly TargetAssembly { get; }
 
-		public AssemblyMessageHandlerServiceModule([NotNull] Assembly targetAssembly)
+		public AssemblyMessageHandlerServiceModule(Assembly targetAssembly)
 		{
 			TargetAssembly = targetAssembly ?? throw new ArgumentNullException(nameof(targetAssembly));
 		}
@@ -72,7 +72,7 @@ namespace Booma
 		/// </summary>
 		/// <param name="assembly">The assembly to parse.</param>
 		/// <returns>Enumerable of all available message handler types.</returns>
-		private static IEnumerable<Type> GetHandlerTypes([NotNull] Assembly assembly)
+		private static IEnumerable<Type> GetHandlerTypes(Assembly assembly)
 		{
 			if(assembly == null) throw new ArgumentNullException(nameof(assembly));
 

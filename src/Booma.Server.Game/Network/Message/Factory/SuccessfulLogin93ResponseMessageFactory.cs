@@ -23,7 +23,7 @@ namespace Booma
 		/// </summary>
 		public SharedLoginRequest93Payload Request { get; }
 
-		public SuccessfulLoginResponseCreationContext([NotNull] JWTModel authenticationToken, [NotNull] SharedLoginRequest93Payload request)
+		public SuccessfulLoginResponseCreationContext(JWTModel authenticationToken, SharedLoginRequest93Payload request)
 		{
 			AuthenticationToken = authenticationToken ?? throw new ArgumentNullException(nameof(authenticationToken));
 			Request = request ?? throw new ArgumentNullException(nameof(request));

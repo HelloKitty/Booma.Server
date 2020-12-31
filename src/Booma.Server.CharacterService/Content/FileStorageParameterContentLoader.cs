@@ -119,7 +119,7 @@ namespace Booma.Content
 		}
 
 		/// <inheritdoc />
-		public async Task<byte[]> GetParameterDataAsync([NotNull] DataParameterFileHeader header)
+		public async Task<byte[]> GetParameterDataAsync(DataParameterFileHeader header)
 		{
 			if (header == null) throw new ArgumentNullException(nameof(header));
 

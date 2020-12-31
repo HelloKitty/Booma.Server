@@ -49,10 +49,10 @@ namespace Booma
 
 		private IReadonlyAuthTokenRepository TokenRepository { get; }
 
-		public ServiceDiscoveryServiceResolver([NotNull] IServiceDiscoveryService discoveryClient, 
+		public ServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient, 
 			BoomaServiceType serviceType, 
 			ILog logger,
-			[NotNull] IReadonlyAuthTokenRepository tokenRepository)
+			IReadonlyAuthTokenRepository tokenRepository)
 		{
 			if(!Enum.IsDefined(typeof(BoomaServiceType), serviceType)) throw new InvalidEnumArgumentException(nameof(serviceType), (int)serviceType, typeof(BoomaServiceType));
 
@@ -108,7 +108,7 @@ namespace Booma
 			}
 		}
 
-		private ServiceResolveResult<TServiceType> BuildService([NotNull] ResolvedEndpoint endpoint)
+		private ServiceResolveResult<TServiceType> BuildService(ResolvedEndpoint endpoint)
 		{
 			if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
 

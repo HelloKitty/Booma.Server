@@ -16,7 +16,7 @@ namespace Booma
 	{
 		private IParameterContentLoadable ParameterLoader { get; }
 
-		public CharacterDataParametersChunkRequestMessageHandler([NotNull] IParameterContentLoadable parameterLoader) 
+		public CharacterDataParametersChunkRequestMessageHandler(IParameterContentLoadable parameterLoader) 
 			: base(true)
 		{
 			ParameterLoader = parameterLoader ?? throw new ArgumentNullException(nameof(parameterLoader));

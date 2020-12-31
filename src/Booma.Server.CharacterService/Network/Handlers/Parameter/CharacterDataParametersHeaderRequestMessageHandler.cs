@@ -19,7 +19,7 @@ namespace Booma
 		/// </summary>
 		private IParameterContentLoadable ParameterLoader { get; }
 
-		public CharacterDataParametersHeaderRequestMessageHandler([NotNull] IParameterContentLoadable parameterLoader) 
+		public CharacterDataParametersHeaderRequestMessageHandler(IParameterContentLoadable parameterLoader) 
 			: base(true)
 		{
 			ParameterLoader = parameterLoader ?? throw new ArgumentNullException(nameof(parameterLoader));

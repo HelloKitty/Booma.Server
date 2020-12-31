@@ -22,7 +22,7 @@ namespace Booma
 		/// </summary>
 		private PSOBBPacketHeader Header { get; }
 
-		public PPSOBBHeaderAdapter([NotNull] PSOBBPacketHeader header)
+		public PPSOBBHeaderAdapter(PSOBBPacketHeader header)
 		{
 			Header = header ?? throw new ArgumentNullException(nameof(header));
 		}

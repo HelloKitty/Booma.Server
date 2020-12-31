@@ -27,7 +27,7 @@ namespace Booma
 		/// Instance of the service must be non-null.
 		/// </summary>
 		/// <param name="instance">The service instance.</param>
-		public ServiceResolveResult([NotNull] TServiceType instance)
+		public ServiceResolveResult(TServiceType instance)
 		{
 			isAvailable = true;
 			Instance = instance ?? throw new ArgumentNullException(nameof(instance));

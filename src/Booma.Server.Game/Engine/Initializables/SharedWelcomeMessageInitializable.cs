@@ -18,8 +18,8 @@ namespace Booma
 
 		private IMessageSendService<PSOBBGamePacketPayloadServer> SendService { get; }
 
-		public SharedWelcomeMessageInitializable([NotNull] IWelcomeMessageFactory messageFactory,
-			[NotNull] IMessageSendService<PSOBBGamePacketPayloadServer> sendService)
+		public SharedWelcomeMessageInitializable(IWelcomeMessageFactory messageFactory,
+			IMessageSendService<PSOBBGamePacketPayloadServer> sendService)
 		{
 			MessageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
 			SendService = sendService ?? throw new ArgumentNullException(nameof(sendService));

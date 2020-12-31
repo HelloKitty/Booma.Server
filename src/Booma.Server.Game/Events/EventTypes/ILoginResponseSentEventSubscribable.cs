@@ -33,7 +33,7 @@ namespace Booma
 
 		public SharedLoginRequest93Payload.SessionStage Stage { get; }
 
-		public LoginResponseSentEventArgs(AuthenticationResponseCode responseCode, [NotNull] SessionMessageContext<PSOBBGamePacketPayloadServer> messageContext, SharedLoginRequest93Payload.SessionStage stage)
+		public LoginResponseSentEventArgs(AuthenticationResponseCode responseCode, SessionMessageContext<PSOBBGamePacketPayloadServer> messageContext, SharedLoginRequest93Payload.SessionStage stage)
 		{
 			if (!Enum.IsDefined(typeof(AuthenticationResponseCode), responseCode)) throw new InvalidEnumArgumentException(nameof(responseCode), (int) responseCode, typeof(AuthenticationResponseCode));
 			ResponseCode = responseCode;

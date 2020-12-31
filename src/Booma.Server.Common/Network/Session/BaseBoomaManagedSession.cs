@@ -64,7 +64,7 @@ namespace Booma
 			CachedSessionContext = CreateSessionContext(details);
 		}
 
-		private SessionMessageContext<TMessageWriteType> CreateSessionContext([NotNull] SessionDetails details)
+		private SessionMessageContext<TMessageWriteType> CreateSessionContext(SessionDetails details)
 		{
 			if (details == null) throw new ArgumentNullException(nameof(details));
 

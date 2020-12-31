@@ -25,7 +25,7 @@ namespace Booma
 		/// </summary>
 		private IServiceDiscoveryService ServiceDiscoveryClient { get; }
 
-		public DefaultSessionRedirectorFactory([NotNull] IServiceDiscoveryService serviceDiscoveryClient)
+		public DefaultSessionRedirectorFactory(IServiceDiscoveryService serviceDiscoveryClient)
 		{
 			ServiceDiscoveryClient = serviceDiscoveryClient ?? throw new ArgumentNullException(nameof(serviceDiscoveryClient));
 		}
@@ -58,13 +58,13 @@ namespace Booma
 	{
 		private IServiceDiscoveryService ServiceDiscoveryClient { get; }
 
-		public SessionRedirector([NotNull] IServiceDiscoveryService serviceDiscoveryClient)
+		public SessionRedirector(IServiceDiscoveryService serviceDiscoveryClient)
 		{
 			ServiceDiscoveryClient = serviceDiscoveryClient ?? throw new ArgumentNullException(nameof(serviceDiscoveryClient));
 		}
 
 		/// <inheritdoc />
-		public async Task<bool> RedirectAsync(BoomaServiceType redirectionTarget, [NotNull] IMessageSendService<PSOBBGamePacketPayloadServer> session)
+		public async Task<bool> RedirectAsync(BoomaServiceType redirectionTarget, IMessageSendService<PSOBBGamePacketPayloadServer> session)
 		{
 			if (session == null) throw new ArgumentNullException(nameof(session));
 			if(!Enum.IsDefined(typeof(BoomaServiceType), redirectionTarget)) throw new InvalidEnumArgumentException(nameof(redirectionTarget), (int)redirectionTarget, typeof(BoomaServiceType));

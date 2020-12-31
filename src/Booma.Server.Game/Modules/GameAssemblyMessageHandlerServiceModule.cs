@@ -11,7 +11,7 @@ namespace Booma
 	/// </summary>
 	public sealed class GameAssemblyMessageHandlerServiceModule : AssemblyMessageHandlerServiceModule<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer>
 	{
-		public GameAssemblyMessageHandlerServiceModule([NotNull] Assembly targetAssembly) 
+		public GameAssemblyMessageHandlerServiceModule(Assembly targetAssembly) 
 			: base(targetAssembly)
 		{
 

@@ -23,7 +23,7 @@ namespace Booma
 			SessionMessageBuildingServiceContext<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer> messageServices, 
 			INetworkMessageDispatchingStrategy<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer> messageDispatcher,
 			SessionMessageInterfaceServiceContext<PSOBBGamePacketPayloadClient, PSOBBGamePacketPayloadServer> messageInterfaces,
-			[NotNull] GameEngineFrameworkManager engine)
+			GameEngineFrameworkManager engine)
 			: base(networkOptions, connection, details, messageServices, messageDispatcher, messageInterfaces)
 		{
 			Engine = engine ?? throw new ArgumentNullException(nameof(engine));

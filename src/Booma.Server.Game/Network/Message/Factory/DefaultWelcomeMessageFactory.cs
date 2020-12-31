@@ -34,7 +34,7 @@ namespace Booma
 		/// </summary>
 		public const string WelcomeMessage = "Phantasy Star Online Blue Burst Game Server. Copyright 1999-2004 SONICTEAM.";
 
-		public DefaultWelcomeMessageFactory([NotNull] INetworkCryptoInitializable cryptoInitializable)
+		public DefaultWelcomeMessageFactory(INetworkCryptoInitializable cryptoInitializable)
 		{
 			CryptoInitializable = cryptoInitializable ?? throw new ArgumentNullException(nameof(cryptoInitializable));
 		}

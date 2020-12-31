@@ -21,13 +21,13 @@ namespace Booma
 		/// </summary>
 		private ISerializerService Serializer { get; }
 
-		public DefaultFreecraftCoreMessageSerializer([NotNull] ISerializerService serializer)
+		public DefaultFreecraftCoreMessageSerializer(ISerializerService serializer)
 		{
 			Serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
 		}
 
 		/// <inheritdoc />
-		public void Serialize([NotNull] TMessageWriteType value, Span<byte> buffer, ref int offset)
+		public void Serialize(TMessageWriteType value, Span<byte> buffer, ref int offset)
 		{
 			if(value == null) throw new ArgumentNullException(nameof(value));
 

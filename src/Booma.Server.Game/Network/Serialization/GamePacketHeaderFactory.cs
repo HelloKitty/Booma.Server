@@ -15,7 +15,7 @@ namespace Booma
 	{
 		private NetworkConnectionOptions Options { get; }
 
-		public GamePacketHeaderFactory([NotNull] NetworkConnectionOptions options)
+		public GamePacketHeaderFactory(NetworkConnectionOptions options)
 		{
 			Options = options ?? throw new ArgumentNullException(nameof(options));
 		}

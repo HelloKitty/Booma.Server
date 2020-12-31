@@ -18,7 +18,7 @@ namespace Booma
 		/// </summary>
 		private ISessionRedirectorFactory RedirectionFactory { get; }
 
-		public RedirectCharacterServiceOnLoginResponseEventListener(ILoginResponseSentEventSubscribable subscriptionService, [NotNull] ISessionRedirectorFactory redirectionFactory) 
+		public RedirectCharacterServiceOnLoginResponseEventListener(ILoginResponseSentEventSubscribable subscriptionService, ISessionRedirectorFactory redirectionFactory) 
 			: base(subscriptionService)
 		{
 			RedirectionFactory = redirectionFactory ?? throw new ArgumentNullException(nameof(redirectionFactory));

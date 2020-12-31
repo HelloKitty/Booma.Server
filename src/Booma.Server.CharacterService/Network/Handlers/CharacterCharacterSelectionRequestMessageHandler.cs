@@ -21,8 +21,8 @@ namespace Booma
 
 		private ICharacterDataRepository CharacterDataRepository { get; }
 
-		public CharacterCharacterSelectionRequestMessageHandler([NotNull] ILog logger,
-			[NotNull] ICharacterDataRepository characterDataRepository)
+		public CharacterCharacterSelectionRequestMessageHandler(ILog logger,
+			ICharacterDataRepository characterDataRepository)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			CharacterDataRepository = characterDataRepository ?? throw new ArgumentNullException(nameof(characterDataRepository));
@@ -65,7 +65,7 @@ namespace Booma
 			}
 		}
 
-		private async Task HandleInvalidSelectionTypeAsync([NotNull] SessionMessageContext<PSOBBGamePacketPayloadServer> context, CharacterSelectionType messageSelectionType)
+		private async Task HandleInvalidSelectionTypeAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, CharacterSelectionType messageSelectionType)
 		{
 			if (context == null) throw new ArgumentNullException(nameof(context));
 

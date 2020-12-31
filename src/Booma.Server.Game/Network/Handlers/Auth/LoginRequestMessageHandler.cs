@@ -40,10 +40,10 @@ namespace Booma
 		//TODO: ASSERT INSTANCE PER LIFETIME SCOPE!!
 		private IAuthTokenRepository TokenRepository { get; }
 
-		public LoginRequestMessageHandler([NotNull] ILog logger,
-			[NotNull] IServiceResolver<IAuthenticationService> authenticationServiceResolver,
-			[NotNull] ISuccessfulLogin93ResponseMessageFactory successResponseFactory,
-			[NotNull] IAuthTokenRepository tokenRepository)
+		public LoginRequestMessageHandler(ILog logger,
+			IServiceResolver<IAuthenticationService> authenticationServiceResolver,
+			ISuccessfulLogin93ResponseMessageFactory successResponseFactory,
+			IAuthTokenRepository tokenRepository)
 			: base(true)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -72,7 +72,7 @@ namespace Booma
 			}
 		}
 
-		private async Task<SharedLoginResponsePayload> TryAuthenticateUserAsync([NotNull] SharedLoginRequest93Payload message, CancellationToken token)
+		private async Task<SharedLoginResponsePayload> TryAuthenticateUserAsync(SharedLoginRequest93Payload message, CancellationToken token)
 		{
 			if (message == null) throw new ArgumentNullException(nameof(message));
 
