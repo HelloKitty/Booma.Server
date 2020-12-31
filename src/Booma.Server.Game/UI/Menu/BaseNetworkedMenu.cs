@@ -98,7 +98,7 @@ namespace Booma
 			if (selectionData == null) throw new ArgumentNullException(nameof(selectionData));
 
 			//TODO: Verify menu
-			await InternalMenuEntries[selectionData.MenuId]
+			await InternalMenuEntries[selectionData.ItemId]
 				.Script
 				.OnSelectionAsync(token);
 		}
