@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Booma.Proxy;
 using Glader.Essentials;
 using Glader;
+using Glader.ASP.ServiceDiscovery;
 
 namespace Booma
 {
 	public sealed class ShipListWelcomeEventListener : LoginResponseSentEventListener
 	{
-		public ShipListWelcomeEventListener(ILoginResponseSentEventSubscribable subscriptionService) : base(subscriptionService)
+		private IShipEntryRepository ShipRepository { get; }
+
+		public ShipListWelcomeEventListener(ILoginResponseSentEventSubscribable subscriptionService, 
+			IShipEntryRepository shipRepository) 
+			: base(subscriptionService)
 		{
+			ShipRepository = shipRepository ?? throw new ArgumentNullException(nameof(shipRepository));
 		}
 
 		protected override async Task OnEventFiredAsync(object source, LoginResponseSentEventArgs args)
@@ -25,19 +33,28 @@ namespace Booma
 			await args.MessageContext.MessageService.SendMessageAsync(new SharedMarqueeScrollChangeEventPayload("Hello World, welcome to GladerServ? No that's terrible name!"));
 
 			//Demo ship list
-			await args.MessageContext.MessageService.SendMessageAsync(new SharedShipListEventPayload(BuildShipList()));
+			ShipEntry[] entries = await ShipRepository
+				.RetrieveAllAsync();
 
+			if (entries.Any())
+			{
+				await args.MessageContext.MessageService.SendMessageAsync(new SharedShipListEventPayload(entries.Select(s =>
+				{
+					return new MenuListing(new MenuItemIdentifier(0, 1), 0, s.Name);
+				}).ToArray()));
+			}
+			else
+			{
+				await args.MessageContext.MessageService.SendMessageAsync(new SharedShipListEventPayload(BuildEmptyShipListMenu()));
+			}
 		}
 
-		private MenuListing[] BuildShipList()
+		private MenuListing[] BuildEmptyShipListMenu()
 		{
-			return new MenuListing[]
+			return new[]
 			{
-				new MenuListing(new MenuItemIdentifier(0, 1), 0, "Dreamcast (86)"),
-				new MenuListing(new MenuItemIdentifier(0, 2), 0, "Xbox (5)"),
-				new MenuListing(new MenuItemIdentifier(0, 3), 0, "GameCube (234)"),
-				new MenuListing(new MenuItemIdentifier(0, 4), 0, "BB (2530)"),
-				new MenuListing(new MenuItemIdentifier(0, 5), 0, "PC (25)"),
+				new MenuListing(new MenuItemIdentifier(0, 1), ushort.MaxValue, "None"),
+				new MenuListing(new MenuItemIdentifier(0, 2), 0, "Refresh List"),
 			};
 		}
 	}
