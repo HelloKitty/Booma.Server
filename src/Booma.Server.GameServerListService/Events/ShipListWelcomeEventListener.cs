@@ -37,7 +37,7 @@ namespace Booma
 			await args.MessageContext.MessageService.SendMessageAsync(new SharedMarqueeScrollChangeEventPayload("Hello World, welcome to GladerServ? No that's terrible name!"));
 
 			//Demo ship list
-			ShipEntry[] entries = await ShipRepository
+			ConnectionEntry[] entries = await ShipRepository
 				.RetrieveAllAsync();
 
 			MenuListing[] menu = ServerListMenu.Create(entries);

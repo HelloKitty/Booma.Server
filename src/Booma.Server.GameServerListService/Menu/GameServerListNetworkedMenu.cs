@@ -11,7 +11,7 @@ namespace Booma
 	/// <summary>
 	/// Networked menu for the ship list.
 	/// </summary>
-	public sealed class GameServerListNetworkedMenu : BaseNetworkedMenu<GameServerListMenuCode, ShipEntry[]>
+	public sealed class GameServerListNetworkedMenu : BaseNetworkedMenu<GameServerListMenuCode, ConnectionEntry[]>
 	{
 		private IMessageSendService<PSOBBGamePacketPayloadServer> SendService { get; }
 
@@ -21,7 +21,7 @@ namespace Booma
 			SendService = sendService ?? throw new ArgumentNullException(nameof(sendService));
 		}
 
-		protected override NetworkedButtonMenuEntry[] CreateMenu(ShipEntry[] context)
+		protected override NetworkedButtonMenuEntry[] CreateMenu(ConnectionEntry[] context)
 		{
 			if (context == null) throw new ArgumentNullException(nameof(context));
 
@@ -29,7 +29,7 @@ namespace Booma
 				.ToArray();
 		}
 
-		private IEnumerable<NetworkedButtonMenuEntry> CreateServerListMenuItems(ShipEntry[] context)
+		private IEnumerable<NetworkedButtonMenuEntry> CreateServerListMenuItems(ConnectionEntry[] context)
 		{
 			if (context == null) throw new ArgumentNullException(nameof(context));
 

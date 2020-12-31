@@ -30,7 +30,7 @@ namespace Booma
 		}
 
 		/// <inheritdoc />
-		public async Task<ShipEntry[]> RetrieveAllAsync(CancellationToken token = default)
+		public async Task<ConnectionEntry[]> RetrieveAllAsync(CancellationToken token = default)
 		{
 			string shipServiceType = BoomaEndpointConstants.GetServiceIdentifier(BoomaServiceType.ShipService);
 			var discoveryResponse = await ServiceDiscoveryClient.DiscoverServicesAsync(shipServiceType, token);
@@ -40,13 +40,13 @@ namespace Booma
 				if (Logger.IsErrorEnabled)
 					Logger.Error($"Failed to resolve ship list. Reason: {discoveryResponse.ResultCode}");
 
-				return Array.Empty<ShipEntry>();
+				return Array.Empty<ConnectionEntry>();
 			}
 
 			return discoveryResponse
 				.Result
 				.Services
-				.Select(s => new ShipEntry(s.Name, s.Endpoint))
+				.Select(s => new ConnectionEntry(s.Name, s.Endpoint))
 				.ToArray();
 		}
 	}

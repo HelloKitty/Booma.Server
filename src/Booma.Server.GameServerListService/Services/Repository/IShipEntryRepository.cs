@@ -13,10 +13,10 @@ namespace Booma
 	public interface IShipEntryRepository
 	{
 		/// <summary>
-		/// Retrieves all ship entries <see cref="ShipEntry"/>.
+		/// Retrieves all ship entries <see cref="ConnectionEntry"/>.
 		/// </summary>
 		/// <param name="token">Cancel token.</param>
 		/// <returns>Non-null list of ships.</returns>
-		Task<ShipEntry[]> RetrieveAllAsync(CancellationToken token = default);
+		Task<ConnectionEntry[]> RetrieveAllAsync(CancellationToken token = default);
 	}
 }

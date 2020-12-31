@@ -8,7 +8,7 @@ namespace Booma
 	/// <summary>
 	/// Represents a simple model of a ship entry.
 	/// </summary>
-	public sealed class ShipEntry
+	public sealed class ConnectionEntry
 	{
 		/// <summary>
 		/// The ship name.
@@ -20,7 +20,7 @@ namespace Booma
 		/// </summary>
 		public ResolvedEndpoint Endpoint { get; }
 
-		public ShipEntry(string name, ResolvedEndpoint endpoint)
+		public ConnectionEntry(string name, ResolvedEndpoint endpoint)
 		{
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Endpoint = endpoint ?? throw new ArgumentNullException(nameof(endpoint));
