@@ -8,12 +8,12 @@ using Glader.ASP.ServiceDiscovery;
 namespace Booma
 {
 	/// <summary>
-	/// Contract for data interface for querying ship entries.
+	/// Contract for data interface for querying server entries.
 	/// </summary>
-	public interface IShipEntryRepository
+	public interface IGameServerEntryRepository
 	{
 		/// <summary>
-		/// Retrieves all ship entries <see cref="ConnectionEntry"/>.
+		/// Retrieves all server entries <see cref="ConnectionEntry"/>.
 		/// </summary>
 		/// <param name="token">Cancel token.</param>
 		/// <returns>Non-null list of ships.</returns>

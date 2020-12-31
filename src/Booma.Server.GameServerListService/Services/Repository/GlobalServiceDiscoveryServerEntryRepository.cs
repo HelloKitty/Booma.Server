@@ -10,10 +10,10 @@ using Glader.ASP.ServiceDiscovery;
 namespace Booma
 {
 	/// <summary>
-	/// Implementation of <see cref="IShipEntryRepository"/> based around the global
+	/// Implementation of <see cref="IGameServerEntryRepository"/> based around the global
 	/// <see cref="IServiceDiscoveryService"/>.
 	/// </summary>
-	public sealed class GlobalServiceDiscoveryShipEntryRepository : IShipEntryRepository
+	public sealed class GlobalServiceDiscoveryServerEntryRepository : IGameServerEntryRepository
 	{
 		/// <summary>
 		/// Discovery service.
@@ -22,7 +22,7 @@ namespace Booma
 
 		private ILog Logger { get; }
 
-		public GlobalServiceDiscoveryShipEntryRepository(IServiceDiscoveryService serviceDiscoveryClient, 
+		public GlobalServiceDiscoveryServerEntryRepository(IServiceDiscoveryService serviceDiscoveryClient, 
 			ILog logger)
 		{
 			ServiceDiscoveryClient = serviceDiscoveryClient ?? throw new ArgumentNullException(nameof(serviceDiscoveryClient));

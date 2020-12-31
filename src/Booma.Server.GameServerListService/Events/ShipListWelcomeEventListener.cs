@@ -13,12 +13,12 @@ namespace Booma
 {
 	public sealed class ShipListWelcomeEventListener : LoginResponseSentEventListener
 	{
-		private IShipEntryRepository ShipRepository { get; }
+		private IGameServerEntryRepository ShipRepository { get; }
 
 		private GameServerListNetworkedMenu ServerListMenu { get; }
 
 		public ShipListWelcomeEventListener(ILoginResponseSentEventSubscribable subscriptionService, 
-			IShipEntryRepository shipRepository, 
+			IGameServerEntryRepository shipRepository, 
 			GameServerListNetworkedMenu serverListMenu) 
 			: base(subscriptionService)
 		{
