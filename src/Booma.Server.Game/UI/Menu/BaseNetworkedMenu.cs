@@ -12,7 +12,7 @@ using Glader.Essentials;
 
 namespace Booma
 {
-	public abstract class NetworkedMenuFactory<TMenuCodeType, TMenuCreationType> 
+	public abstract class BaseNetworkedMenu<TMenuCodeType, TMenuCreationType> 
 		: IEnumerable<MenuListing>, IFactoryCreatable<MenuListing[], TMenuCreationType>
 			where TMenuCodeType : Enum
 	{
@@ -28,7 +28,7 @@ namespace Booma
 		private int _menuIdentifierCount = -1; //so that the default value is 0, we init to -1.
 		protected int MenuIdentifierCount => _menuIdentifierCount;
 
-		protected NetworkedMenuFactory(TMenuCodeType id)
+		protected BaseNetworkedMenu(TMenuCodeType id)
 		{
 			Id = id;
 		}
