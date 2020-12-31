@@ -38,5 +38,10 @@ namespace Booma
 		/// The service responsible for maintaining and providing Character Data.
 		/// </summary>
 		CharacterDataService = 5,
+
+		/// <summary>
+		/// The ship service type.
+		/// </summary>
+		ShipService = 6,
 	}
 }
