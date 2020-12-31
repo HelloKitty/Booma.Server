@@ -14,6 +14,10 @@ namespace Booma
 			builder.RegisterType<GlobalServiceDiscoveryShipEntryRepository>()
 				.As<IShipEntryRepository>()
 				.InstancePerLifetimeScope();
+
+			builder.RegisterType<GameServerListNetworkedMenu>()
+				.AsSelf()
+				.InstancePerLifetimeScope();
 		}
 	}
 }

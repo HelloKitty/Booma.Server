@@ -28,6 +28,11 @@ namespace Booma
 		private int _menuIdentifierCount = -1; //so that the default value is 0, we init to -1.
 		protected int MenuIdentifierCount => _menuIdentifierCount;
 
+		/// <summary>
+		/// Indicates if the menu has been initialized.
+		/// </summary>
+		public bool IsInitialized => _menuIdentifierCount > -1;
+
 		protected BaseNetworkedMenu(TMenuCodeType id)
 		{
 			Id = id;
