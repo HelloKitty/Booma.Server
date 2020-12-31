@@ -7,9 +7,9 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
-    <PackageReference Include="Booma.Packet.Common" Version="0.0.21" />
+    <PackageReference Include="Booma.Packet.Common" Version="0.0.23" />
     <PackageReference Include="Common.Logging" Version="3.4.1" />
-    <PackageReference Include="FreecraftCore.Serializer" Version="4.0.48" />
+    <PackageReference Include="FreecraftCore.Serializer" Version="4.0.55" />
     <PackageReference Include="Generic.Math" Version="1.0.2" />
     <PackageReference Include="Glader.Essentials.Common" Version="2.2.46" />
     <PackageReference Include="GladNet.API.Server" Version="4.0.10" />
