@@ -38,8 +38,7 @@ namespace Booma
 			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(GetType().Assembly));
 
 			//TODO: This is a hacky way to get the menu selection handler.
-			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(typeof(GameServerListNetworkedMenu).Assembly));
-			builder.RegisterModule<GameServerDataServiceModule>();
+			builder.RegisterModule<ChannelDataServiceModule>();
 
 			return builder;
 		}

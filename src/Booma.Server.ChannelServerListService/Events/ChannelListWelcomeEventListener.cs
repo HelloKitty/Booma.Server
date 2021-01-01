@@ -13,13 +13,13 @@ namespace Booma
 {
 	public sealed class ChannelListWelcomeEventListener : LoginResponseSentEventListener
 	{
-		private GameServerListNetworkedMenu ServerListMenu { get; }
+		private ChannelListNetworkedMenu ChannelListMenu { get; }
 
 		public ChannelListWelcomeEventListener(ILoginResponseSentEventSubscribable subscriptionService,
-			GameServerListNetworkedMenu serverListMenu) 
+			ChannelListNetworkedMenu channelListMenu) 
 			: base(subscriptionService)
 		{
-			ServerListMenu = serverListMenu ?? throw new ArgumentNullException(nameof(serverListMenu));
+			ChannelListMenu = channelListMenu ?? throw new ArgumentNullException(nameof(channelListMenu));
 		}
 
 		protected override async Task OnEventFiredAsync(object source, LoginResponseSentEventArgs args)
@@ -35,7 +35,7 @@ namespace Booma
 				new ConnectionEntry("Block 01", new ResolvedEndpoint("127.0.0.1", 12005))
 			};
 
-			MenuListing[] menu = ServerListMenu.Create(entries);
+			MenuListing[] menu = ChannelListMenu.Create(entries);
 			await args.MessageContext.MessageService.SendMessageAsync(new ShipBlockListEventPayload(menu));
 		}
 	}

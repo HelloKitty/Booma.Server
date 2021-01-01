@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Booma;
+using Booma.UI;
 using GladNet;
 
 namespace Booma
@@ -11,13 +13,21 @@ namespace Booma
 	/// <summary>
 	/// Networked menu for the ship list.
 	/// </summary>
-	public sealed class GameServerListNetworkedMenu : BaseNetworkedMenu<GameServerListMenuCode, ConnectionEntry[]>
+	public class GameServerListNetworkedMenu : BaseNetworkedMenu<KnownMenuIdentifier, ConnectionEntry[]>
 	{
 		private IMessageSendService<PSOBBGamePacketPayloadServer> SendService { get; }
 
 		public GameServerListNetworkedMenu(IMessageSendService<PSOBBGamePacketPayloadServer> sendService) 
-			: base(GameServerListMenuCode.ServerListMenu)
+			: base(KnownMenuIdentifier.SHIP)
 		{
+			SendService = sendService ?? throw new ArgumentNullException(nameof(sendService));
+		}
+
+		public GameServerListNetworkedMenu(KnownMenuIdentifier menu, 
+			IMessageSendService<PSOBBGamePacketPayloadServer> sendService) 
+			: base(menu)
+		{
+			if (!Enum.IsDefined(typeof(KnownMenuIdentifier), menu)) throw new ArgumentOutOfRangeException(nameof(menu), "Value should be defined in the KnownMenuIdentifier enum.");
 			SendService = sendService ?? throw new ArgumentNullException(nameof(sendService));
 		}
 
