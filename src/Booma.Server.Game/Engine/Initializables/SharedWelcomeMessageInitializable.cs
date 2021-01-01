@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Booma.Proxy;
+using Booma;
 using Glader.Essentials;
 using GladNet;
 

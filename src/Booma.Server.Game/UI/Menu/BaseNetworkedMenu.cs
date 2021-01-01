@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Booma.Proxy;
+using Booma;
 using Generic.Math;
 using Glader.Essentials;
 

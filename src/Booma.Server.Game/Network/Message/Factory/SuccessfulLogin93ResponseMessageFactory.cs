@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using Booma.Proxy;
+using Booma;
 using Glader.ASP.Authentication;
 using Glader.Essentials;
 

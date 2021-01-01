@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using Autofac;
-using Booma.Proxy;
+using Booma;
 using Common.Logging;
 using GladNet;
 using JetBrains.Annotations;

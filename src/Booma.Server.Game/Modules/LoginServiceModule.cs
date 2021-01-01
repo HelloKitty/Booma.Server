@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Autofac;
 using Booma;
-using Booma.Proxy;
+using Booma;
 using Glader.ASP.Authentication;
 using Glader.Essentials;
 

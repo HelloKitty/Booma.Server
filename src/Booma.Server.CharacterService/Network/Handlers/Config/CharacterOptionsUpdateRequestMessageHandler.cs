@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Booma.Proxy;
+using Booma;
 using Common.Logging;
 using GladNet;
 
@@ -20,7 +20,7 @@ namespace Booma
 		{
 			//TODO: We should save and persist these options.
 			//Just ehco it back as an options response for now.
-			return new CharacterOptionsResponsePayload(message.Bindings, message.GuildCard, message.TeamInfo);
+			return new CharacterOptionsResponsePayload(message.Config);
 		}
 	}
 }

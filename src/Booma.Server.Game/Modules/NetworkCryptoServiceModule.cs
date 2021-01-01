@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Autofac;
-using Booma.Proxy;
+using Booma;
 using GladNet;
 
 namespace Booma

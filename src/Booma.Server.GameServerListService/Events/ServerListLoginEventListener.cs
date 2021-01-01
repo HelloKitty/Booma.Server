@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Booma.Proxy;
+using Booma;
 using Glader.Essentials;
 using Glader;
 using Glader.ASP.ServiceDiscovery;

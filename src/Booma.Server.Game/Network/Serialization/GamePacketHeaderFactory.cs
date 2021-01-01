@@ -3,7 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Booma.Proxy;
+using Booma;
 using GladNet;
 
 namespace Booma

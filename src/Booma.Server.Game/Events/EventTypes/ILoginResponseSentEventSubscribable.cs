@@ -3,7 +3,7 @@ using FreecraftCore;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
-using Booma.Proxy;
+using Booma;
 using GladNet;
 
 namespace Booma

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Autofac;
 using Autofac.Core;
-using Booma.Proxy;
+using Booma;
 using FreecraftCore.Serializer;
 using JetBrains.Annotations;
 

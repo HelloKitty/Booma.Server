@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
-using Booma.Proxy;
+using Booma;
 using Glader.ASP.ServiceDiscovery;
 using Glader.Essentials;
 using GladNet;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Booma.Proxy;
+using Booma;
 using Common.Logging;
 using Glader.ASP.RPGCharacter;
 using GladNet;

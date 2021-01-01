@@ -6,7 +6,7 @@ using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Booma.Proxy;
+using Booma;
 using Force.Crc32;
 using Nito.AsyncEx;
 

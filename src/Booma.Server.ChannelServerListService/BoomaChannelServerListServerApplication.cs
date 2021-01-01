@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using Autofac;
-using Booma.Proxy;
+using Booma;
 using Common.Logging;
 using GladNet;
 using JetBrains.Annotations;
@@ -36,6 +36,9 @@ namespace Booma
 
 			//GameServerList service handlers
 			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(GetType().Assembly));
+
+			//TODO: This is a hacky way to get the menu selection handler.
+			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(typeof(GameServerListNetworkedMenu).Assembly));
 			builder.RegisterModule<GameServerDataServiceModule>();
 
 			return builder;
