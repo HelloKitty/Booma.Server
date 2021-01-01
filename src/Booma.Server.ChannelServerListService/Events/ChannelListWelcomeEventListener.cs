@@ -32,7 +32,8 @@ namespace Booma
 			//Channel list.
 			ConnectionEntry[] entries = new ConnectionEntry[1]
 			{
-				new ConnectionEntry("Block 01", new ResolvedEndpoint("127.0.0.1", 12005))
+				//WARNING: YOU MUST SEND BLOCK IN BLOCK## format!!
+				new ConnectionEntry("BLOCK01", new ResolvedEndpoint("127.0.0.1", 12005))
 			};
 
 			MenuListing[] menu = ChannelListMenu.Create(entries);
