@@ -35,7 +35,7 @@ namespace Booma
 			//We should not try to send defaults if the config service
 			//is unavailable, because this will override their config
 			//therefore we should just disconnect in that case.
-			var resolveResult = await ConfigServiceResolver.Create(token);
+			ServiceResolveResult<IKeybindConfigurationService> resolveResult = await ConfigServiceResolver.Create(token);
 
 			if (!resolveResult.isAvailable)
 				return await LogServiceErrorAndDisconnectAsync(context);
