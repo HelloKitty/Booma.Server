@@ -47,6 +47,12 @@ namespace Booma
 		/// <summary>
 		/// The Block/Channel service type.
 		/// </summary>
-		BlockService = 7
+		BlockService = 7,
+
+		/// <summary>
+		/// The game configuration service.
+		/// (For stuff like Keybinds)
+		/// </summary>
+		GameConfigurationService = 8,
 	}
 }

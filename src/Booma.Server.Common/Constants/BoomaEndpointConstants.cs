@@ -52,6 +52,11 @@ namespace Booma
 		public const string BOOMA_SHIP_SERVICE_NAME = "SHIP";
 
 		/// <summary>
+		/// Represents the constant string identifier for a Booma service name.
+		/// </summary>
+		public const string BOOMA_GAME_CONFIGURATION_SERVICE_NAME = "GAMECONFIG";
+
+		/// <summary>
 		/// Gets a constant service name based on the service type.
 		/// </summary>
 		/// <param name="type">The service name.</param>
@@ -76,6 +81,8 @@ namespace Booma
 					return BOOMA_CHARACTER_DATA_SERVICE_NAME;
 				case BoomaServiceType.ShipService:
 					return BOOMA_SHIP_SERVICE_NAME;
+				case BoomaServiceType.GameConfigurationService:
+					return BOOMA_GAME_CONFIGURATION_SERVICE_NAME;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(type), type, null);
 			}
