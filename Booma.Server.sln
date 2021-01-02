@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Booma.Server.ChannelServerL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Booma.Server.ChannelService", "src\Booma.Server.ChannelService\Booma.Server.ChannelService.csproj", "{3B8737F0-20FF-419B-91B1-D04FC22DD58C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Booma.Server.GameConfigurationService", "src\Booma.Server.GameConfigurationService\Booma.Server.GameConfigurationService.csproj", "{7271C166-91B8-41D4-B7AD-9AB243C816EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{3B8737F0-20FF-419B-91B1-D04FC22DD58C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B8737F0-20FF-419B-91B1-D04FC22DD58C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B8737F0-20FF-419B-91B1-D04FC22DD58C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7271C166-91B8-41D4-B7AD-9AB243C816EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7271C166-91B8-41D4-B7AD-9AB243C816EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7271C166-91B8-41D4-B7AD-9AB243C816EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7271C166-91B8-41D4-B7AD-9AB243C816EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +102,7 @@ Global
 		{5A6F4EE0-EB75-4FC7-BF72-61ABB0DF166D} = {7D9FD5C0-739C-4DA0-9F90-F832CBC90100}
 		{D78FF20C-A748-4F6F-B1FA-1F20BB4E191C} = {5A6F4EE0-EB75-4FC7-BF72-61ABB0DF166D}
 		{3B8737F0-20FF-419B-91B1-D04FC22DD58C} = {5A6F4EE0-EB75-4FC7-BF72-61ABB0DF166D}
+		{7271C166-91B8-41D4-B7AD-9AB243C816EA} = {5A6F4EE0-EB75-4FC7-BF72-61ABB0DF166D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {146E1F83-8720-4378-8D78-F715F01D7FC3}
