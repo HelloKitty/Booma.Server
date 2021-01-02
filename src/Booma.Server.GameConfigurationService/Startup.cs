@@ -12,7 +12,6 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Glader.ASP.GameConfig;
-using Glader.ASP.ServiceDiscovery;
 using Glader.Essentials;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -66,7 +65,7 @@ namespace Booma
 
 					//TODO: This audience stuff is ALL WRONG.
 					options.Audience = "auth-server";
-					options.TokenValidationParameters.ValidIssuer = "https://localhost:5003/";
+					options.TokenValidationParameters.ValidIssuers = new[] { "https://localhost:5003/", "https://127.0.0.1:5003/" };
 				});
 		}
 
