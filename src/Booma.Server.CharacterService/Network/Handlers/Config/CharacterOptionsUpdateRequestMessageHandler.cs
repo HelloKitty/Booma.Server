@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,10 +41,17 @@ namespace Booma
 			//Store the binds sent (will be queried at some point by the backend for loading in-game)
 			await resolveResult
 				.Instance
-				.UpdateAccountBindsAsync(new KeybindConfigurationUpdateRequest(message.Config.Bindings.KeyConfiguration), token);
+				.UpdateAccountBindsAsync(new KeybindConfigurationUpdateRequest(SerializeBindingConfig(message)), token);
 
 			//Echo back, since we persisted this data now
 			return new CharacterOptionsResponsePayload(message.Config);
+		}
+
+		private static byte[] SerializeBindingConfig(CharacterOptionsUpdateRequestPayload message)
+		{
+			return message.Config.Bindings.KeyConfiguration
+				.Concat(message.Config.Bindings.JoystickConfiguration)
+				.ToArray();
 		}
 
 		private async Task<CharacterOptionsResponsePayload> LogServiceErrorAndDisconnectAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context)
