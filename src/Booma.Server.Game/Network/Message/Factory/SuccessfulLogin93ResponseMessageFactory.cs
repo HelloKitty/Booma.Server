@@ -44,7 +44,7 @@ namespace Booma
 		{
 			if (!context.AuthenticationToken.isTokenValid)
 				throw new ArgumentException($"Content must have a valid {nameof(JWTModel)} token.", nameof(context));
-
+			
 			//JWT Access Token should have a Subject field like:
 			/*{
 			"sub": "1",
@@ -55,7 +55,7 @@ namespace Booma
 			uint accountId = uint.Parse(token.Subject);
 
 			//Team and security data nonsense is ignorable for Login.
-			return new SharedLoginResponsePayload(accountId, 0, new byte[40]);
+			return new SharedLoginResponsePayload(accountId, 0, context.Request.ClientData.SecurityData);
 		}
 	}
 }
