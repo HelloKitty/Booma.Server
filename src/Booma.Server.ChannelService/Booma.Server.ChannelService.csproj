@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Booma.Server.Common\Booma.Server.Common.csproj" />
     <ProjectReference Include="..\Booma.Server.Game\Booma.Server.Game.csproj" />
   </ItemGroup>
