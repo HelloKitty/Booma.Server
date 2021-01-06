@@ -39,6 +39,7 @@ namespace Booma
 			
 			//Channel specific stuff
 			builder.RegisterModule<GameConfigServiceModule>();
+			builder.RegisterModule<MEAKKAServiceModule>();
 
 			return builder;
 		}
