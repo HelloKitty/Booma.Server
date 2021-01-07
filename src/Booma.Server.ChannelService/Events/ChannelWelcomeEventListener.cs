@@ -18,21 +18,21 @@ namespace Booma
 {
 	public sealed class ChannelWelcomeEventListener : LoginResponseSentEventListener
 	{
-		private ICharacterOptionsConfigurationFactory OptionsFactory { get; }
+		private ICharacterDataSnapshotFactory CharacterDataFactory { get; }
 
 		private IEntityActorRef<RootChannelActor> ChannelActor { get; }
 
 		private ILog Logger { get; }
 
 		public ChannelWelcomeEventListener(ILoginResponseSentEventSubscribable subscriptionService, 
-			ICharacterOptionsConfigurationFactory optionsFactory, 
 			IEntityActorRef<RootChannelActor> channelActor, 
-			ILog logger) 
+			ILog logger, 
+			ICharacterDataSnapshotFactory characterDataFactory) 
 			: base(subscriptionService)
 		{
-			OptionsFactory = optionsFactory ?? throw new ArgumentNullException(nameof(optionsFactory));
 			ChannelActor = channelActor ?? throw new ArgumentNullException(nameof(channelActor));
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+			CharacterDataFactory = characterDataFactory ?? throw new ArgumentNullException(nameof(characterDataFactory));
 		}
 
 		protected override async Task OnEventFiredAsync(object source, LoginResponseSentEventArgs args)
@@ -47,10 +47,19 @@ namespace Booma
 			if (!await SendLobbyListAsync(args.MessageContext)) 
 				return;
 
-			CharacterOptionsConfiguration configuration = await OptionsFactory.Create(CancellationToken.None);
+			InitialCharacterDataSnapshot dataSnapshot = 
+				await CharacterDataFactory.Create(new CharacterDataEventPayloadCreationContext(args.CharacterSlot));
+			InitializeCharacterDataEventPayload characterDataPayload = new InitializeCharacterDataEventPayload(dataSnapshot.Inventory, BuildLobbyCharacterData(dataSnapshot), 0, dataSnapshot.Bank, dataSnapshot.GuildCard, 0, dataSnapshot.Options);
 
-			await args.MessageContext.MessageService.SendMessageAsync(new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration));
-			await args.MessageContext.MessageService.SendMessageAsync(new BlockCharacterDataInitializationServerRequestPayload());
+			await args.MessageContext.MessageService.SendMessageAsync(characterDataPayload);
+
+
+			//await args.MessageContext.MessageService.SendMessageAsync(new BlockCharacterDataInitializationServerRequestPayload());
+		}
+
+		private static LobbyCharacterData BuildLobbyCharacterData(InitialCharacterDataSnapshot dataSnapshot)
+		{
+			return new LobbyCharacterData(dataSnapshot.Stats, 0, 0, dataSnapshot.Progress, 0, String.Empty, 0, dataSnapshot.SpecialCustom, dataSnapshot.GuildCard.SectionId, dataSnapshot.GuildCard.ClassType, dataSnapshot.Version, dataSnapshot.Customization, dataSnapshot.Name);
 		}
 
 		private async Task<bool> SendLobbyListAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context)
