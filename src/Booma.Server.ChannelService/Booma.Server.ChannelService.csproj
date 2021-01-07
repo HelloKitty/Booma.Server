@@ -8,12 +8,18 @@
   <ItemGroup>
     <PackageReference Include="Akka.DI.AutoFac" Version="1.4.1" />
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.0.2" />
-    <PackageReference Include="MEAKKA.NET" Version="0.0.1" />
+    <PackageReference Include="MEAKKA.NET" Version="0.1.3" />
+    <PackageReference Include="MEAKKA.NET.Autofac" Version="0.1.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Booma.Server.Common\Booma.Server.Common.csproj" />
     <ProjectReference Include="..\Booma.Server.Game\Booma.Server.Game.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Engine\Akka\Handlers\Base\" />
+    <Folder Include="Services\Akka\" />
   </ItemGroup>
 
 </Project>

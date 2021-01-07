@@ -11,17 +11,11 @@ namespace Booma
 {
 	public sealed class RootChannelActor : BaseEntityActor<EmptyFactoryContext>
 	{
-		private ActorMessageHandlerService<RootChannelActor> MessageHandlerService { get; }
-
-		public RootChannelActor(ILog logger, ActorMessageHandlerService<RootChannelActor> messageHandlerService) 
-			: base(logger)
+		//We have to use specific type because it contains actor type information.
+		public RootChannelActor(ILog logger, DefaultActorMessageHandlerService<RootChannelActor> messageHandlerService)
+			: base(logger, messageHandlerService)
 		{
-			MessageHandlerService = messageHandlerService ?? throw new ArgumentNullException(nameof(messageHandlerService));
-		}
 
-		protected override async Task<bool> OnReceiveMessageAsync(EntityActorMessage message, EntityActorMessageContext context)
-		{
-			return await MessageHandlerService.HandleMessageAsync(context, message);
 		}
 
 		protected override void OnInitialized(EntityActorInitializationSuccessMessage successMessage)

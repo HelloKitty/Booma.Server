@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Autofac;
+using Glader.Essentials;
 using GladNet;
 
 namespace Booma

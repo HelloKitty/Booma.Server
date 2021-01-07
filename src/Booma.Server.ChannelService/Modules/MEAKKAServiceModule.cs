@@ -32,18 +32,7 @@ namespace Booma
 				.OwnedByLifetimeScope()
 				.SingleInstance();
 
-			builder.Register(context =>
-				{
-					// Create the dependency resolver
-					IDependencyResolver resolver = new AutoFacDependencyResolver(context.Resolve<ILifetimeScope>(), context.Resolve<ActorSystem>());
-					return resolver;
-				})
-				.As<IDependencyResolver>()
-				.AutoActivate()
-				.OwnedByLifetimeScope()
-				.SingleInstance();
-
-			RegisterActorType<RootChannelActor>(builder);
+			builder.RegisterModule<EntityActorServiceModule<RootChannelActor>>();
 
 			//Create the root channel actor.
 			builder.Register(context =>
@@ -57,42 +46,9 @@ namespace Booma
 
 					return new EntityActorGenericAdapter<RootChannelActor>(channelActor);
 				})
-				.As<IEntityActor<RootChannelActor>>()
+				.As<IEntityActorRef<RootChannelActor>>()
 				.AutoActivate()
 				.SingleInstance();
-
-			//Must be instance per lifetime scope since it depends
-			//on the lifetimescope for resolving actor dependencies.
-			builder.RegisterGeneric(typeof(DefaultFactorFactory<>))
-				.As(typeof(IActorFactory<>))
-				.InstancePerLifetimeScope();
-		}
-
-		private void RegisterActorType<TActorType>(ContainerBuilder builder)
-			where TActorType : IEntityActor
-		{
-			builder.RegisterType<TActorType>()
-				.AsSelf();
-
-			builder.Register(context =>
-				{
-					var handlers = context.ResolveNamed<IEnumerable<IMessageHandler<EntityActorMessage, EntityActorMessageContext>>>(typeof(TActorType).Name);
-					return new ActorMessageHandlerService<TActorType>(handlers);
-				})
-				.As<ActorMessageHandlerService<TActorType>>()
-				.InstancePerLifetimeScope();
-
-			foreach (var handler in GetType()
-				.Assembly
-				.GetTypes()
-				.Where(t => t.IsAssignableTo<IMessageHandler<EntityActorMessage, EntityActorMessageContext>>())
-				.Where(t => t.GetCustomAttribute<ActorMessageHandlerAttribute>()?.ActorType == typeof(TActorType)))
-			{
-				//No longer sharing handlers anymore.
-				builder.RegisterType(handler)
-					.Named<IMessageHandler<EntityActorMessage, EntityActorMessageContext>>(typeof(TActorType).Name)
-					.InstancePerLifetimeScope();
-			}
 		}
 	}
 }
