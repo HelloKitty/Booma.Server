@@ -56,7 +56,7 @@ namespace Booma
 				if (lobbyActor.IsNobody())
 					throw new InvalidOperationException($"Lobby actor failed to successfully create.");
 
-				if (!await LobbyRepository.TryCreateAsync(new LobbyEntry(message.LobbyId, lobbyActor.Path.Address.ToString()), token))
+				if (!await LobbyRepository.TryCreateAsync(new LobbyEntry(message.LobbyId, lobbyActor.Path.ToString()), token))
 					throw new InvalidOperationException($"Failed to store lobby in repository");
 
 				//At this point lobby is registered.
