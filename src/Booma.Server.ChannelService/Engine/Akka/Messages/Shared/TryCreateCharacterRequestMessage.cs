@@ -8,7 +8,7 @@ namespace Booma
 	/// <summary>
 	/// Tells an actor that a character would like to join the System.
 	/// </summary>
-	public sealed class TryCreateCharacterActorMessage : EntityActorMessage
+	public sealed class TryCreateCharacterRequestMessage : EntityActorMessage
 	{
 		/// <summary>
 		/// The input character data to use for creating
@@ -16,7 +16,7 @@ namespace Booma
 		/// </summary>
 		public InitialCharacterDataSnapshot CharacterData { get; }
 
-		public TryCreateCharacterActorMessage(InitialCharacterDataSnapshot characterData)
+		public TryCreateCharacterRequestMessage(InitialCharacterDataSnapshot characterData)
 		{
 			CharacterData = characterData ?? throw new ArgumentNullException(nameof(characterData));
 		}
