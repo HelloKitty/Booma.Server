@@ -31,6 +31,12 @@ namespace Booma
 				.AutoActivate()
 				.OwnedByLifetimeScope()
 				.SingleInstance();
+
+			//MutableCharacterActorReferenceContainer : ICharacterActorReferenceContainer
+			builder.RegisterType<MutableCharacterActorReferenceContainer>()
+				.As<ICharacterActorReferenceContainer>()
+				.OwnedByLifetimeScope()
+				.InstancePerLifetimeScope();
 		}
 	}
 }
