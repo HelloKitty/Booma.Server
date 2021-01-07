@@ -25,6 +25,13 @@ namespace Booma
 
 		protected override async Task OnEventFiredAsync(object source, LoginResponseSentEventArgs args)
 		{
+			//Disconnect if not successful
+			if (args.ResponseCode != AuthenticationResponseCode.LOGIN_93BB_OK)
+			{
+				await args.MessageContext.ConnectionService.DisconnectAsync();
+				return;
+			}
+
 			await args.MessageContext.MessageService.SendMessageAsync(new LobbyListEventPayload(new LobbyMenuEntry[0x0F]
 			{
 				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 0),
