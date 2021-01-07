@@ -16,6 +16,12 @@ namespace Booma
 
 		public IActorRef Actor { get; }
 
+		/// <summary>
+		/// Indicates if the character is initialized.
+		/// (don't send messages to an uninitialized character reference)
+		/// </summary>
+		public bool IsInitialized { get; set; } = false;
+
 		public CharacterLobbySlot(InitialCharacterDataSnapshot characterData, int slot, IActorRef actor)
 		{
 			if (slot < 0) throw new ArgumentOutOfRangeException(nameof(slot));
