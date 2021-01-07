@@ -29,7 +29,9 @@ namespace Booma
 
 		public string Name => GuildCard.Name;
 
-		public InitialCharacterDataSnapshot(CharacterInventoryData inventory, CharacterBankData bank, CharacterStats stats, CharacterProgress progress, CharacterSpecialCustomInfo specialCustom, CharacterVersionData version, CharacterCustomizationInfo customization, GuildCardEntry guildCard, CharacterOptionsConfiguration options)
+		public NetworkEntityGuid EntityGuid { get; }
+
+		public InitialCharacterDataSnapshot(CharacterInventoryData inventory, CharacterBankData bank, CharacterStats stats, CharacterProgress progress, CharacterSpecialCustomInfo specialCustom, CharacterVersionData version, CharacterCustomizationInfo customization, GuildCardEntry guildCard, CharacterOptionsConfiguration options, NetworkEntityGuid entityGuid)
 		{
 			Inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
 			Bank = bank ?? throw new ArgumentNullException(nameof(bank));
@@ -40,6 +42,7 @@ namespace Booma
 			Customization = customization ?? throw new ArgumentNullException(nameof(customization));
 			GuildCard = guildCard ?? throw new ArgumentNullException(nameof(guildCard));
 			Options = options ?? throw new ArgumentNullException(nameof(options));
+			EntityGuid = entityGuid ?? throw new ArgumentNullException(nameof(entityGuid));
 		}
 	}
 }

@@ -58,11 +58,12 @@ namespace Booma
 			RPGCharacterData data = characterDatas[context.Slot];
 
 			CharacterOptionsConfiguration configuration = await OptionsFactory.Create(CancellationToken.None);
+			NetworkEntityGuid guid = new NetworkEntityGuid(EntityType.Player, data.Entry.Id);
 
 			//new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration)
 			return new InitialCharacterDataSnapshot(CreateEmptyInventory(), CreateEmptyBank(), CreateEmptyStats(), new CharacterProgress((uint)data.Progress.Experience, (uint)data.Progress.Level),
 				new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), new CharacterVersionData(0, 0, 0), new CharacterCustomizationInfo(0, 0, 0, 0, 0, new Vector3<ushort>(0, 0, 0), new Vector2<float>(0, 0)),
-				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), configuration);
+				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), configuration, guid);
 		}
 
 		private static CharacterBankData CreateEmptyBank()
