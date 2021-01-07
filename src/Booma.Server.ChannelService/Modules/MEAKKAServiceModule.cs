@@ -31,24 +31,6 @@ namespace Booma
 				.AutoActivate()
 				.OwnedByLifetimeScope()
 				.SingleInstance();
-
-			builder.RegisterModule<EntityActorServiceModule<RootChannelActor>>();
-
-			//Create the root channel actor.
-			builder.Register(context =>
-				{
-					IActorRef channelActor = context
-						.Resolve<IActorFactory<RootChannelActor>>()
-						.Create(new ActorCreationContext(context.Resolve<IActorRefFactory>()));
-
-					channelActor.Tell(new EntityActorStateInitializeMessage<EmptyFactoryContext>(EmptyFactoryContext.Instance));
-					channelActor.Tell(new CreateLobbyMessage());
-
-					return new EntityActorGenericAdapter<RootChannelActor>(channelActor);
-				})
-				.As<IEntityActorRef<RootChannelActor>>()
-				.AutoActivate()
-				.SingleInstance();
 		}
 	}
 }
