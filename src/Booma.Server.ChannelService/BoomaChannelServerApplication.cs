@@ -40,8 +40,11 @@ namespace Booma
 			//Channel specific stuff
 			builder.RegisterModule<GameConfigServiceModule>();
 			builder.RegisterModule<MEAKKAServiceModule>();
+
+			//Actors
 			builder.RegisterModule<ChannelActorServiceModule>();
 			builder.RegisterModule<GameLobbyActorServiceModule>();
+			builder.RegisterModule<LobbyCharacterActorServiceModule>();
 
 			builder.RegisterModule<CharacterDataServiceModule>();
 			builder.RegisterModule<GameConfigServiceModule>();
