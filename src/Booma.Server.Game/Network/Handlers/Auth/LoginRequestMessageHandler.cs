@@ -121,7 +121,7 @@ namespace Booma
 		protected override Task OnResponseMessageSendAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, SharedLoginRequest93Payload request, SharedLoginResponsePayload response, SendResult sendResult)
 		{
 			//broadcast the login response.
-			OnLoginResponseSent?.Invoke(this, new LoginResponseSentEventArgs(response.ResponseCode, context, request.Stage));
+			OnLoginResponseSent?.Invoke(this, new LoginResponseSentEventArgs(response.ResponseCode, context, request.Stage, request.SelectedSlot));
 
 			return base.OnResponseMessageSendAsync(context, request, response, sendResult);
 		}
