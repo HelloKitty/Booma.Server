@@ -16,5 +16,9 @@
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.0.2" />
     <PackageReference Include="Glader.ASP.RPGCharacter.Client" Version="0.0.1" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Repository\" />
+  </ItemGroup>
 
 </Project>

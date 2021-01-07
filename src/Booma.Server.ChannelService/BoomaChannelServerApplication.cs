@@ -43,6 +43,9 @@ namespace Booma
 			builder.RegisterModule<ChannelActorServiceModule>();
 			builder.RegisterModule<GameLobbyActorServiceModule>();
 
+			builder.RegisterModule<CharacterDataServiceModule>();
+			builder.RegisterModule<GameConfigServiceModule>();
+
 			return builder;
 		}
 

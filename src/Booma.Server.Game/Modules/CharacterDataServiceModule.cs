@@ -21,9 +21,6 @@ namespace Booma
 			builder.RegisterModule(new ServiceDiscoverableServiceModule<ICharacterDataQueryService>(BoomaServiceType.CharacterDataService));
 			builder.RegisterModule(new ServiceDiscoverableServiceModule<ICharacterCreationService>(BoomaServiceType.CharacterDataService));
 
-			//This has config like keybinds and stuff, which character service has to deal with.
-			builder.RegisterModule(new ServiceDiscoverableServiceModule<IKeybindConfigurationService>(BoomaServiceType.GameConfigurationService));
-
 			//CharacterDataServiceBackedCharacterDataRepository : ICharacterDataRepository
 			builder.RegisterType<CharacterDataServiceBackedCharacterDataRepository>()
 				.As<ICharacterDataRepository>()

@@ -11,6 +11,7 @@ using Common.Logging;
 using Glader.Essentials;
 using Glader;
 using Glader.ASP.ServiceDiscovery;
+using GladNet;
 using MEAKKA;
 
 namespace Booma
@@ -43,6 +44,17 @@ namespace Booma
 				return;
 			}
 
+			if (!await SendLobbyListAsync(args.MessageContext)) 
+				return;
+
+			CharacterOptionsConfiguration configuration = await OptionsFactory.Create(CancellationToken.None);
+
+			await args.MessageContext.MessageService.SendMessageAsync(new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration));
+			await args.MessageContext.MessageService.SendMessageAsync(new BlockCharacterDataInitializationServerRequestPayload());
+		}
+
+		private async Task<bool> SendLobbyListAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context)
+		{
 			try
 			{
 				var lobbyData = (await ChannelActor.Actor
@@ -53,21 +65,18 @@ namespace Booma
 				if (Logger.IsDebugEnabled)
 					Logger.Debug($"Sending Lobby Data Count: {lobbyData.Length}");
 
-				await args.MessageContext.MessageService.SendMessageAsync(new LobbyListEventPayload(lobbyData));
+				await context.MessageService.SendMessageAsync(new LobbyListEventPayload(lobbyData));
 			}
 			catch (Exception e)
 			{
-				if(Logger.IsErrorEnabled)
+				if (Logger.IsErrorEnabled)
 					Logger.Error($"Failed to send LobbyList. Reason: {e}");
 
-				await args.MessageContext.ConnectionService.DisconnectAsync();
-				return;
+				await context.ConnectionService.DisconnectAsync();
+				return false;
 			}
 
-			CharacterOptionsConfiguration configuration = await OptionsFactory.Create(CancellationToken.None);
-
-			await args.MessageContext.MessageService.SendMessageAsync(new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration));
-			await args.MessageContext.MessageService.SendMessageAsync(new BlockCharacterDataInitializationServerRequestPayload());
+			return true;
 		}
 
 		public static LobbyCharacterData CreateDefaultCharacterData()

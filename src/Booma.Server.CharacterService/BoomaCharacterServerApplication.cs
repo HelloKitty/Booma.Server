@@ -40,6 +40,7 @@ namespace Booma
 			//Data content such as characters and Parameters
 			builder.RegisterModule<ParameterContentServiceModule>();
 			builder.RegisterModule<CharacterDataServiceModule>();
+			builder.RegisterModule<GameConfigServiceModule>();
 
 			return builder;
 		}
