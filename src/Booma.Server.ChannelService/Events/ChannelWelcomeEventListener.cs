@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Akka.Actor;
 using Booma;
 using Booma.UI;
+using Common.Logging;
 using Glader.Essentials;
 using Glader;
 using Glader.ASP.ServiceDiscovery;
+using MEAKKA;
 
 namespace Booma
 {
@@ -16,11 +19,19 @@ namespace Booma
 	{
 		private ICharacterOptionsConfigurationFactory OptionsFactory { get; }
 
+		private IEntityActorRef<RootChannelActor> ChannelActor { get; }
+
+		private ILog Logger { get; }
+
 		public ChannelWelcomeEventListener(ILoginResponseSentEventSubscribable subscriptionService, 
-			ICharacterOptionsConfigurationFactory optionsFactory) 
+			ICharacterOptionsConfigurationFactory optionsFactory, 
+			IEntityActorRef<RootChannelActor> channelActor, 
+			ILog logger) 
 			: base(subscriptionService)
 		{
 			OptionsFactory = optionsFactory ?? throw new ArgumentNullException(nameof(optionsFactory));
+			ChannelActor = channelActor ?? throw new ArgumentNullException(nameof(channelActor));
+			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
 		protected override async Task OnEventFiredAsync(object source, LoginResponseSentEventArgs args)
@@ -32,24 +43,26 @@ namespace Booma
 				return;
 			}
 
-			await args.MessageContext.MessageService.SendMessageAsync(new LobbyListEventPayload(new LobbyMenuEntry[0x0F]
+			try
 			{
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 0),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 1),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 2),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 3),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 4),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 5),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 6),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 7),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 8),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 9),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 10),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 11),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 12),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 13),
-				new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, 14),
-			}));
+				var lobbyData = (await ChannelActor.Actor
+						.Ask<LobbyListResponseMessage>(new LobbyListRequestMessage(), TimeSpan.FromSeconds(15)))
+					.Select(l => new LobbyMenuEntry((uint) KnownMenuIdentifier.LOBBY, (uint) l.LobbyId))
+					.ToArray();
+
+				if (Logger.IsDebugEnabled)
+					Logger.Debug($"Sending Lobby Data Count: {lobbyData.Length}");
+
+				await args.MessageContext.MessageService.SendMessageAsync(new LobbyListEventPayload(lobbyData));
+			}
+			catch (Exception e)
+			{
+				if(Logger.IsErrorEnabled)
+					Logger.Error($"Failed to send LobbyList. Reason: {e}");
+
+				await args.MessageContext.ConnectionService.DisconnectAsync();
+				return;
+			}
 
 			CharacterOptionsConfiguration configuration = await OptionsFactory.Create(CancellationToken.None);
 
