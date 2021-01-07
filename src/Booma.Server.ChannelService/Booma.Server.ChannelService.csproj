@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.0.2" />
+    <PackageReference Include="Glader.Essentials.Database" Version="2.2.49" />
     <PackageReference Include="MEAKKA.NET" Version="0.1.4" />
     <PackageReference Include="MEAKKA.NET.Autofac" Version="0.1.4" />
   </ItemGroup>
