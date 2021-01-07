@@ -34,8 +34,7 @@ namespace Booma.ChannelActor
 			context
 				.ActorContext
 				.ActorSelection(entry.LobbyActorPath)
-				.Anchor
-				.Forward(message);
+				.Tell(message, context.Sender);
 		}
 	}
 }
