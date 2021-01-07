@@ -45,6 +45,7 @@ namespace Booma
 
 			builder.RegisterModule<CharacterDataServiceModule>();
 			builder.RegisterModule<GameConfigServiceModule>();
+			builder.RegisterModule<ExternalPlayerDataServiceModule>();
 
 			return builder;
 		}
