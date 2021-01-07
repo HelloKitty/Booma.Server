@@ -27,13 +27,21 @@ namespace Booma
 						.Create(new ActorCreationContext(context.Resolve<IActorRefFactory>()));
 
 					channelActor.Tell(new EntityActorStateInitializeMessage<EmptyFactoryContext>(EmptyFactoryContext.Instance));
-					channelActor.Tell(new CreateLobbyMessage());
+
+					//TODO: We should make this configurable
+					for(int i = 0; i < 15; i++)
+						channelActor.Tell(new CreateLobbyMessage(i));
 
 					return new EntityActorGenericAdapter<RootChannelActor>(channelActor);
 				})
 				.As<IEntityActorRef<RootChannelActor>>()
 				.AutoActivate()
 				.SingleInstance();
+
+			//Lobby registry
+			builder.RegisterType<InMemoryLobbyEntryRepository>()
+				.As<ILobbyEntryRepository>()
+				.InstancePerLifetimeScope();
 		}
 	}
 }

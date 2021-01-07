@@ -6,18 +6,20 @@ using MEAKKA;
 namespace Booma
 {
 	/// <summary>
-	/// Empty message that tells an actor
-	/// to create a lobby.
+	/// Requests an actor to create a lobby.
 	/// </summary>
 	public sealed class CreateLobbyMessage : EntityActorMessage
 	{
 		/// <summary>
-		/// Empty message that tells an actor
-		/// to create a lobby.
+		/// the lobby id to create a lobby for.
 		/// </summary>
-		public CreateLobbyMessage()
+		public int LobbyId { get; }
+
+		public CreateLobbyMessage(int lobbyId)
 		{
-			
+			if (lobbyId < 0) throw new ArgumentOutOfRangeException(nameof(lobbyId));
+
+			LobbyId = lobbyId;
 		}
 	}
 }
