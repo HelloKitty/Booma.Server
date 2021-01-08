@@ -83,5 +83,10 @@ namespace Booma
 		{
 			return Task.FromResult(InternalStore.First(slot => slot?.CharacterData?.EntityGuid == guid));
 		}
+
+		public Task<IEnumerable<CharacterLobbySlot>> RetrieveInitializedAsync(CancellationToken token = default)
+		{
+			return Task.FromResult(InternalStore.Where(slot => slot != null && slot.IsInitialized));
+		}
 	}
 }

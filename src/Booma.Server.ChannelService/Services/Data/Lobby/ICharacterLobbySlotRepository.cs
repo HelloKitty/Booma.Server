@@ -39,5 +39,11 @@ namespace Booma
 		/// <returns></returns>
 		Task<CharacterLobbySlot> RetrieveAsync(NetworkEntityGuid guid, CancellationToken token = default);
 
+		/// <summary>
+		/// Retrieves all initialized lobby entries.
+		/// </summary>
+		/// <param name="token">Cancel token.</param>
+		/// <returns></returns>
+		Task<IEnumerable<CharacterLobbySlot>> RetrieveInitializedAsync(CancellationToken token = default);
 	}
 }
