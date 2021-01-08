@@ -20,6 +20,11 @@ namespace Booma
 		/// Indicates if the character actor is available.
 		/// </summary>
 		bool IsAvailable { get; }
+
+		/// <summary>
+		/// The entity guid associated with the character actor.
+		/// </summary>
+		NetworkEntityGuid EntityGuid { get; set; }
 	}
 
 	public sealed class MutableCharacterActorReferenceContainer : ICharacterActorReferenceContainer
@@ -29,6 +34,9 @@ namespace Booma
 
 		/// <inheritdoc />
 		public bool IsAvailable => Reference != null && !Reference.IsNobody();
+
+		/// <inheritdoc />
+		public NetworkEntityGuid EntityGuid { get; set; } = NetworkEntityGuid.Empty;
 
 		public void Dispose()
 		{
