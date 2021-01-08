@@ -22,5 +22,13 @@ namespace Booma
 		/// <param name="token">Cancel token.</param>
 		/// <returns>Available slot.</returns>
 		Task<int> FirstAvailableSlotAsync(CancellationToken token = default);
+
+		/// <summary>
+		/// Indicates if the lobby contains an assigned slot for the provided entity.
+		/// </summary>
+		/// <param name="messageEntity">Entity to look for.</param>
+		/// <param name="token">The cancel token.</param>
+		/// <returns>True if the lobby contains a slot assigned to the entity.</returns>
+		Task<bool> ContainsEntitySlotAsync(NetworkEntityGuid messageEntity, CancellationToken token = default);
 	}
 }

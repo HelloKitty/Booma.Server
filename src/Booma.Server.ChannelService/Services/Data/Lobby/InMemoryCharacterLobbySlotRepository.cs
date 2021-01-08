@@ -71,5 +71,12 @@ namespace Booma
 			//Finds first null slot.
 			return Task.FromResult(Array.FindIndex(InternalStore, slot => slot == null));
 		}
+
+		public Task<bool> ContainsEntitySlotAsync(NetworkEntityGuid messageEntity, CancellationToken token = default)
+		{
+			if (messageEntity == null) throw new ArgumentNullException(nameof(messageEntity));
+
+			return Task.FromResult(InternalStore.Any(slot => slot?.CharacterData?.EntityGuid == messageEntity));
+		}
 	}
 }
