@@ -6,9 +6,21 @@ using MEAKKA;
 
 namespace Booma
 {
+	public enum CharacterActorCreationResponseCode
+	{
+		Success = GladerEssentialsModelConstants.RESPONSE_CODE_SUCCESS_VALUE,
+
+		GeneralError = 2,
+
+		/// <summary>
+		/// Indicates there is no space to create a character actor.
+		/// </summary>
+		UnavailableSpace = 3,
+	}
+
 	/// <summary>
 	/// Tells an actor that a character would like to join the System.
-	/// Should respond with <see cref="ResponseModel"/> <see cref="CharacterActorCreationResponseCode"/>
+	/// Should respond with <see cref="ResponseModel{TModelType,TResponseCodeType}"/> <see cref="CharacterActorCreationResponseCode"/>
 	/// and <see cref="string"/> of the Actor's path.
 	/// </summary>
 	public sealed class TryCreateCharacterRequestMessage : EntityActorMessage, IActorRequestMessage<ResponseModel<string, CharacterActorCreationResponseCode>>
