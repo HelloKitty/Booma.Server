@@ -37,6 +37,12 @@ namespace Booma
 				.As<ICharacterActorReferenceContainer>()
 				.OwnedByLifetimeScope()
 				.InstancePerLifetimeScope();
+
+			//This is the actor state storage objects.
+			builder.RegisterGeneric(typeof(MutableGenericActorState<>))
+				.As(typeof(IActorState<>))
+				.As(typeof(IMutableActorState<>))
+				.InstancePerLifetimeScope();
 		}
 	}
 }
