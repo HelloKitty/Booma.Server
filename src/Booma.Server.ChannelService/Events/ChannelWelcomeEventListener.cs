@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Akka;
 using Akka.Actor;
 using Booma;
 using Booma.UI;
@@ -24,15 +25,24 @@ namespace Booma
 
 		private ILog Logger { get; }
 
+		private ICharacterActorReferenceContainer CharacterActorContainer { get; }
+
+		//TODO: Don't expose this directly just to resolve an actor reference.
+		private ActorSystem GlobalActorSystem { get; }
+
 		public ChannelWelcomeEventListener(ILoginResponseSentEventSubscribable subscriptionService, 
 			IEntityActorRef<RootChannelActor> channelActor, 
 			ILog logger, 
-			ICharacterDataSnapshotFactory characterDataFactory) 
+			ICharacterDataSnapshotFactory characterDataFactory, 
+			ICharacterActorReferenceContainer characterActorContainer, 
+			ActorSystem globalActorSystem) 
 			: base(subscriptionService)
 		{
 			ChannelActor = channelActor ?? throw new ArgumentNullException(nameof(channelActor));
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			CharacterDataFactory = characterDataFactory ?? throw new ArgumentNullException(nameof(characterDataFactory));
+			CharacterActorContainer = characterActorContainer ?? throw new ArgumentNullException(nameof(characterActorContainer));
+			GlobalActorSystem = globalActorSystem ?? throw new ArgumentNullException(nameof(globalActorSystem));
 		}
 
 		protected override async Task OnEventFiredAsync(object source, LoginResponseSentEventArgs args)
@@ -53,6 +63,52 @@ namespace Booma
 
 			await args.MessageContext.MessageService.SendMessageAsync(characterDataPayload);
 
+			//NetworkEntityGuid
+			var characterActorCreationResponse = await ChannelActor
+				.Actor
+				.Ask<ResponseModel<string, CharacterActorCreationResponseCode>>(new TryCreateCharacterRequestMessage(dataSnapshot));
+
+			//TODO: Handle lobby re-try logic. Lobby may have been full.
+			if (!characterActorCreationResponse.isSuccessful)
+			{
+				if(Logger.IsErrorEnabled)
+					Logger.Error($"Failed to send create character actor. Reason: {characterActorCreationResponse.ResultCode}");
+
+				await args.MessageContext.ConnectionService.DisconnectAsync();
+				return;
+			}
+
+			//At this point we have an actor path and need to setup the network's interface
+			//into Akka. To do this we assign a mutateable actor reference which can be accessed by the message
+			//handlers.
+			CharacterActorContainer.Reference = await GlobalActorSystem
+				.ActorSelection(characterActorCreationResponse.Result)
+				.ResolveOne(TimeSpan.FromSeconds(30), CancellationToken.None);
+
+			//Initialize the actor but with no initial state.
+			CharacterActorContainer.Reference
+				.Tell(new EntityActorStateInitializeMessage<EmptyFactoryContext>(EmptyFactoryContext.Instance));
+
+			CharacterActorContainer.Reference
+				.InitializeState(args.MessageContext.MessageService);
+
+			CharacterActorContainer.Reference
+				.InitializeState(args.MessageContext.ConnectionService);
+
+			CharacterActorContainer.Reference
+				.InitializeState(dataSnapshot.EntityGuid);
+
+			CharacterActorContainer.Reference
+				.InitializeState(dataSnapshot);
+
+			//Tell client that pre-join initialization is finished.
+			CharacterActorContainer.Reference
+				.Tell<PreJoinInitializationFinishedMessage>();
+
+			/*await args.MessageContext.MessageService.SendMessageAsync(new BlockLobbyJoinEventPayload(0, 0, 0, 1, 0, new CharacterJoinData[1]
+			{
+				new CharacterJoinData(new PlayerInformationHeader(1, 0, "Glader"), new CharacterInventoryData(0, 0, 0, 0, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), ChannelWelcomeEventListener.CreateDefaultCharacterData()),
+			}), CancellationToken.None);*/
 
 			//await args.MessageContext.MessageService.SendMessageAsync(new BlockCharacterDataInitializationServerRequestPayload());
 		}
@@ -86,11 +142,6 @@ namespace Booma
 			}
 
 			return true;
-		}
-
-		public static LobbyCharacterData CreateDefaultCharacterData()
-		{
-			return new LobbyCharacterData(new CharacterStats(Enumerable.Repeat((ushort)100, 7).ToArray()), 0, 0, new CharacterProgress(0, 0), 0, "1", 0, new CharacterSpecialCustomInfo(), SectionId.Viridia, CharacterClass.HUmar, new CharacterVersionData(), new CharacterCustomizationInfo(0, 0, 0, 0, 0, new Vector3<ushort>(), new Vector2<float>()), "Glader");
 		}
 	}
 }
