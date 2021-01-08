@@ -78,5 +78,10 @@ namespace Booma
 
 			return Task.FromResult(InternalStore.Any(slot => slot?.CharacterData?.EntityGuid == messageEntity));
 		}
+
+		public Task<CharacterLobbySlot> RetrieveAsync(NetworkEntityGuid guid, CancellationToken token = default)
+		{
+			return Task.FromResult(InternalStore.First(slot => slot?.CharacterData?.EntityGuid == guid));
+		}
 	}
 }
