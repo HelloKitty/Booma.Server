@@ -9,11 +9,18 @@ using MEAKKA;
 
 namespace Booma
 {
-	public sealed class Subcommand60EchoMessageHandler : GameMessageHandler<BlockNetworkCommand60EventClientPayload>
+	/// <summary>
+	/// Message handler for <see cref="BlockNetworkCommand60EventClientPayload"/>.
+	/// Routes Subcommand60 payloads into Akka through the client's <see cref="ICharacterActorReferenceContainer"/>.
+	/// </summary>
+	public sealed class Subcommand60MessageHandler : GameMessageHandler<BlockNetworkCommand60EventClientPayload>
 	{
+		/// <summary>
+		/// Actor reference container.
+		/// </summary>
 		private ICharacterActorReferenceContainer ActorReference { get; }
 
-		public Subcommand60EchoMessageHandler(ICharacterActorReferenceContainer actorReference) 
+		public Subcommand60MessageHandler(ICharacterActorReferenceContainer actorReference) 
 		{
 			ActorReference = actorReference ?? throw new ArgumentNullException(nameof(actorReference));
 		}
