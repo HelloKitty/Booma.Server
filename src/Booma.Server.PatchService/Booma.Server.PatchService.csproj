@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
-    <PackageReference Include="Booma.Packet.Patch" Version="0.0.40" />
+    <PackageReference Include="Booma.Packet.Patch" Version="0.0.41" />
     <PackageReference Include="GladNet.Server.DotNetTcpServer" Version="4.1.12" />
   </ItemGroup>
 
