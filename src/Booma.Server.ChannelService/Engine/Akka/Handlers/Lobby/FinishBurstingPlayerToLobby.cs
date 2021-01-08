@@ -33,7 +33,6 @@ namespace Booma
 			slot.IsInitialized = true;
 			message.Answer(context.Sender, LobbyJoinResponseCode.Success);
 
-
 			var characterJoinDatas = await BuildCharacterJoinData();
 			//TODO: Input accurate block/lobby id.
 			//Send the initial lobby join packet to the actor
@@ -42,7 +41,7 @@ namespace Booma
 			//Now we should broadcast to all lobby clients that
 			//a player has joined the lobby.
 			CharacterJoinData newJoinData = characterJoinDatas.First(d => d.PlayerHeader.ClientId == slot.Slot);
-			var broadcastPacket = new BlockOtherPlayerJoinedLobbyEventPayload();
+			var broadcastPacket = new BlockOtherPlayerJoinedLobbyEventPayload((byte)slot.Slot, 0, 0, 1, 0, newJoinData);
 
 			//TODO: make broadcasting API
 			foreach (var lobbyPlayer in await LobbyCharacterRepository.RetrieveInitializedAsync(token))

@@ -9,8 +9,8 @@
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.0.2" />
     <PackageReference Include="Glader.ASP.RPGCharacter.Client" Version="0.0.1" />
     <PackageReference Include="Glader.Essentials.Database" Version="2.2.49" />
-    <PackageReference Include="MEAKKA.NET" Version="0.1.8" />
-    <PackageReference Include="MEAKKA.NET.Autofac" Version="0.1.8" />
+    <PackageReference Include="MEAKKA.NET" Version="0.1.9" />
+    <PackageReference Include="MEAKKA.NET.Autofac" Version="0.1.9" />
   </ItemGroup>
 
   <ItemGroup>
