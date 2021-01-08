@@ -36,7 +36,7 @@ namespace Booma
 		{
 			//Just query and send the lobby list response.
 			LobbyEntry[] entries = await LobbyRepository.RetrieveAllAsync(token);
-			context.Sender.Tell(new LobbyListResponseMessage(entries));
+			message.Answer(context.Sender, new LobbyListResponseMessage(entries));
 		}
 	}
 }

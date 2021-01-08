@@ -8,7 +8,7 @@ namespace Booma
 	/// <summary>
 	/// Message to request a lobby list.
 	/// </summary>
-	public sealed class LobbyListRequestMessage : EntityActorMessage
+	public sealed class LobbyListRequestMessage : EntityActorMessage, IActorRequestMessage<LobbyListResponseMessage>
 	{
 		/// <summary>
 		/// Empty command/request.
