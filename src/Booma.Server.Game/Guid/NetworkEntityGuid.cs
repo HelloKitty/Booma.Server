@@ -7,6 +7,13 @@ namespace Booma
 {
 	public sealed class NetworkEntityGuid : ObjectGuid<EntityType>
 	{
+		public new static NetworkEntityGuid Empty { get; } = new NetworkEntityGuid();
+
+		static NetworkEntityGuid()
+		{
+			
+		}
+
 		public NetworkEntityGuid(EntityType type, int id)
 			: this(type, id, 0)
 		{
@@ -21,6 +28,15 @@ namespace Booma
 
 			//TODO: Support shards
 			SetShard(0);
+		}
+
+		/// <summary>
+		/// Serializer ctor.
+		/// </summary>
+		internal NetworkEntityGuid()
+			: base(0)
+		{
+			
 		}
 	}
 }
