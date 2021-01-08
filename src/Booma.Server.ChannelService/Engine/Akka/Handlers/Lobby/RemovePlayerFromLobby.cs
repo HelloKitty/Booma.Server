@@ -7,7 +7,7 @@ using MEAKKA;
 
 namespace Booma.Lobby
 {
-	[ActorMessageHandler(typeof(LobbyCharacterActor))]
+	[ActorMessageHandler(typeof(GameLobbyActor))]
 	public sealed class RemovePlayerFromLobby : BaseActorMessageHandler<LeaveLobbyRequestMessage>
 	{
 		private ICharacterLobbySlotRepository LobbySlotRepository { get; }
