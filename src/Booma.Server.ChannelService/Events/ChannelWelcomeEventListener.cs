@@ -85,6 +85,8 @@ namespace Booma
 				.ActorSelection(characterActorCreationResponse.Result)
 				.ResolveOne(TimeSpan.FromSeconds(30), CancellationToken.None);
 
+			CharacterActorContainer.EntityGuid = dataSnapshot.EntityGuid;
+
 			//Initialize the actor but with no initial state.
 			CharacterActorContainer.Reference
 				.Tell(new EntityActorStateInitializeMessage<EmptyFactoryContext>(EmptyFactoryContext.Instance));
