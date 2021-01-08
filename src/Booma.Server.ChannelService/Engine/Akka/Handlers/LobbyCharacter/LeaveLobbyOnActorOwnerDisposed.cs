@@ -7,6 +7,7 @@ using MEAKKA;
 
 namespace Booma.LobbyPlayer
 {
+	[ActorMessageHandler(typeof(LobbyCharacterActor))]
 	public sealed class LeaveLobbyOnActorOwnerDisposed : BaseActorMessageHandler<ActorOwnerDisposedMessage>
 	{
 		private IActorState<NetworkEntityGuid> GuidState { get; }
