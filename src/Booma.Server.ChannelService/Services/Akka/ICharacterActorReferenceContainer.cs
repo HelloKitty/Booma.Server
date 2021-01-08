@@ -24,8 +24,10 @@ namespace Booma
 
 	public sealed class MutableCharacterActorReferenceContainer : ICharacterActorReferenceContainer
 	{
+		/// <inheritdoc />
 		public IActorRef Reference { get; set; }
 
+		/// <inheritdoc />
 		public bool IsAvailable => Reference != null && !Reference.IsNobody();
 
 		public void Dispose()

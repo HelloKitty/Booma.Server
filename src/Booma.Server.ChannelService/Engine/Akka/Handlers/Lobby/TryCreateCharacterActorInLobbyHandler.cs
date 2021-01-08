@@ -49,6 +49,9 @@ namespace Booma.Lobby
 				await CharacterSlotRepository
 					.TryCreateAsync(new CharacterLobbySlot(message.CharacterData, slot, lobbyCharacterActor), token);
 
+				if (Logger.IsInfoEnabled)
+					Logger.Info($"Created Lobby Character Slot: {slot} Name: {message.CharacterData.Name}");
+
 				//Send the actor path if we successfully slotted the character.
 				message.AnswerSuccess(context.Sender, lobbyCharacterActor.Path.ToString());
 			}
