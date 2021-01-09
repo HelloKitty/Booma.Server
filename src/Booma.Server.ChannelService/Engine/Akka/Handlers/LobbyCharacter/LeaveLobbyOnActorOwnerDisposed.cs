@@ -26,7 +26,7 @@ namespace Booma.LobbyPlayer
 				.TellEntity(new LeaveWorldRequestMessage(GuidState.Data));
 
 			//Ack back the dispose request.
-			message.Answer(context.Entity, true);
+			message.Answer(context.Sender, true);
 
 			//Stops us from handling ANY more messages.
 			context.ActorContext.Stop(context.ActorContext.Self);
