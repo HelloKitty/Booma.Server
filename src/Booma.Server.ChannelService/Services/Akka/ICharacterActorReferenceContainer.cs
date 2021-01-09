@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Akka.Actor;
 using MEAKKA;
 
@@ -9,7 +10,7 @@ namespace Booma
 	/// <summary>
 	/// Provides access to the character actor reference.
 	/// </summary>
-	public interface ICharacterActorReferenceContainer : IDisposable
+	public interface ICharacterActorReferenceContainer : IDisposable, IAsyncDisposable
 	{
 		/// <summary>
 		/// Actor reference for the character.
@@ -42,6 +43,15 @@ namespace Booma
 		{
 			if (IsAvailable)
 				Reference.TellSelf(new ActorOwnerDisposedMessage());
+		}
+
+		public async ValueTask DisposeAsync()
+		{
+			//Async await for disposal WITH ack
+			if (IsAvailable)
+				await Reference.RequestAsync<ActorOwnerDisposedMessage, bool>(new ActorOwnerDisposedMessage());
+			else
+				return;
 		}
 	}
 }
