@@ -23,7 +23,7 @@ namespace Booma.Lobby
 			foreach(var lobbyPlayer in await LobbyCharacterRepository.RetrieveInitializedAsync(token))
 			{
 				if(lobbyPlayer.CharacterData.EntityGuid != message.Broadcaster)
-					lobbyPlayer.Actor.Tell(new SendGamePacketMessage(message.Packet));
+					lobbyPlayer.EntityActor.Actor.TellEntity(new SendGamePacketMessage(message.Packet));
 			}
 		}
 	}

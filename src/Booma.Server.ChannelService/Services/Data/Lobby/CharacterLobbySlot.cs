@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Akka.Actor;
+using MEAKKA;
 
 namespace Booma
 {
@@ -14,7 +15,9 @@ namespace Booma
 
 		public int Slot { get; }
 
-		public IActorRef Actor { get; }
+		public IEntityActorRef<LobbyCharacterActor> EntityActor { get; }
+
+		public IActorRef Actor => EntityActor.Actor;
 
 		/// <summary>
 		/// Indicates if the character is initialized.
@@ -22,12 +25,12 @@ namespace Booma
 		/// </summary>
 		public bool IsInitialized { get; set; } = false;
 
-		public CharacterLobbySlot(InitialCharacterDataSnapshot characterData, int slot, IActorRef actor)
+		public CharacterLobbySlot(InitialCharacterDataSnapshot characterData, int slot, IEntityActorRef<LobbyCharacterActor> actor)
 		{
 			if (slot < 0) throw new ArgumentOutOfRangeException(nameof(slot));
 			CharacterData = characterData ?? throw new ArgumentNullException(nameof(characterData));
 			Slot = slot;
-			Actor = actor ?? throw new ArgumentNullException(nameof(actor));
+			EntityActor = actor ?? throw new ArgumentNullException(nameof(actor));
 		}
 	}
 }

@@ -105,7 +105,7 @@ namespace Booma
 
 			//Tell client that pre-join initialization is finished.
 			CharacterActorContainer.Reference
-				.Tell<PreJoinInitializationFinishedMessage>();
+				.TellEntity<PreJoinInitializationFinishedMessage>();
 
 			/*await args.MessageContext.MessageService.SendMessageAsync(new BlockLobbyJoinEventPayload(0, 0, 0, 1, 0, new CharacterJoinData[1]
 			{

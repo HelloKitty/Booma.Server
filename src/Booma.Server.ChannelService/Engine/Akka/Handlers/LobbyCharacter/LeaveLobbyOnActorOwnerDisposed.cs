@@ -22,7 +22,7 @@ namespace Booma.LobbyPlayer
 			//Owner/client/session has disposed of this player actor in some fashion
 			//so we should tell the lobby (parent) that we are leaving
 			context.ActorContext.Parent
-				.Tell(new LeaveLobbyRequestMessage(GuidState.Data));
+				.TellEntity(new LeaveLobbyRequestMessage(GuidState.Data));
 
 			//Stops us from handling ANY more messages.
 			context.ActorContext.Stop(context.ActorContext.Self);

@@ -22,17 +22,17 @@ namespace Booma
 			//Create the root channel actor.
 			builder.Register(context =>
 				{
-					IActorRef channelActor = context
+					IEntityActorRef<RootChannelActor> channelActor = context
 						.Resolve<IActorFactory<RootChannelActor>>()
 						.Create(new ActorCreationContext(context.Resolve<IActorRefFactory>()));
 
-					channelActor.Tell(new EntityActorStateInitializeMessage<EmptyFactoryContext>(EmptyFactoryContext.Instance));
+					channelActor.Actor.Tell(new EntityActorStateInitializeMessage<EmptyFactoryContext>(EmptyFactoryContext.Instance));
 
 					//TODO: We should make this configurable
 					for(int i = 0; i < 15; i++)
-						channelActor.Tell(new CreateLobbyMessage(i));
+						channelActor.Actor.Tell(new CreateLobbyMessage(i));
 
-					return new EntityActorGenericAdapter<RootChannelActor>(channelActor);
+					return channelActor;
 				})
 				.As<IEntityActorRef<RootChannelActor>>()
 				.AutoActivate()

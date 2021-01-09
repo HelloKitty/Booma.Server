@@ -40,7 +40,7 @@ namespace Booma.Lobby
 			int slot = await CharacterSlotRepository
 				.FirstAvailableSlotAsync(token);
 
-			IActorRef lobbyCharacterActor = null;
+			IEntityActorRef<LobbyCharacterActor> lobbyCharacterActor = null;
 			try
 			{
 				lobbyCharacterActor = LobbyCharacterFactory
@@ -53,13 +53,13 @@ namespace Booma.Lobby
 					Logger.Info($"Created Lobby Character Slot: {slot} Name: {message.CharacterData.Name}");
 
 				//Send the actor path if we successfully slotted the character.
-				message.AnswerSuccess(context.Sender, lobbyCharacterActor.Path.ToString());
+				message.AnswerSuccess(context.Sender, lobbyCharacterActor.Actor.Path.ToString());
 			}
 			catch (Exception e)
 			{
 				//Kill the actor, something went wrong.
-				if (lobbyCharacterActor != null && !lobbyCharacterActor.IsNobody())
-					lobbyCharacterActor.Tell(PoisonPill.Instance);
+				if (lobbyCharacterActor != null && !lobbyCharacterActor.Actor.IsNobody())
+					lobbyCharacterActor.Actor.Tell(PoisonPill.Instance);
 
 				if (Logger.IsErrorEnabled)
 					Logger.Error($"Failed to create Lobby Character for Character: {message.CharacterData.Name} Slot: {slot}");

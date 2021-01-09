@@ -45,23 +45,23 @@ namespace Booma
 			if (Logger.IsInfoEnabled)
 				Logger.Info($"Channel Lobby {message.LobbyId:D2} Creation Request: {message}");
 
-			IActorRef lobbyActor = null;
+			IEntityActorRef<GameLobbyActor> lobbyActor = null;
 			try
 			{
 				lobbyActor = LobbyActorFactory
 					.Create(new ActorCreationContext(context.ActorContext));
 
-				lobbyActor.Tell(new EntityActorStateInitializeMessage<EmptyFactoryContext>(EmptyFactoryContext.Instance));
+				lobbyActor.Actor.Tell(new EntityActorStateInitializeMessage<EmptyFactoryContext>(EmptyFactoryContext.Instance));
 
-				if (lobbyActor.IsNobody())
+				if (lobbyActor.Actor.IsNobody())
 					throw new InvalidOperationException($"Lobby actor failed to successfully create.");
 
-				if (!await LobbyRepository.TryCreateAsync(new LobbyEntry(message.LobbyId, lobbyActor.Path.ToString()), token))
+				if (!await LobbyRepository.TryCreateAsync(new LobbyEntry(message.LobbyId, lobbyActor.Actor.Path.ToString()), token))
 					throw new InvalidOperationException($"Failed to store lobby in repository");
 
 				//At this point lobby is registered.
 				if(Logger.IsInfoEnabled)
-					Logger.Info($"Lobby {message.LobbyId:D2} Created Path: {lobbyActor.Path}");
+					Logger.Info($"Lobby {message.LobbyId:D2} Created Path: {lobbyActor.Actor.Path}");
 			}
 			catch (Exception e)
 			{
@@ -70,7 +70,7 @@ namespace Booma
 					Logger.Error($"Failed to create Lobby {message.LobbyId:D2}. Could not store in Lobby Repository. Reason: {e}");
 
 				//Kill the lobby if we ever made it
-				lobbyActor?.Tell(PoisonPill.Instance);
+				lobbyActor?.Actor?.Tell(PoisonPill.Instance);
 			}
 		}
 	}

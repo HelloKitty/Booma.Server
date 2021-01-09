@@ -7,6 +7,7 @@ using Booma;
 using Common.Logging;
 using GladNet;
 using JetBrains.Annotations;
+using MEAKKA;
 
 namespace Booma
 {
@@ -38,8 +39,8 @@ namespace Booma
 			builder.RegisterModule(new GameAssemblyMessageHandlerServiceModule(GetType().Assembly));
 			
 			//Channel specific stuff
-			builder.RegisterModule<GameConfigServiceModule>();
 			builder.RegisterModule<MEAKKAServiceModule>();
+			builder.RegisterModule<ActorStateServiceModule>();
 
 			//Actors
 			builder.RegisterModule<ChannelActorServiceModule>();
