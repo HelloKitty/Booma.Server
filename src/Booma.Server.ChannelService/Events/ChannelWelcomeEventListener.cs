@@ -48,7 +48,7 @@ namespace Booma
 			if (!await SendLobbyListAsync(args.MessageContext)) 
 				return;
 
-			await LobbyEntryService.TryEnterLobbyAsync(args.MessageContext, args.CharacterSlot);
+			await LobbyEntryService.TryEnterLobbyAsync(args.MessageContext, args.CharacterSlot, 0);
 		}
 
 		private async Task<bool> SendLobbyListAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context)

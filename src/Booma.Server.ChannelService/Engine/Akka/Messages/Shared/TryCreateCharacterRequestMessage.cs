@@ -31,9 +31,17 @@ namespace Booma
 		/// </summary>
 		public InitialCharacterDataSnapshot CharacterData { get; }
 
-		public TryCreateCharacterRequestMessage(InitialCharacterDataSnapshot characterData)
+		/// <summary>
+		/// Requested lobby id.
+		/// </summary>
+		public int LobbyId { get; }
+
+		public TryCreateCharacterRequestMessage(InitialCharacterDataSnapshot characterData, int lobbyId)
 		{
+			if (lobbyId < 0) throw new ArgumentOutOfRangeException(nameof(lobbyId));
+
 			CharacterData = characterData ?? throw new ArgumentNullException(nameof(characterData));
+			LobbyId = lobbyId;
 		}
 	}
 }

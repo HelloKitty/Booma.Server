@@ -25,16 +25,23 @@ namespace Booma.ChannelActor
 		public override async Task HandleMessageAsync(EntityActorMessageContext context, TryCreateCharacterRequestMessage message, CancellationToken token = new CancellationToken())
 		{
 			//TODO: Better select lobby, lobby can be full! Preferred lobbies exist too.
-			//Get the default lobby.
-			LobbyEntry entry = await LobbyRepository
-				.RetrieveAsync(0, token);
+			try
+			{
+				//Get the default lobby.
+				LobbyEntry entry = await LobbyRepository
+					.RetrieveAsync(message.LobbyId, token);
 
-			//Just forward the request for a character to enter
-			//to a lobby actor. It can respond with a response.
-			context
-				.ActorContext
-				.ActorSelection(entry.LobbyActorPath)
-				.Tell(message, context.Sender);
+				//Just forward the request for a character to enter
+				//to a lobby actor. It can respond with a response.
+				context
+					.ActorContext
+					.ActorSelection(entry.LobbyActorPath)
+					.Tell(message, context.Sender);
+			}
+			catch (Exception)
+			{
+				message.AnswerFailure(context.Sender, CharacterActorCreationResponseCode.GeneralError);
+			}
 		}
 	}
 }

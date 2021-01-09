@@ -13,9 +13,9 @@ namespace Booma
 {
 	public interface ILobbyEntryService
 	{
-		Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int characterSlot, CancellationToken token = default);
+		Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int characterSlot, int lobbyId, CancellationToken token = default);
 
-		Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, CancellationToken token = default);
+		Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, int lobbyId, CancellationToken token = default);
 	}
 
 	public sealed class DefaultLobbyEntryService : ILobbyEntryService
@@ -40,23 +40,23 @@ namespace Booma
 			ChannelActor = channelActor ?? throw new ArgumentNullException(nameof(channelActor));
 		}
 
-		public async Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int characterSlot, CancellationToken token = default)
+		public async Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int characterSlot, int lobbyId, CancellationToken token = default)
 		{
 			InitialCharacterDataSnapshot dataSnapshot =
 				await CharacterDataFactory.Create(new CharacterDataEventPayloadCreationContext(characterSlot));
 
-			await TryEnterLobbyWithCharacterAsync(context, dataSnapshot, token);
+			await TryEnterLobbyWithCharacterAsync(context, dataSnapshot, lobbyId, token);
 		}
 
-		public async Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, CancellationToken token = default)
+		public async Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, int lobbyId, CancellationToken token = default)
 		{
 			InitialCharacterDataSnapshot dataSnapshot =
 				await CharacterDataFactory.Create(entity);
 
-			await TryEnterLobbyWithCharacterAsync(context, dataSnapshot, token);
+			await TryEnterLobbyWithCharacterAsync(context, dataSnapshot, lobbyId, token);
 		}
 
-		private async Task TryEnterLobbyWithCharacterAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, InitialCharacterDataSnapshot dataSnapshot, CancellationToken token = default)
+		private async Task TryEnterLobbyWithCharacterAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, InitialCharacterDataSnapshot dataSnapshot, int lobbyId, CancellationToken token = default)
 		{
 			InitializeCharacterDataEventPayload characterDataPayload = new InitializeCharacterDataEventPayload(dataSnapshot.Inventory, BuildLobbyCharacterData(dataSnapshot), 0, dataSnapshot.Bank, dataSnapshot.GuildCard, 0, dataSnapshot.Options);
 
@@ -65,7 +65,7 @@ namespace Booma
 			//NetworkEntityGuid
 			var characterActorCreationResponse = await ChannelActor
 				.Actor
-				.Ask<ResponseModel<string, CharacterActorCreationResponseCode>>(new TryCreateCharacterRequestMessage(dataSnapshot));
+				.Ask<ResponseModel<string, CharacterActorCreationResponseCode>>(new TryCreateCharacterRequestMessage(dataSnapshot, lobbyId));
 
 			//TODO: Handle lobby re-try logic. Lobby may have been full.
 			if (!characterActorCreationResponse.isSuccessful)
