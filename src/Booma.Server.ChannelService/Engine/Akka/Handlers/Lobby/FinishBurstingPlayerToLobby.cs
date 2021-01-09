@@ -14,9 +14,13 @@ namespace Booma
 	{
 		private ICharacterLobbySlotRepository LobbyCharacterRepository { get; }
 
-		public FinishBurstingPlayerToLobby(ICharacterLobbySlotRepository lobbyCharacterRepository)
+		private IActorState<NetworkEntityGuid> LobbyIdentifier { get; }
+
+		public FinishBurstingPlayerToLobby(ICharacterLobbySlotRepository lobbyCharacterRepository, 
+			IActorState<NetworkEntityGuid> lobbyIdentifier)
 		{
 			LobbyCharacterRepository = lobbyCharacterRepository ?? throw new ArgumentNullException(nameof(lobbyCharacterRepository));
+			LobbyIdentifier = lobbyIdentifier ?? throw new ArgumentNullException(nameof(lobbyIdentifier));
 		}
 
 		public override async Task HandleMessageAsync(EntityActorMessageContext context, JoinWorldRequestMessage message, CancellationToken token = default)
@@ -36,12 +40,12 @@ namespace Booma
 			var characterJoinDatas = await BuildCharacterJoinData();
 			//TODO: Input accurate block/lobby id.
 			//Send the initial lobby join packet to the actor
-			context.Sender.Tell(new SendGamePacketMessage(new BlockLobbyJoinEventPayload((byte) slot.Slot, 0, 0, 1, 0, characterJoinDatas)));
+			context.Sender.Tell(new SendGamePacketMessage(new BlockLobbyJoinEventPayload((byte) slot.Slot, 0, (byte)LobbyIdentifier.Data.Identifier, 1, 0, characterJoinDatas)));
 
 			//Now we should broadcast to all lobby clients that
 			//a player has joined the lobby.
 			CharacterJoinData newJoinData = characterJoinDatas.First(d => d.PlayerHeader.ClientId == slot.Slot);
-			var broadcastPacket = new BlockOtherPlayerJoinedLobbyEventPayload((byte)slot.Slot, 0, 0, 1, 0, newJoinData);
+			var broadcastPacket = new BlockOtherPlayerJoinedLobbyEventPayload((byte)slot.Slot, 0, (byte)LobbyIdentifier.Data.Identifier, 1, 0, newJoinData);
 
 			//TODO: make broadcasting API
 			foreach (var lobbyPlayer in await LobbyCharacterRepository.RetrieveInitializedAsync(token))

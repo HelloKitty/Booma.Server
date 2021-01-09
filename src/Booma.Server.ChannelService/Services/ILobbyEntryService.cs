@@ -13,9 +13,9 @@ namespace Booma
 {
 	public interface ILobbyEntryService
 	{
-		Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int characterSlot, int lobbyId, CancellationToken token = default);
+		Task<bool> TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int characterSlot, int lobbyId, CancellationToken token = default);
 
-		Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, int lobbyId, CancellationToken token = default);
+		Task<bool> TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, int lobbyId, CancellationToken token = default);
 	}
 
 	public sealed class DefaultLobbyEntryService : ILobbyEntryService
@@ -40,23 +40,23 @@ namespace Booma
 			ChannelActor = channelActor ?? throw new ArgumentNullException(nameof(channelActor));
 		}
 
-		public async Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int characterSlot, int lobbyId, CancellationToken token = default)
+		public async Task<bool> TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int characterSlot, int lobbyId, CancellationToken token = default)
 		{
 			InitialCharacterDataSnapshot dataSnapshot =
 				await CharacterDataFactory.Create(new CharacterDataEventPayloadCreationContext(characterSlot));
 
-			await TryEnterLobbyWithCharacterAsync(context, dataSnapshot, lobbyId, token);
+			return await TryEnterLobbyWithCharacterAsync(context, dataSnapshot, lobbyId, token);
 		}
 
-		public async Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, int lobbyId, CancellationToken token = default)
+		public async Task<bool> TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, int lobbyId, CancellationToken token = default)
 		{
 			InitialCharacterDataSnapshot dataSnapshot =
 				await CharacterDataFactory.Create(entity);
 
-			await TryEnterLobbyWithCharacterAsync(context, dataSnapshot, lobbyId, token);
+			return await TryEnterLobbyWithCharacterAsync(context, dataSnapshot, lobbyId, token);
 		}
 
-		private async Task TryEnterLobbyWithCharacterAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, InitialCharacterDataSnapshot dataSnapshot, int lobbyId, CancellationToken token = default)
+		private async Task<bool> TryEnterLobbyWithCharacterAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, InitialCharacterDataSnapshot dataSnapshot, int lobbyId, CancellationToken token = default)
 		{
 			InitializeCharacterDataEventPayload characterDataPayload = new InitializeCharacterDataEventPayload(dataSnapshot.Inventory, BuildLobbyCharacterData(dataSnapshot), 0, dataSnapshot.Bank, dataSnapshot.GuildCard, 0, dataSnapshot.Options);
 
@@ -70,11 +70,19 @@ namespace Booma
 			//TODO: Handle lobby re-try logic. Lobby may have been full.
 			if (!characterActorCreationResponse.isSuccessful)
 			{
-				if (Logger.IsErrorEnabled)
-					Logger.Error($"Failed to send create character actor. Reason: {characterActorCreationResponse.ResultCode}");
+				switch (characterActorCreationResponse.ResultCode)
+				{
+					case CharacterActorCreationResponseCode.GeneralError:
+						if(Logger.IsErrorEnabled)
+							Logger.Error($"Failed to send create character actor. Reason: {characterActorCreationResponse.ResultCode}");
 
-				await context.ConnectionService.DisconnectAsync();
-				return;
+						await context.ConnectionService.DisconnectAsync();
+						return false;
+					case CharacterActorCreationResponseCode.UnavailableSpace:
+						return false;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
 			}
 
 			//At this point we have an actor path and need to setup the network's interface
@@ -104,6 +112,8 @@ namespace Booma
 			//Tell client that pre-join initialization is finished.
 			CharacterActorContainer.Reference
 				.TellEntity<PreJoinInitializationFinishedMessage>();
+
+			return true;
 		}
 
 		private static LobbyCharacterData BuildLobbyCharacterData(InitialCharacterDataSnapshot dataSnapshot)

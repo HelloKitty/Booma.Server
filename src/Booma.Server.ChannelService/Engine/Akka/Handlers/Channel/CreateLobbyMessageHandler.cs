@@ -62,6 +62,9 @@ namespace Booma
 				//At this point lobby is registered.
 				if(Logger.IsInfoEnabled)
 					Logger.Info($"Lobby {message.LobbyId:D2} Created Path: {lobbyActor.Actor.Path}");
+
+				//Set lobby GUID, this is the only way a lobby can know its ID!!
+				lobbyActor.Actor.InitializeState(new NetworkEntityGuid(EntityType.Lobby, message.LobbyId));
 			}
 			catch (Exception e)
 			{
