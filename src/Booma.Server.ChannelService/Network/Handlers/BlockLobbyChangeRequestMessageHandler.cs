@@ -32,12 +32,25 @@ namespace Booma
 			//Good chance the lobby will be full.
 			if (!await LobbyEntryService.TryEnterLobbyAsync(context, ActorContainer.EntityGuid, lobbyId, token))
 			{
-				//TODO: Better handle try join ANY lobby.
-				//We don't know what lobby they were in, so let's try to put them in the first lobby and go down the list.
-				for(int i = 0; i < 15; i++)
-					if (await LobbyEntryService.TryEnterLobbyAsync(context, ActorContainer.EntityGuid, i, token))
-						return;
+				await context.MessageService.SendMessageAsync(new SharedCreateMessageBoxEventPayload($"Failed to join the requested lobby. Will attempt to find a replacement lobby."), token);
+				await Task.Delay(5000, token);
+
+				//Been 5 seconds, we can retry before we select for them.
+				if (!await LobbyEntryService.TryEnterLobbyAsync(context, ActorContainer.EntityGuid, lobbyId, token))
+				{
+					//TODO: Better handle try join ANY lobby.
+					//We don't know what lobby they were in, so let's try to put them in the first lobby and go down the list.
+					for(int i = 0; i < 15; i++)
+						if(await LobbyEntryService.TryEnterLobbyAsync(context, ActorContainer.EntityGuid, i, token))
+						{
+							//Case where we ended up actually getting into the requested lobby.
+							return;
+						}
+				}
 			}
+
+			//All lobbies are full or failed to join any.
+			await context.ConnectionService.DisconnectAsync();
 		}
 	}
 }
