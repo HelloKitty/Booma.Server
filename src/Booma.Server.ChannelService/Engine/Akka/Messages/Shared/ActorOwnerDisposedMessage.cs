@@ -9,7 +9,7 @@ namespace Booma
 	/// Empty message indicating the owner of an actor is disposing of itself
 	/// and the actor.
 	/// </summary>
-	public sealed class ActorOwnerDisposedMessage : EntityActorMessage
+	public sealed class ActorOwnerDisposedMessage : EntityActorMessage, IActorRequestMessage<bool>
 	{
 		/// <summary>
 		/// Empty message indicating the owner of an actor is disposing of itself
