@@ -21,7 +21,7 @@ namespace Booma.LobbyCharacter
 		{
 			//Tell lobby (parent) that we want to finally join
 			context.ActorContext.Parent
-				.TellEntity(new JoinLobbyRequestMessage(GuidState.Data));
+				.TellEntity(new JoinWorldRequestMessage(GuidState.Data));
 
 			return Task.CompletedTask;
 		}

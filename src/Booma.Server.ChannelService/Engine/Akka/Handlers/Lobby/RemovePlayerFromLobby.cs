@@ -8,7 +8,7 @@ using MEAKKA;
 namespace Booma.Lobby
 {
 	[ActorMessageHandler(typeof(GameLobbyActor))]
-	public sealed class RemovePlayerFromLobby : BaseActorMessageHandler<LeaveLobbyRequestMessage>
+	public sealed class RemovePlayerFromLobby : BaseActorMessageHandler<LeaveWorldRequestMessage>
 	{
 		private ICharacterLobbySlotRepository LobbySlotRepository { get; }
 
@@ -17,7 +17,7 @@ namespace Booma.Lobby
 			LobbySlotRepository = lobbySlotRepository ?? throw new ArgumentNullException(nameof(lobbySlotRepository));
 		}
 
-		public override async Task HandleMessageAsync(EntityActorMessageContext context, LeaveLobbyRequestMessage message, CancellationToken token = new CancellationToken())
+		public override async Task HandleMessageAsync(EntityActorMessageContext context, LeaveWorldRequestMessage message, CancellationToken token = new CancellationToken())
 		{
 			if (!await LobbySlotRepository.ContainsEntitySlotAsync(message.Entity, token))
 			{

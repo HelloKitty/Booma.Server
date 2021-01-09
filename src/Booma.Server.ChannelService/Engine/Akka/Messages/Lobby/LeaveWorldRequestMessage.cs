@@ -6,14 +6,14 @@ using MEAKKA;
 
 namespace Booma
 {
-	public sealed class LeaveLobbyRequestMessage : EntityActorMessage
+	public sealed class LeaveWorldRequestMessage : EntityActorMessage
 	{
 		/// <summary>
-		/// The entity requesting to leave the lobby.
+		/// The entity requesting to leave the world.
 		/// </summary>
 		public NetworkEntityGuid Entity { get; private set; }
 
-		public LeaveLobbyRequestMessage(NetworkEntityGuid entity)
+		public LeaveWorldRequestMessage(NetworkEntityGuid entity)
 		{
 			Entity = entity ?? throw new ArgumentNullException(nameof(entity));
 		}

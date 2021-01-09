@@ -10,7 +10,7 @@ using MEAKKA;
 namespace Booma
 {
 	[ActorMessageHandler(typeof(GameLobbyActor))]
-	public sealed class FinishBurstingPlayerToLobby : BaseActorMessageHandler<JoinLobbyRequestMessage>
+	public sealed class FinishBurstingPlayerToLobby : BaseActorMessageHandler<JoinWorldRequestMessage>
 	{
 		private ICharacterLobbySlotRepository LobbyCharacterRepository { get; }
 
@@ -19,19 +19,19 @@ namespace Booma
 			LobbyCharacterRepository = lobbyCharacterRepository ?? throw new ArgumentNullException(nameof(lobbyCharacterRepository));
 		}
 
-		public override async Task HandleMessageAsync(EntityActorMessageContext context, JoinLobbyRequestMessage message, CancellationToken token = default)
+		public override async Task HandleMessageAsync(EntityActorMessageContext context, JoinWorldRequestMessage message, CancellationToken token = default)
 		{
 			//If we don't KNOW this entity, maybe it's been kicked or something, then don't finish joining them.
 			if (!await LobbyCharacterRepository.ContainsEntitySlotAsync(message.Entity, token))
 			{
-				message.Answer(context.Sender, LobbyJoinResponseCode.GeneralServerError);
+				message.Answer(context.Sender, WorldJoinResponseCode.GeneralServerError);
 				return;
 			}
 
 			//We just mark it as initialized which indicates to the Lobby that it's ready for NORMAL lobby stuff.
 			CharacterLobbySlot slot = await LobbyCharacterRepository.RetrieveAsync(message.Entity, token);
 			slot.IsInitialized = true;
-			message.Answer(context.Sender, LobbyJoinResponseCode.Success);
+			message.Answer(context.Sender, WorldJoinResponseCode.Success);
 
 			var characterJoinDatas = await BuildCharacterJoinData();
 			//TODO: Input accurate block/lobby id.

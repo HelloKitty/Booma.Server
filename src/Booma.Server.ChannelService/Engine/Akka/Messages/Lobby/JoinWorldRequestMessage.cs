@@ -6,7 +6,7 @@ using MEAKKA;
 
 namespace Booma
 {
-	public enum LobbyJoinResponseCode
+	public enum WorldJoinResponseCode
 	{
 		/// <summary>
 		/// Should almost always be the case since a slot should be reserved.
@@ -21,17 +21,17 @@ namespace Booma
 		/// <summary>
 		/// Should rarely happen since a spot should be reserved.
 		/// </summary>
-		LobbyFull = 3,
+		WorldFull = 3,
 	}
 
-	public sealed class JoinLobbyRequestMessage : EntityActorMessage, IActorRequestMessage<LobbyJoinResponseCode>
+	public sealed class JoinWorldRequestMessage : EntityActorMessage, IActorRequestMessage<WorldJoinResponseCode>
 	{
 		/// <summary>
-		/// The entity requesting to join the lobby.
+		/// The entity requesting to join the world actor.
 		/// </summary>
 		public NetworkEntityGuid Entity { get; private set; }
 
-		public JoinLobbyRequestMessage(NetworkEntityGuid entity)
+		public JoinWorldRequestMessage(NetworkEntityGuid entity)
 		{
 			Entity = entity ?? throw new ArgumentNullException(nameof(entity));
 		}
