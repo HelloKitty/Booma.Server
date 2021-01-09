@@ -35,7 +35,7 @@ namespace Booma.Lobby
 			{
 				context.ActorContext
 					.ActorSelection("*")
-					.Tell(new PlayerLeftLobbyEventMessage(slot.CharacterData.EntityGuid, slot.Slot));
+					.Tell(new PlayerLeftWorldEventMessage(slot.CharacterData.EntityGuid, slot.Slot));
 			}
 
 			await LobbySlotRepository.TryDeleteAsync(slot.Slot, token);

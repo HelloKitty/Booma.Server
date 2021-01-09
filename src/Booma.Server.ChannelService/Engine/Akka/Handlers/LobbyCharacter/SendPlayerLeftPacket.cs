@@ -9,7 +9,7 @@ using MEAKKA;
 namespace Booma.LobbyCharacter
 {
 	[ActorMessageHandler(typeof(LobbyCharacterActor))]
-	public sealed class SendPlayerLeftPacket : BaseActorMessageHandler<PlayerLeftLobbyEventMessage>
+	public sealed class SendPlayerLeftPacket : BaseActorMessageHandler<PlayerLeftWorldEventMessage>
 	{
 		private IActorState<IMessageSendService<PSOBBGamePacketPayloadServer>> SendService { get; }
 
@@ -18,7 +18,7 @@ namespace Booma.LobbyCharacter
 			SendService = sendService ?? throw new ArgumentNullException(nameof(sendService));
 		}
 
-		public override async Task HandleMessageAsync(EntityActorMessageContext context, PlayerLeftLobbyEventMessage message, CancellationToken token = default)
+		public override async Task HandleMessageAsync(EntityActorMessageContext context, PlayerLeftWorldEventMessage message, CancellationToken token = default)
 		{
 			await SendService.Data.SendMessageAsync(new BlockOtherPlayerLeaveLobbyEventPayload((byte) message.Slot, 0), token);
 		}
