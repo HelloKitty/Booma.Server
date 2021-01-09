@@ -14,6 +14,8 @@ namespace Booma
 	public interface ILobbyEntryService
 	{
 		Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, int characterSlot, CancellationToken token = default);
+
+		Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, CancellationToken token = default);
 	}
 
 	public sealed class DefaultLobbyEntryService : ILobbyEntryService
@@ -42,6 +44,20 @@ namespace Booma
 		{
 			InitialCharacterDataSnapshot dataSnapshot =
 				await CharacterDataFactory.Create(new CharacterDataEventPayloadCreationContext(characterSlot));
+
+			await TryEnterLobbyWithCharacterAsync(context, dataSnapshot, token);
+		}
+
+		public async Task TryEnterLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, CancellationToken token = default)
+		{
+			InitialCharacterDataSnapshot dataSnapshot =
+				await CharacterDataFactory.Create(entity);
+
+			await TryEnterLobbyWithCharacterAsync(context, dataSnapshot, token);
+		}
+
+		private async Task TryEnterLobbyWithCharacterAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, InitialCharacterDataSnapshot dataSnapshot, CancellationToken token = default)
+		{
 			InitializeCharacterDataEventPayload characterDataPayload = new InitializeCharacterDataEventPayload(dataSnapshot.Inventory, BuildLobbyCharacterData(dataSnapshot), 0, dataSnapshot.Bank, dataSnapshot.GuildCard, 0, dataSnapshot.Options);
 
 			await context.MessageService.SendMessageAsync(characterDataPayload, token);
@@ -52,9 +68,9 @@ namespace Booma
 				.Ask<ResponseModel<string, CharacterActorCreationResponseCode>>(new TryCreateCharacterRequestMessage(dataSnapshot));
 
 			//TODO: Handle lobby re-try logic. Lobby may have been full.
-			if(!characterActorCreationResponse.isSuccessful)
+			if (!characterActorCreationResponse.isSuccessful)
 			{
-				if(Logger.IsErrorEnabled)
+				if (Logger.IsErrorEnabled)
 					Logger.Error($"Failed to send create character actor. Reason: {characterActorCreationResponse.ResultCode}");
 
 				await context.ConnectionService.DisconnectAsync();
