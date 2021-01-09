@@ -25,7 +25,8 @@ namespace Booma
 		}
 	}
 
-	public interface ICharacterDataSnapshotFactory : IAsyncFactoryCreatable<InitialCharacterDataSnapshot, CharacterDataEventPayloadCreationContext>
+	public interface ICharacterDataSnapshotFactory 
+		: IAsyncFactoryCreatable<InitialCharacterDataSnapshot, CharacterDataEventPayloadCreationContext>, IAsyncFactoryCreatable<InitialCharacterDataSnapshot, NetworkEntityGuid>
 	{
 
 	}
@@ -45,6 +46,38 @@ namespace Booma
 
 		public async Task<InitialCharacterDataSnapshot> Create(CharacterDataEventPayloadCreationContext context)
 		{
+			RPGCharacterData[] characterDatas = await LoadCharactersAsync();
+
+			//If it don't exist, we throw. Not much else we can do
+			RPGCharacterData data = characterDatas[context.Slot];
+
+			return await BuildCharacterDataAsync(data);
+		}
+
+		public async Task<InitialCharacterDataSnapshot> Create(NetworkEntityGuid context)
+		{
+			RPGCharacterData[] characterDatas = await LoadCharactersAsync();
+
+			//If it don't exist, we throw. Not much else we can do
+			RPGCharacterData data = characterDatas
+				.First(d => d.Entry.Id == context.Identifier);
+
+			return await BuildCharacterDataAsync(data);
+		}
+
+		private async Task<InitialCharacterDataSnapshot> BuildCharacterDataAsync(RPGCharacterData data)
+		{
+			CharacterOptionsConfiguration configuration = await OptionsFactory.Create(CancellationToken.None);
+			NetworkEntityGuid guid = new NetworkEntityGuid(EntityType.Player, data.Entry.Id);
+
+			//new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration)
+			return new InitialCharacterDataSnapshot(CreateEmptyInventory(), CreateEmptyBank(), CreateEmptyStats(), new CharacterProgress((uint) data.Progress.Experience, (uint) data.Progress.Level),
+				new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), new CharacterVersionData(0, 0, 0), new CharacterCustomizationInfo(0, 0, 0, 0, 0, new Vector3<ushort>(0, 0, 0), new Vector2<float>(0, 0)),
+				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), configuration, guid);
+		}
+
+		private async Task<RPGCharacterData[]> LoadCharactersAsync()
+		{
 			var serviceQueryResult = await DataQueryService.Create(CancellationToken.None);
 
 			if (!serviceQueryResult.isAvailable)
@@ -53,17 +86,7 @@ namespace Booma
 			RPGCharacterData[] characterDatas = await serviceQueryResult
 				.Instance
 				.RetrieveCharactersDataAsync();
-
-			//If it don't exist, we throw. Not much else we can do
-			RPGCharacterData data = characterDatas[context.Slot];
-
-			CharacterOptionsConfiguration configuration = await OptionsFactory.Create(CancellationToken.None);
-			NetworkEntityGuid guid = new NetworkEntityGuid(EntityType.Player, data.Entry.Id);
-
-			//new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration)
-			return new InitialCharacterDataSnapshot(CreateEmptyInventory(), CreateEmptyBank(), CreateEmptyStats(), new CharacterProgress((uint)data.Progress.Experience, (uint)data.Progress.Level),
-				new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), new CharacterVersionData(0, 0, 0), new CharacterCustomizationInfo(0, 0, 0, 0, 0, new Vector3<ushort>(0, 0, 0), new Vector2<float>(0, 0)),
-				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), configuration, guid);
+			return characterDatas;
 		}
 
 		private static CharacterBankData CreateEmptyBank()
