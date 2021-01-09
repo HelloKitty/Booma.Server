@@ -15,6 +15,11 @@ namespace Booma
 			builder.RegisterType<CharacterDataSnapshotFactory>()
 				.As<ICharacterDataSnapshotFactory>()
 				.InstancePerLifetimeScope();
+
+			//DefaultLobbyEntryService : ILobbyEntryService
+			builder.RegisterType<DefaultLobbyEntryService>()
+				.As<ILobbyEntryService>()
+				.InstancePerLifetimeScope();
 		}
 	}
 }
