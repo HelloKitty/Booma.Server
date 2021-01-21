@@ -20,6 +20,7 @@ namespace Booma
 
 			builder.RegisterModule(new ServiceDiscoverableServiceModule<ICharacterDataQueryService>(BoomaServiceType.CharacterDataService));
 			builder.RegisterModule(new ServiceDiscoverableServiceModule<ICharacterCreationService>(BoomaServiceType.CharacterDataService));
+			builder.RegisterModule(new ServiceDiscoverableServiceModule<IPSOBBCharacterAppearanceService>(BoomaServiceType.CharacterDataService));
 
 			//CharacterDataServiceBackedCharacterDataRepository : ICharacterDataRepository
 			builder.RegisterType<CharacterDataServiceBackedCharacterDataRepository>()

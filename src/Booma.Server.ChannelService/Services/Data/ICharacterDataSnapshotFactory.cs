@@ -37,11 +37,15 @@ namespace Booma
 
 		private ICharacterOptionsConfigurationFactory OptionsFactory { get; }
 
+		private IServiceResolver<IPSOBBCharacterAppearanceService> AppearanceService { get; }
+
 		public CharacterDataSnapshotFactory(IServiceResolver<ICharacterDataQueryService> dataQueryService, 
-			ICharacterOptionsConfigurationFactory optionsFactory)
+			ICharacterOptionsConfigurationFactory optionsFactory, 
+			IServiceResolver<IPSOBBCharacterAppearanceService> appearanceService)
 		{
 			DataQueryService = dataQueryService ?? throw new ArgumentNullException(nameof(dataQueryService));
 			OptionsFactory = optionsFactory ?? throw new ArgumentNullException(nameof(optionsFactory));
+			AppearanceService = appearanceService ?? throw new ArgumentNullException(nameof(appearanceService));
 		}
 
 		public async Task<InitialCharacterDataSnapshot> Create(CharacterDataEventPayloadCreationContext context)
@@ -51,7 +55,9 @@ namespace Booma
 			//If it don't exist, we throw. Not much else we can do
 			RPGCharacterData data = characterDatas[context.Slot];
 
-			return await BuildCharacterDataAsync(data);
+			var customizationData = await LoadCharacterAppearanceAsync(data.Entry.Id);
+
+			return await BuildCharacterDataAsync(data, customizationData.Result);
 		}
 
 		public async Task<InitialCharacterDataSnapshot> Create(NetworkEntityGuid context)
@@ -62,31 +68,76 @@ namespace Booma
 			RPGCharacterData data = characterDatas
 				.First(d => d.Entry.Id == context.Identifier);
 
-			return await BuildCharacterDataAsync(data);
+			var customizationData = await LoadCharacterAppearanceAsync(data.Entry.Id);
+
+			return await BuildCharacterDataAsync(data, customizationData.Result);
 		}
 
-		private async Task<InitialCharacterDataSnapshot> BuildCharacterDataAsync(RPGCharacterData data)
+		private async Task<InitialCharacterDataSnapshot> BuildCharacterDataAsync(RPGCharacterData data, RPGCharacterCustomizationData<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>> customizationData)
 		{
+			if (data == null) throw new ArgumentNullException(nameof(data));
+			if (customizationData == null) throw new ArgumentNullException(nameof(customizationData));
+
 			CharacterOptionsConfiguration configuration = await OptionsFactory.Create(CancellationToken.None);
 			NetworkEntityGuid guid = new NetworkEntityGuid(EntityType.Player, data.Entry.Id);
 
+			CharacterModelType modelType = customizationData.SlotData.ContainsKey(PsobbCustomizationSlots.Override)
+				? (CharacterModelType)customizationData.SlotData[PsobbCustomizationSlots.Override]
+				: CharacterModelType.Regular;
+
+			var hairColor = customizationData.SlotColorData.ContainsKey(PsobbCustomizationSlots.Hair)
+				? customizationData.SlotColorData[PsobbCustomizationSlots.Hair]
+				: new Vector3<ushort>(0, 0, 0);
+
+			var proportions = customizationData.ProportionData.ContainsKey(PsobbProportionSlots.Default)
+				? customizationData.ProportionData[PsobbProportionSlots.Default]
+				: new Vector2<float>(0, 0);
+
+			CharacterCustomizationInfo customizationInfo = new CharacterCustomizationInfo(
+				GetCustomizationData(PsobbCustomizationSlots.Costume, customizationData),
+				GetCustomizationData(PsobbCustomizationSlots.Skin, customizationData),
+				GetCustomizationData(PsobbCustomizationSlots.Face, customizationData),
+				GetCustomizationData(PsobbCustomizationSlots.Head, customizationData),
+				GetCustomizationData(PsobbCustomizationSlots.Hair, customizationData),
+				hairColor, proportions);
+
 			//new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration)
 			return new InitialCharacterDataSnapshot(CreateEmptyInventory(), CreateEmptyBank(), CreateEmptyStats(), new CharacterProgress((uint) data.Progress.Experience, (uint) data.Progress.Level),
-				new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), new CharacterVersionData(0, 0, 0), new CharacterCustomizationInfo(0, 0, 0, 0, 0, new Vector3<ushort>(0, 0, 0), new Vector2<float>(0, 0)),
+				new CharacterSpecialCustomInfo(0, modelType, 0), new CharacterVersionData(0, 0, 0), customizationInfo,
 				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), configuration, guid);
+		}
+
+		private static ushort GetCustomizationData(PsobbCustomizationSlots slot, RPGCharacterCustomizationData<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>> data)
+		{
+			data.SlotData.TryGetValue(slot, out var val);
+			return (ushort)val;
 		}
 
 		private async Task<RPGCharacterData[]> LoadCharactersAsync()
 		{
 			var serviceQueryResult = await DataQueryService.Create(CancellationToken.None);
 
-			if (!serviceQueryResult.isAvailable)
+			if(!serviceQueryResult.isAvailable)
 				throw new InvalidOperationException($"Failed to aquire service Type: {nameof(ICharacterDataQueryService)}");
 
 			RPGCharacterData[] characterDatas = await serviceQueryResult
 				.Instance
 				.RetrieveCharactersDataAsync();
 			return characterDatas;
+		}
+
+		private async Task<ResponseModel<RPGCharacterCustomizationData<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>>, CharacterDataQueryResponseCode>> LoadCharacterAppearanceAsync(int characterId)
+		{
+			var serviceQueryResult = await AppearanceService.Create(CancellationToken.None);
+
+			if (!serviceQueryResult.isAvailable)
+				throw new InvalidOperationException($"Failed to aquire service Type: {nameof(IPSOBBCharacterAppearanceService)}");
+
+			var model = await serviceQueryResult
+				.Instance
+				.RetrieveCharacterAppearanceAsync(characterId);
+
+			return model;
 		}
 
 		private static CharacterBankData CreateEmptyBank()
