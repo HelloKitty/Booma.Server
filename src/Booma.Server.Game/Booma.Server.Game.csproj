@@ -6,16 +6,16 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
-    <PackageReference Include="Booma.Crypto.Common" Version="0.0.45" />
-    <PackageReference Include="Booma.Packet.Game" Version="0.0.45" />
-    <PackageReference Include="Glader.ASP.Authentication.Client" Version="0.0.2" />
+    <PackageReference Include="Booma.Crypto.Common" Version="0.0.46" />
+    <PackageReference Include="Booma.Packet.Game" Version="0.0.46" />
+    <PackageReference Include="Glader.ASP.Authentication.Client" Version="0.0.3" />
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.0.2" />
-    <PackageReference Include="Glader.ASP.RPGCharacter.Client" Version="0.0.2" />
+    <PackageReference Include="Glader.ASP.RPG.Character.Client" Version="0.1.7" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.4" />
-    <PackageReference Include="Glader.Essentials.Events" Version="2.2.49" />
-    <PackageReference Include="Glader.Essentials.GameFramework" Version="2.2.49" />
-    <PackageReference Include="Glader.Essentials.GUID" Version="2.2.49" />
-    <PackageReference Include="Glader.Essentials.Refit" Version="2.2.49" />
+    <PackageReference Include="Glader.Essentials.Events" Version="2.2.63" />
+    <PackageReference Include="Glader.Essentials.GameFramework" Version="2.2.63" />
+    <PackageReference Include="Glader.Essentials.GUID" Version="2.2.63" />
+    <PackageReference Include="Glader.Essentials.Refit" Version="2.2.63" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
   </ItemGroup>
 

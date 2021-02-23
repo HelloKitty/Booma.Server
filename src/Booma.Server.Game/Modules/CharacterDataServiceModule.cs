@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using Autofac;
 using Glader.ASP.GameConfig;
-using Glader.ASP.RPGCharacter;
+using Glader.ASP.RPG;
+
+//TODO: When Refit fixes: https://github.com/reactiveui/refit/issues/931 we should use closed derived Type.
+using IPSOBBCharacterCreationService = Glader.ASP.RPG.ICharacterCreationService<Booma.CharacterRace, Booma.CharacterClass>;
+using IPSOBBCharacterDataQueryService = Glader.ASP.RPG.ICharacterDataQueryService<Booma.CharacterRace, Booma.CharacterClass>;
 
 namespace Booma
 {
 	/// <summary>
-	/// Service module that registers <see cref="ICharacterDataQueryService"/>
-	/// and <see cref="ICharacterCreationService"/> via the <see cref="IServiceResolver{TServiceInterfaceType}"/>.
+	/// Service module that registers <see cref="ICharacterDataQueryService{TRaceType,TClassType}"/>
+	/// and <see cref="ICharacterCreationService{TRaceType,TClassType}"/> via the <see cref="IServiceResolver{TServiceInterfaceType}"/>.
 	/// </summary>
 	public sealed class CharacterDataServiceModule : Module
 	{
@@ -18,8 +22,8 @@ namespace Booma
 		{
 			base.Load(builder);
 
-			builder.RegisterModule(new ServiceDiscoverableServiceModule<ICharacterDataQueryService>(BoomaServiceType.CharacterDataService));
-			builder.RegisterModule(new ServiceDiscoverableServiceModule<ICharacterCreationService>(BoomaServiceType.CharacterDataService));
+			builder.RegisterModule(new ServiceDiscoverableServiceModule<IPSOBBCharacterDataQueryService>(BoomaServiceType.CharacterDataService));
+			builder.RegisterModule(new ServiceDiscoverableServiceModule<IPSOBBCharacterCreationService>(BoomaServiceType.CharacterDataService));
 			builder.RegisterModule(new ServiceDiscoverableServiceModule<IPSOBBCharacterAppearanceService>(BoomaServiceType.CharacterDataService));
 
 			//CharacterDataServiceBackedCharacterDataRepository : ICharacterDataRepository

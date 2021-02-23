@@ -6,25 +6,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using Booma;
 using Common.Logging;
-using Glader.ASP.RPGCharacter;
+using Glader.ASP.RPG;
 using GladNet;
+
+//TODO: When Refit fixes: https://github.com/reactiveui/refit/issues/931 we should use closed derived Type.
+using IPSOBBCharacterCreationService = Glader.ASP.RPG.ICharacterCreationService<Booma.CharacterRace, Booma.CharacterClass>;
+using IPSOBBCharacterDataQueryService = Glader.ASP.RPG.ICharacterDataQueryService<Booma.CharacterRace, Booma.CharacterClass>;
 
 namespace Booma
 {
 	/// <summary>
-	/// <see cref="ICharacterDataQueryService"/>-backed implementation of <see cref="ICharacterDataRepository"/>
+	/// <see cref="ICharacterDataQueryService{TRaceType,TClassType}"/>-backed implementation of <see cref="ICharacterDataRepository"/>
 	/// </summary>
 	public sealed class CharacterDataServiceBackedCharacterDataRepository : ICharacterDataRepository
 	{
 		/// <summary>
 		/// The service resolver for the data query service.
 		/// </summary>
-		private IServiceResolver<ICharacterDataQueryService> CharacterDataServiceResolver { get; }
+		private IServiceResolver<ICharacterDataQueryService<Booma.CharacterRace, CharacterClass>> CharacterDataServiceResolver { get; }
 
 		/// <summary>
 		/// The service resolver for the character creation
 		/// </summary>
-		private IServiceResolver<ICharacterCreationService> CharacterCreationServiceResolver { get; }
+		private IServiceResolver<IPSOBBCharacterCreationService> CharacterCreationServiceResolver { get; }
 
 		/// <summary>
 		/// The service resolver for the character creation
@@ -41,10 +45,10 @@ namespace Booma
 		/// </summary>
 		private SessionDetails Details { get; }
 
-		public CharacterDataServiceBackedCharacterDataRepository(IServiceResolver<ICharacterDataQueryService> characterDataServiceResolver,
+		public CharacterDataServiceBackedCharacterDataRepository(IServiceResolver<IPSOBBCharacterDataQueryService> characterDataServiceResolver,
 			ILog logger,
 			SessionDetails details, 
-			IServiceResolver<ICharacterCreationService> characterCreationServiceResolver, 
+			IServiceResolver<IPSOBBCharacterCreationService> characterCreationServiceResolver, 
 			IServiceResolver<IPSOBBCharacterAppearanceService> appearanceServiceResolver)
 		{
 			CharacterDataServiceResolver = characterDataServiceResolver ?? throw new ArgumentNullException(nameof(characterDataServiceResolver));
@@ -56,26 +60,26 @@ namespace Booma
 
 		public async Task<bool> ContainsAsync(int slot, CancellationToken token = default)
 		{
-			RPGCharacterData[] characters = await LoadCharactersAsync(token);
+			RPGCharacterData<CharacterRace, CharacterClass>[] characters = await LoadCharactersAsync(token);
 
 			return characters != null && characters.Length > slot;
 		}
 
-		private async Task<RPGCharacterData[]> LoadCharactersAsync(CancellationToken token)
+		private async Task<RPGCharacterData<CharacterRace, CharacterClass>[]> LoadCharactersAsync(CancellationToken token)
 		{
-			ServiceResolveResult<ICharacterDataQueryService> serviceResolutionResult
+			ServiceResolveResult<IPSOBBCharacterDataQueryService> serviceResolutionResult
 				= await CharacterDataServiceResolver.Create(token);
 
 			if (!serviceResolutionResult.isAvailable)
 			{
 				if (Logger.IsErrorEnabled)
-					Logger.Error($"Service unavailable: {nameof(ICharacterDataQueryService)}. Disconnecting Client: {Details.ConnectionId}");
+					Logger.Error($"Service unavailable: {nameof(IPSOBBCharacterDataQueryService)}. Disconnecting Client: {Details.ConnectionId}");
 
-				throw new InvalidOperationException($"Service unavailable: {nameof(ICharacterDataQueryService)}. Disconnecting Client: {Details.ConnectionId}");
+				throw new InvalidOperationException($"Service unavailable: {nameof(IPSOBBCharacterDataQueryService)}. Disconnecting Client: {Details.ConnectionId}");
 			}
 
 			//TODO: Implement some form of caching.
-			RPGCharacterData[] characters = await serviceResolutionResult
+			RPGCharacterData<CharacterRace, CharacterClass>[] characters = await serviceResolutionResult
 				.Instance
 				.RetrieveCharactersDataAsync(token);
 			return characters;
@@ -83,7 +87,7 @@ namespace Booma
 
 		public async Task<PlayerCharacterDataModel> RetrieveAsync(int slot, CancellationToken token = default)
 		{
-			RPGCharacterData[] characters = await LoadCharactersAsync(token);
+			RPGCharacterData<CharacterRace, CharacterClass>[] characters = await LoadCharactersAsync(token);
 
 			var appearanceServiceResult = await AppearanceServiceResolver.Create(token);
 
@@ -102,17 +106,17 @@ namespace Booma
 			}
 		}
 
-		private async Task<ICharacterCreationService> GetCharacterCreationServiceAsync(CancellationToken token = default)
+		private async Task<IPSOBBCharacterCreationService> GetCharacterCreationServiceAsync(CancellationToken token = default)
 		{
-			ServiceResolveResult<ICharacterCreationService> serviceResolutionResult
+			ServiceResolveResult<IPSOBBCharacterCreationService> serviceResolutionResult
 				= await CharacterCreationServiceResolver.Create(token);
 
 			if(!serviceResolutionResult.isAvailable)
 			{
 				if(Logger.IsErrorEnabled)
-					Logger.Error($"Service unavailable: {nameof(ICharacterCreationService)}. Disconnecting Client: {Details.ConnectionId}");
+					Logger.Error($"Service unavailable: {nameof(IPSOBBCharacterCreationService)}. Disconnecting Client: {Details.ConnectionId}");
 
-				throw new InvalidOperationException($"Service unavailable: {nameof(ICharacterCreationService)}. Disconnecting Client: {Details.ConnectionId}");
+				throw new InvalidOperationException($"Service unavailable: {nameof(IPSOBBCharacterCreationService)}. Disconnecting Client: {Details.ConnectionId}");
 			}
 
 			return serviceResolutionResult.Instance;
@@ -136,9 +140,9 @@ namespace Booma
 
 		public async Task<bool> CreateAsync(PlayerCharacterDataModel data, CancellationToken token = default)
 		{
-			ICharacterCreationService creationService = await GetCharacterCreationServiceAsync(token);
+			IPSOBBCharacterCreationService creationService = await GetCharacterCreationServiceAsync(token);
 			IPSOBBCharacterAppearanceService appearService = await GetCharacterAppearanceServiceAsync(token);
-			var creationResult = await creationService.CreateCharacterAsync(new RPGCharacterCreationRequest(data.CharacterName), token);
+			var creationResult = await creationService.CreateCharacterAsync(new RPGCharacterCreationRequest<CharacterRace, CharacterClass>(data.CharacterName, ComputeCharacterRace(data.ClassRace), data.ClassRace), token);
 
 			if (!creationResult.isSuccessful)
 			{
@@ -169,17 +173,41 @@ namespace Booma
 			return creationResult.isSuccessful;
 		}
 
+		private CharacterRace ComputeCharacterRace(CharacterClass @class)
+		{
+			switch (@class)
+			{
+				case CharacterClass.RAmarl:
+				case CharacterClass.FOmarl:
+				case CharacterClass.RAmar:
+				case CharacterClass.FOmar:
+				case CharacterClass.HUmar:
+					return CharacterRace.Human;
+				case CharacterClass.HUcaseal:
+				case CharacterClass.RAcaseal:
+				case CharacterClass.RAcast:
+				case CharacterClass.HUcast:
+					return CharacterRace.Cast;
+				case CharacterClass.HUnewearl:
+				case CharacterClass.FOnewm:
+				case CharacterClass.FOnewearl:
+					return CharacterRace.Newman;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(@class), @class, null);
+			}
+		}
+
 		//TODO: use object mapper.
-		private PlayerCharacterDataModel Convert(RPGCharacterData character)
+		private PlayerCharacterDataModel Convert(RPGCharacterData<CharacterRace, CharacterClass> character)
 		{
 			if (character == null) throw new ArgumentNullException(nameof(character));
 
 			return new PlayerCharacterDataModel(new CharacterProgress((uint) character.Progress.Experience, (uint) character.Progress.Level),
-				String.Empty, new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), SectionId.Viridia, CharacterClass.HUmar,
+				String.Empty, new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), SectionId.Viridia, character.ClassType,
 				new CharacterVersionData(0, 0, 0), new CharacterCustomizationInfo(0, 0, 0, 0, 0, new Vector3<ushort>(0, 0, 0), new Vector2<float>(0, 0)), character.Entry.Name, (uint) character.Progress.PlayTime.TotalSeconds);
 		}
 
-		private PlayerCharacterDataModel Convert(RPGCharacterData character, RPGCharacterCustomizationData<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>> customizationData)
+		private PlayerCharacterDataModel Convert(RPGCharacterData<CharacterRace, CharacterClass> character, RPGCharacterCustomizationData<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>> customizationData)
 		{
 			if (character == null) throw new ArgumentNullException(nameof(character));
 			if (customizationData == null) throw new ArgumentNullException(nameof(customizationData));
@@ -205,7 +233,7 @@ namespace Booma
 					hairColor, proportions);
 
 			return new PlayerCharacterDataModel(new CharacterProgress((uint)character.Progress.Experience, (uint)character.Progress.Level),
-				String.Empty, new CharacterSpecialCustomInfo(0, modelType, 0), SectionId.Viridia, CharacterClass.HUmar,
+				String.Empty, new CharacterSpecialCustomInfo(0, modelType, 0), SectionId.Viridia, character.ClassType,
 				new CharacterVersionData(0, 0, 0), customizationInfo, character.Entry.Name, (uint)character.Progress.PlayTime.TotalSeconds);
 		}
 

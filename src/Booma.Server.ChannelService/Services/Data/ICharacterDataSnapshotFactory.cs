@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Glader.ASP.RPGCharacter;
+using Glader.ASP.RPG;
 using Glader.Essentials;
+
+//TODO: When Refit fixes: https://github.com/reactiveui/refit/issues/931 we should use closed derived Type.
+using IPSOBBCharacterDataQueryService = Glader.ASP.RPG.ICharacterDataQueryService<Booma.CharacterRace, Booma.CharacterClass>;
 
 namespace Booma
 {
@@ -33,13 +36,13 @@ namespace Booma
 
 	public sealed class CharacterDataSnapshotFactory : ICharacterDataSnapshotFactory
 	{
-		private IServiceResolver<ICharacterDataQueryService> DataQueryService { get; }
+		private IServiceResolver<IPSOBBCharacterDataQueryService> DataQueryService { get; }
 
 		private ICharacterOptionsConfigurationFactory OptionsFactory { get; }
 
 		private IServiceResolver<IPSOBBCharacterAppearanceService> AppearanceService { get; }
 
-		public CharacterDataSnapshotFactory(IServiceResolver<ICharacterDataQueryService> dataQueryService, 
+		public CharacterDataSnapshotFactory(IServiceResolver<IPSOBBCharacterDataQueryService> dataQueryService, 
 			ICharacterOptionsConfigurationFactory optionsFactory, 
 			IServiceResolver<IPSOBBCharacterAppearanceService> appearanceService)
 		{
@@ -50,10 +53,10 @@ namespace Booma
 
 		public async Task<InitialCharacterDataSnapshot> Create(CharacterDataEventPayloadCreationContext context)
 		{
-			RPGCharacterData[] characterDatas = await LoadCharactersAsync();
+			RPGCharacterData<CharacterRace, CharacterClass>[] characterDatas = await LoadCharactersAsync();
 
 			//If it don't exist, we throw. Not much else we can do
-			RPGCharacterData data = characterDatas[context.Slot];
+			RPGCharacterData<CharacterRace, CharacterClass> data = characterDatas[context.Slot];
 
 			var customizationData = await LoadCharacterAppearanceAsync(data.Entry.Id);
 
@@ -62,10 +65,10 @@ namespace Booma
 
 		public async Task<InitialCharacterDataSnapshot> Create(NetworkEntityGuid context)
 		{
-			RPGCharacterData[] characterDatas = await LoadCharactersAsync();
+			RPGCharacterData<CharacterRace, CharacterClass>[] characterDatas = await LoadCharactersAsync();
 
 			//If it don't exist, we throw. Not much else we can do
-			RPGCharacterData data = characterDatas
+			RPGCharacterData<CharacterRace, CharacterClass> data = characterDatas
 				.First(d => d.Entry.Id == context.Identifier);
 
 			var customizationData = await LoadCharacterAppearanceAsync(data.Entry.Id);
@@ -73,7 +76,7 @@ namespace Booma
 			return await BuildCharacterDataAsync(data, customizationData.Result);
 		}
 
-		private async Task<InitialCharacterDataSnapshot> BuildCharacterDataAsync(RPGCharacterData data, RPGCharacterCustomizationData<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>> customizationData)
+		private async Task<InitialCharacterDataSnapshot> BuildCharacterDataAsync(RPGCharacterData<CharacterRace, CharacterClass> data, RPGCharacterCustomizationData<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>> customizationData)
 		{
 			if (data == null) throw new ArgumentNullException(nameof(data));
 			if (customizationData == null) throw new ArgumentNullException(nameof(customizationData));
@@ -104,7 +107,7 @@ namespace Booma
 			//new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration)
 			return new InitialCharacterDataSnapshot(CreateEmptyInventory(), CreateEmptyBank(), CreateEmptyStats(), new CharacterProgress((uint) data.Progress.Experience, (uint) data.Progress.Level),
 				new CharacterSpecialCustomInfo(0, modelType, 0), new CharacterVersionData(0, 0, 0), customizationInfo,
-				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), configuration, guid);
+				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, data.ClassType), configuration, guid);
 		}
 
 		private static ushort GetCustomizationData(PsobbCustomizationSlots slot, RPGCharacterCustomizationData<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>> data)
@@ -113,14 +116,14 @@ namespace Booma
 			return (ushort)val;
 		}
 
-		private async Task<RPGCharacterData[]> LoadCharactersAsync()
+		private async Task<RPGCharacterData<CharacterRace, CharacterClass>[]> LoadCharactersAsync()
 		{
 			var serviceQueryResult = await DataQueryService.Create(CancellationToken.None);
 
 			if(!serviceQueryResult.isAvailable)
-				throw new InvalidOperationException($"Failed to aquire service Type: {nameof(ICharacterDataQueryService)}");
+				throw new InvalidOperationException($"Failed to aquire service Type: {nameof(IPSOBBCharacterDataQueryService)}");
 
-			RPGCharacterData[] characterDatas = await serviceQueryResult
+			RPGCharacterData<CharacterRace, CharacterClass>[] characterDatas = await serviceQueryResult
 				.Instance
 				.RetrieveCharactersDataAsync();
 			return characterDatas;
@@ -151,11 +154,11 @@ namespace Booma
 		}
 
 		//TODO: use object mapper.
-		private LobbyCharacterData Convert(RPGCharacterData character)
+		private LobbyCharacterData Convert(RPGCharacterData<CharacterRace, CharacterClass> character)
 		{
 			if(character == null) throw new ArgumentNullException(nameof(character));
 
-			return new LobbyCharacterData(CreateEmptyStats(), 0, 0, new CharacterProgress((uint)character.Progress.Experience, (uint)character.Progress.Level), 0, String.Empty, 0, new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), SectionId.Viridia, CharacterClass.HUmar,
+			return new LobbyCharacterData(CreateEmptyStats(), 0, 0, new CharacterProgress((uint)character.Progress.Experience, (uint)character.Progress.Level), 0, String.Empty, 0, new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), SectionId.Viridia, character.ClassType,
 				new CharacterVersionData(0, 0, 0), new CharacterCustomizationInfo(0, 0, 0, 0, 0, new Vector3<ushort>(0, 0, 0), new Vector2<float>(0, 0)), character.Entry.Name);
 		}
 

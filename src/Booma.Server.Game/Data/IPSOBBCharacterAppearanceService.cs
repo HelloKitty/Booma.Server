@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Glader.ASP.RPGCharacter;
+using Glader.ASP.RPG;
 using Glader.Essentials;
 using Refit;
 
