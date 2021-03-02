@@ -6,12 +6,11 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Booma.API.Common" Version="0.0.46" />
-    <PackageReference Include="Glader.ASP.RPG.Server" Version="0.1.7" />
+    <PackageReference Include="Glader.ASP.RPG.Server" Version="0.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
       <PrivateAssets>all</PrivateAssets>

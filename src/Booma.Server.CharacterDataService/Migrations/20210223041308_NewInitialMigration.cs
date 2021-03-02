@@ -38,7 +38,7 @@ namespace Booma.Server.CharacterDataService.Migrations
                 name: "class",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false),
+                    Id = table.Column<byte>(nullable: false),
                     VisualName = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },
@@ -51,7 +51,7 @@ namespace Booma.Server.CharacterDataService.Migrations
                 name: "race",
                 columns: table => new
                 {
-                    Id = table.Column<byte>(nullable: false),
+                    Id = table.Column<int>(nullable: false),
                     VisualName = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },
@@ -85,8 +85,8 @@ namespace Booma.Server.CharacterDataService.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     LastModifiedDate = table.Column<DateTime>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn),
-                    Race = table.Column<byte>(nullable: false),
-                    Class = table.Column<int>(nullable: false)
+                    Race = table.Column<int>(nullable: false),
+                    Class = table.Column<byte>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -283,9 +283,18 @@ namespace Booma.Server.CharacterDataService.Migrations
                 columns: new[] { "Id", "Description", "VisualName" },
                 values: new object[,]
                 {
-                    { 1, "", "Human" },
-                    { 2, "", "Newman" },
-                    { 3, "", "Cast" }
+                    { (byte)11, "", "RAmarl" },
+                    { (byte)10, "", "FOmar" },
+                    { (byte)9, "", "HUcaseal" },
+                    { (byte)8, "", "FOnewearl" },
+                    { (byte)7, "", "FOnewm" },
+                    { (byte)6, "", "FOmarl" },
+                    { (byte)4, "", "RAcast" },
+                    { (byte)3, "", "RAmar" },
+                    { (byte)2, "", "HUcast" },
+                    { (byte)1, "", "HUnewearl" },
+                    { (byte)0, "", "HUmar" },
+                    { (byte)5, "", "RAcaseal" }
                 });
 
             migrationBuilder.InsertData(
@@ -293,18 +302,9 @@ namespace Booma.Server.CharacterDataService.Migrations
                 columns: new[] { "Id", "Description", "VisualName" },
                 values: new object[,]
                 {
-                    { (byte)10, "", "FOmar" },
-                    { (byte)9, "", "HUcaseal" },
-                    { (byte)8, "", "FOnewearl" },
-                    { (byte)7, "", "FOnewm" },
-                    { (byte)6, "", "FOmarl" },
-                    { (byte)1, "", "HUnewearl" },
-                    { (byte)4, "", "RAcast" },
-                    { (byte)3, "", "RAmar" },
-                    { (byte)2, "", "HUcast" },
-                    { (byte)11, "", "RAmarl" },
-                    { (byte)0, "", "HUmar" },
-                    { (byte)5, "", "RAcaseal" }
+                    { 3, "", "Cast" },
+                    { 1, "", "Human" },
+                    { 2, "", "Newman" }
                 });
 
             migrationBuilder.InsertData(

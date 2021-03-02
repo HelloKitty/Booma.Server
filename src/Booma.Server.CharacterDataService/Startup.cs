@@ -33,10 +33,10 @@ namespace Booma.Server.CharacterDataService
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllers()
-				.RegisterCharacterDataController<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterClass, CharacterRace>()
+				.RegisterCharacterDataController<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass>()
 				.AddNewtonsoftJson();
 
-			services.RegisterCharacterDatabase<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterClass, CharacterRace, DefaultTestSkillType>(builder =>
+			services.RegisterCharacterDatabase<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass, DefaultTestSkillType>(builder =>
 			{
 				builder.UseMySql("server=127.0.0.1;port=3306;Database=booma.game;Uid=root;Pwd=test;", optionsBuilder =>
 				{
