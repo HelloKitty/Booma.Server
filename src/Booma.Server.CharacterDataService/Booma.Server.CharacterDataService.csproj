@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Booma.API.Common" Version="0.0.46" />
+    <PackageReference Include="Booma.API.Common" Version="0.0.47" />
     <PackageReference Include="Glader.ASP.RPG.Server" Version="0.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
