@@ -34,6 +34,7 @@ namespace Booma
 				await context.ConnectionService.DisconnectAsync();
 		}
 
+		//TODO: Refactor into a lobby join object. This code is used multiple places.
 		private async Task<bool> TrySwitchLobbyAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, CancellationToken token, int lobbyId)
 		{
 			//Good chance the lobby will be full.
