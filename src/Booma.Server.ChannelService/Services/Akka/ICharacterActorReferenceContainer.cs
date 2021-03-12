@@ -42,14 +42,20 @@ namespace Booma
 		public void Dispose()
 		{
 			if (IsAvailable)
+			{
 				Reference.TellSelf(new ActorOwnerDisposedMessage());
+				Reference = ActorRefs.Nobody;
+			}
 		}
 
 		public async ValueTask DisposeAsync()
 		{
 			//Async await for disposal WITH ack
 			if (IsAvailable)
+			{
 				await Reference.RequestAsync<ActorOwnerDisposedMessage, bool>(new ActorOwnerDisposedMessage());
+				Reference = ActorRefs.Nobody;
+			}
 			else
 				return;
 		}
