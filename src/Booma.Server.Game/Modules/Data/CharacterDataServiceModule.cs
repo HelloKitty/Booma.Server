@@ -26,6 +26,9 @@ namespace Booma
 			builder.RegisterModule(new ServiceDiscoverableServiceModule<IPSOBBCharacterCreationService>(BoomaServiceType.CharacterDataService));
 			builder.RegisterModule(new ServiceDiscoverableServiceModule<IPSOBBCharacterAppearanceService>(BoomaServiceType.CharacterDataService));
 
+			//TODO: If Groups ever move off the CharacterDataService we should change the location of this registeration.
+			builder.RegisterModule<GroupDataServiceModule>();
+
 			//CharacterDataServiceBackedCharacterDataRepository : ICharacterDataRepository
 			builder.RegisterType<CharacterDataServiceBackedCharacterDataRepository>()
 				.As<ICharacterDataRepository>()
