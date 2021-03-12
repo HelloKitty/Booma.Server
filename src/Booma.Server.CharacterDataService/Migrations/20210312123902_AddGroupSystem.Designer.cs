@@ -3,14 +3,16 @@ using System;
 using Glader.ASP.RPG;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Booma.Server.CharacterDataService.Migrations
 {
     [DbContext(typeof(RPGCharacterDatabaseContext<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass, DefaultTestSkillType>))]
-    partial class RPGCharacterDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210312123902_AddGroupSystem")]
+    partial class AddGroupSystem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
