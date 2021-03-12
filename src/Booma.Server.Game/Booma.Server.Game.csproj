@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -10,7 +10,7 @@
     <PackageReference Include="Booma.Packet.Game" Version="0.0.46" />
     <PackageReference Include="Glader.ASP.Authentication.Client" Version="0.0.3" />
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.0.2" />
-    <PackageReference Include="Glader.ASP.RPG.Character.Client" Version="0.1.8" />
+    <PackageReference Include="Glader.ASP.RPG.Client" Version="0.1.9" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.4" />
     <PackageReference Include="Glader.Essentials.Events" Version="2.2.63" />
     <PackageReference Include="Glader.Essentials.GameFramework" Version="2.2.63" />
