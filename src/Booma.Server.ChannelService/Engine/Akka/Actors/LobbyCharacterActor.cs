@@ -19,7 +19,7 @@ namespace Booma
 		protected override void OnInitialized(EntityActorInitializationSuccessMessage successMessage)
 		{
 			if(Logger.IsInfoEnabled)
-				Logger.Info($"Character Actor Initialized. Path: {Self.Path}");
+				Logger.Info($"{nameof(LobbyCharacterActor)} Initialized. Path: {Self.Path}");
 		}
 	}
 }

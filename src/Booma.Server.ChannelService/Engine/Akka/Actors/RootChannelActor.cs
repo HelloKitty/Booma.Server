@@ -21,7 +21,7 @@ namespace Booma
 		protected override void OnInitialized(EntityActorInitializationSuccessMessage successMessage)
 		{
 			if (Logger.IsInfoEnabled)
-				Logger.Info($"Channel Actor Initialized. Path: {Self.Path}");
+				Logger.Info($"{nameof(RootChannelActor)} Initialized. Path: {Self.Path}");
 		}
 	}
 }
