@@ -7,7 +7,7 @@ using MEAKKA;
 
 namespace Booma.Lobby
 {
-	[ActorMessageHandler(typeof(GameLobbyActor))]
+	[ActorMessageHandler(typeof(LobbyActor))]
 	public sealed class BroadcastGamePacketMessageHandler : BaseActorMessageHandler<BroadcastGamePacketMessage>
 	{
 		private ICharacterLobbySlotRepository LobbyCharacterRepository { get; }

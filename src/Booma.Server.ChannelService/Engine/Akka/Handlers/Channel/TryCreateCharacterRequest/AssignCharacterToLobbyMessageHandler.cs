@@ -10,7 +10,7 @@ namespace Booma.ChannelActor
 {
 	/// <summary>
 	/// <see cref="RootChannelActor"/> handler for <see cref="TryCreateCharacterRequestMessage"/>.
-	/// It will attempt to assign and forward a character creation request to a child <see cref="GameLobbyActor"/>.
+	/// It will attempt to assign and forward a character creation request to a child <see cref="LobbyActor"/>.
 	/// </summary>
 	[ActorMessageHandler(typeof(RootChannelActor))]
 	public sealed class AssignCharacterToLobbyMessageHandler : BaseActorMessageHandler<TryCreateCharacterRequestMessage>

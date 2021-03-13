@@ -9,7 +9,7 @@ using MEAKKA;
 
 namespace Booma
 {
-	[ActorMessageHandler(typeof(GameLobbyActor))]
+	[ActorMessageHandler(typeof(LobbyActor))]
 	public sealed class FinishBurstingPlayerToLobby : BaseActorMessageHandler<JoinWorldRequestMessage>
 	{
 		private ICharacterLobbySlotRepository LobbyCharacterRepository { get; }

@@ -9,7 +9,7 @@ using MEAKKA;
 namespace Booma
 {
 	/// <summary>
-	/// Service module for <see cref="GameLobbyActor"/>
+	/// Service module for <see cref="LobbyActor"/>
 	/// </summary>
 	public sealed class GameLobbyActorServiceModule : Module
 	{
@@ -17,7 +17,7 @@ namespace Booma
 		{
 			base.Load(builder);
 
-			builder.RegisterModule<EntityActorServiceModule<GameLobbyActor>>();
+			builder.RegisterModule<EntityActorServiceModule<LobbyActor>>();
 
 			//InMemoryCharacterLobbySlotRepository : ICharacterLobbySlotRepository
 			builder.RegisterType<InMemoryCharacterLobbySlotRepository>()

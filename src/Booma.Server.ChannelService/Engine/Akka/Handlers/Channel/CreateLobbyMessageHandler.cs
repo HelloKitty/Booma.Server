@@ -29,11 +29,11 @@ namespace Booma
 		/// <summary>
 		/// The factory that can produce lobby actors.
 		/// </summary>
-		private IActorFactory<GameLobbyActor> LobbyActorFactory { get; }
+		private IActorFactory<LobbyActor> LobbyActorFactory { get; }
 
 		public CreateLobbyMessageHandler(ILog logger, 
 			ILobbyEntryRepository lobbyRepository, 
-			IActorFactory<GameLobbyActor> lobbyActorFactory)
+			IActorFactory<LobbyActor> lobbyActorFactory)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			LobbyRepository = lobbyRepository ?? throw new ArgumentNullException(nameof(lobbyRepository));
@@ -45,7 +45,7 @@ namespace Booma
 			if (Logger.IsInfoEnabled)
 				Logger.Info($"Channel Lobby {message.LobbyId:D2} Creation Request: {message}");
 
-			IEntityActorRef<GameLobbyActor> lobbyActor = null;
+			IEntityActorRef<LobbyActor> lobbyActor = null;
 			try
 			{
 				lobbyActor = LobbyActorFactory

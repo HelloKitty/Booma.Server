@@ -10,7 +10,7 @@ using MEAKKA;
 
 namespace Booma.Lobby
 {
-	[ActorMessageHandler(typeof(GameLobbyActor))]
+	[ActorMessageHandler(typeof(LobbyActor))]
 	public sealed class TryCreateCharacterActorInLobbyHandler : BaseActorMessageHandler<TryCreateCharacterRequestMessage>
 	{
 		private ICharacterLobbySlotRepository CharacterSlotRepository { get; }

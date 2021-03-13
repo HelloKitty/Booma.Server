@@ -7,10 +7,10 @@ using MEAKKA;
 
 namespace Booma
 {
-	public sealed class GameLobbyActor : BaseEntityActor<EmptyFactoryContext>
+	public sealed class LobbyActor : BaseEntityActor<EmptyFactoryContext>
 	{
 		//We have to use specific type because it contains actor type information.
-		public GameLobbyActor(ILog logger, DefaultActorMessageHandlerService<GameLobbyActor> messageHandlerService)
+		public LobbyActor(ILog logger, DefaultActorMessageHandlerService<LobbyActor> messageHandlerService)
 			: base(logger, messageHandlerService)
 		{
 
