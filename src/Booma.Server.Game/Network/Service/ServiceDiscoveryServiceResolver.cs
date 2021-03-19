@@ -14,7 +14,7 @@ using Refit;
 
 namespace Booma
 {
-	public class BaseServiceDiscoveryServiceResolver<TServiceType> : IServiceResolver<TServiceType>
+	public class DefaultServiceDiscoveryServiceResolver<TServiceType> : IServiceResolver<TServiceType>
 		where TServiceType : class
 	{
 		/// <summary>
@@ -43,7 +43,7 @@ namespace Booma
 		/// </summary>
 		protected ILog Logger { get; }
 
-		public BaseServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient,
+		public DefaultServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient,
 			BoomaServiceType serviceType,
 			ILog logger)
 		{
@@ -120,12 +120,12 @@ namespace Booma
 	/// <see cref="IServiceDiscoveryService"/>-based implementation for service resolution.
 	/// </summary>
 	/// <typeparam name="TServiceType"></typeparam>
-	public sealed class ServiceDiscoveryServiceResolver<TServiceType> : BaseServiceDiscoveryServiceResolver<TServiceType>
+	public sealed class AuthorizedServiceDiscoveryServiceResolver<TServiceType> : DefaultServiceDiscoveryServiceResolver<TServiceType>
 		where TServiceType : class
 	{
 		private IReadonlyAuthTokenRepository TokenRepository { get; }
 
-		public ServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient, 
+		public AuthorizedServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient, 
 			BoomaServiceType serviceType, 
 			ILog logger,
 			IReadonlyAuthTokenRepository tokenRepository)
