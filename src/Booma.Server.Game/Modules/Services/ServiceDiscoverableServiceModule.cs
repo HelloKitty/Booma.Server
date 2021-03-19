@@ -28,9 +28,14 @@ namespace Booma
 		/// </summary>
 		private BoomaServiceType ServiceType { get; }
 
-		public ServiceDiscoveryModuleMode Mode { get; init; }
+		//Oddly "Authorized" is our default due to legacy reasons.
+		public ServiceDiscoveryModuleMode Mode { get; init; } = ServiceDiscoveryModuleMode.Authorized;
 
 		public IServiceBaseUrlFactory UrlFactory { get; init; } = new DefaultServiceBaseUrlFactory();
+
+		public bool GlobalScope { get; init; } = false;
+
+		public object Key { get; init; } = null;
 
 		public ServiceDiscoverableServiceModule(BoomaServiceType serviceType)
 		{
@@ -48,21 +53,32 @@ namespace Booma
 				//I know this seems strange, but having the service provider be unique to the
 				//lifetimescope means we can inject Auth tokens into it and not worry about sharing this resource.
 				//It also means if a service dies or gets removed, reconnecting will yield another service on connection.
-				builder.Register<AuthorizedServiceDiscoveryServiceResolver<TServiceType>>(context =>
+				var reg = builder.Register<AuthorizedServiceDiscoveryServiceResolver<TServiceType>>(context =>
 					{
 						return new AuthorizedServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>(), context.Resolve<IReadonlyAuthTokenRepository>(), UrlFactory);
 					})
-					.As<IServiceResolver<TServiceType>>()
-					.InstancePerLifetimeScope();
+					.As<IServiceResolver<TServiceType>>();
+
+				if (GlobalScope)
+					reg = reg.SingleInstance();
+				else
+					reg = reg.InstancePerLifetimeScope();
 			}
 			else
 			{
-				builder.Register<DefaultServiceDiscoveryServiceResolver<TServiceType>>(context =>
+				var reg = builder.Register<DefaultServiceDiscoveryServiceResolver<TServiceType>>(context =>
 					{
 						return new DefaultServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>(), UrlFactory);
 					})
-					.As<IServiceResolver<TServiceType>>()
-					.InstancePerLifetimeScope();
+					.As<IServiceResolver<TServiceType>>();
+
+				if (GlobalScope)
+					reg = reg.SingleInstance();
+				else
+					reg = reg.InstancePerLifetimeScope();
+
+				if (Key != null)
+					reg.Keyed<IServiceResolver<TServiceType>>(Key);
 			}
 		}
 	}
