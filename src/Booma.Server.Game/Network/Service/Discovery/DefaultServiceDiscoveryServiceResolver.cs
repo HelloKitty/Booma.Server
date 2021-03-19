@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
 using Glader.ASP.ServiceDiscovery;
+using Glader.Essentials;
 using Nito.AsyncEx;
 using Refit;
 
@@ -114,7 +115,7 @@ namespace Booma
 
 		protected virtual HttpMessageHandler BuildHttpClientHandler()
 		{
-			return null;
+			return new BypassHttpsValidationHandler();
 		}
 	}
 }
