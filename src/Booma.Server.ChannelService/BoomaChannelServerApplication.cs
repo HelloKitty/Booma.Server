@@ -41,6 +41,7 @@ namespace Booma
 			//Channel specific stuff
 			builder.RegisterModule<MEAKKAServiceModule>();
 			builder.RegisterModule<ActorStateServiceModule>();
+			builder.RegisterModule<NameQueryServiceModule>();
 
 			//Actors
 			builder.RegisterModule<ChannelActorServiceModule>();
