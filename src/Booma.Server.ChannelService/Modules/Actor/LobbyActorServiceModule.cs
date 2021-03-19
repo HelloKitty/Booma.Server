@@ -11,7 +11,7 @@ namespace Booma
 	/// <summary>
 	/// Service module for <see cref="LobbyActor"/>
 	/// </summary>
-	public sealed class GameLobbyActorServiceModule : Module
+	public sealed class LobbyActorServiceModule : Module
 	{
 		protected override void Load(ContainerBuilder builder)
 		{
