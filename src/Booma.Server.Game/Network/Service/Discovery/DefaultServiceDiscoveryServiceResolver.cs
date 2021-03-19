@@ -39,15 +39,21 @@ namespace Booma
 		/// </summary>
 		protected ILog Logger { get; }
 
+		private IServiceBaseUrlFactory UrlFactory { get; } = new DefaultServiceBaseUrlFactory();
+
 		public DefaultServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient,
 			BoomaServiceType serviceType,
-			ILog logger)
+			ILog logger, IServiceBaseUrlFactory urlFactory = null)
 		{
 			if(!Enum.IsDefined(typeof(BoomaServiceType), serviceType)) throw new InvalidEnumArgumentException(nameof(serviceType), (int)serviceType, typeof(BoomaServiceType));
 
 			DiscoveryClient = discoveryClient ?? throw new ArgumentNullException(nameof(discoveryClient));
 			ServiceType = serviceType;
 			Logger = logger;
+
+			//Opt for default otherwise.
+			if (urlFactory != null)
+				UrlFactory = urlFactory;
 		}
 
 		public async Task<ServiceResolveResult<TServiceType>> Create(CancellationToken context)
@@ -101,7 +107,7 @@ namespace Booma
 			if(endpoint == null) throw new ArgumentNullException(nameof(endpoint));
 
 			TServiceType service = RestService
-				.For<TServiceType>($"{endpoint.Address}:{endpoint.Port}", new RefitSettings() { HttpMessageHandlerFactory = BuildHttpClientHandler });
+				.For<TServiceType>(UrlFactory.Create(endpoint), new RefitSettings() { HttpMessageHandlerFactory = BuildHttpClientHandler });
 
 			return new ServiceResolveResult<TServiceType>(service);
 		}

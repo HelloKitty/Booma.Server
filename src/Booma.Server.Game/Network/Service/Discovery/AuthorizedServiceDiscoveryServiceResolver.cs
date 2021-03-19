@@ -16,11 +16,22 @@ namespace Booma
 	{
 		private IReadonlyAuthTokenRepository TokenRepository { get; }
 
-		public AuthorizedServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient, 
-			BoomaServiceType serviceType, 
+		public AuthorizedServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient,
+			BoomaServiceType serviceType,
 			ILog logger,
 			IReadonlyAuthTokenRepository tokenRepository)
 			: base(discoveryClient, serviceType, logger)
+		{
+			if(!Enum.IsDefined(typeof(BoomaServiceType), serviceType)) throw new InvalidEnumArgumentException(nameof(serviceType), (int)serviceType, typeof(BoomaServiceType));
+
+			TokenRepository = tokenRepository ?? throw new ArgumentNullException(nameof(tokenRepository));
+		}
+
+		public AuthorizedServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient,
+			BoomaServiceType serviceType,
+			ILog logger,
+			IReadonlyAuthTokenRepository tokenRepository, IServiceBaseUrlFactory urlFactory)
+			: base(discoveryClient, serviceType, logger, urlFactory)
 		{
 			if(!Enum.IsDefined(typeof(BoomaServiceType), serviceType)) throw new InvalidEnumArgumentException(nameof(serviceType), (int)serviceType, typeof(BoomaServiceType));
 

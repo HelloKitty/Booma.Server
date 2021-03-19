@@ -28,13 +28,14 @@ namespace Booma
 		/// </summary>
 		private BoomaServiceType ServiceType { get; }
 
-		public ServiceDiscoveryModuleMode Mode { get; }
+		public ServiceDiscoveryModuleMode Mode { get; init; }
 
-		public ServiceDiscoverableServiceModule(BoomaServiceType serviceType, ServiceDiscoveryModuleMode mode = ServiceDiscoveryModuleMode.Authorized)
+		public IServiceBaseUrlFactory UrlFactory { get; init; } = new DefaultServiceBaseUrlFactory();
+
+		public ServiceDiscoverableServiceModule(BoomaServiceType serviceType)
 		{
 			if (!Enum.IsDefined(typeof(BoomaServiceType), serviceType)) throw new InvalidEnumArgumentException(nameof(serviceType), (int) serviceType, typeof(BoomaServiceType));
 			ServiceType = serviceType;
-			Mode = mode;
 		}
 
 		/// <inheritdoc />
@@ -49,7 +50,7 @@ namespace Booma
 				//It also means if a service dies or gets removed, reconnecting will yield another service on connection.
 				builder.Register<AuthorizedServiceDiscoveryServiceResolver<TServiceType>>(context =>
 					{
-						return new AuthorizedServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>(), context.Resolve<IReadonlyAuthTokenRepository>());
+						return new AuthorizedServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>(), context.Resolve<IReadonlyAuthTokenRepository>(), UrlFactory);
 					})
 					.As<IServiceResolver<TServiceType>>()
 					.InstancePerLifetimeScope();
@@ -58,7 +59,7 @@ namespace Booma
 			{
 				builder.Register<DefaultServiceDiscoveryServiceResolver<TServiceType>>(context =>
 					{
-						return new DefaultServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>());
+						return new DefaultServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>(), UrlFactory);
 					})
 					.As<IServiceResolver<TServiceType>>()
 					.InstancePerLifetimeScope();
