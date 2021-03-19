@@ -30,6 +30,13 @@ namespace Booma
 			SetShard(0);
 		}
 
+		public NetworkEntityGuid(ulong rawValue)
+			: base(rawValue)
+		{
+			//TODO: Support shards
+			SetShard(0);
+		}
+
 		/// <summary>
 		/// Serializer ctor.
 		/// </summary>

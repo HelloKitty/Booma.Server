@@ -18,6 +18,7 @@ namespace Booma
 		GameObject = 5,
 		DynamicObject = 6,
 		Corpse = 7,
-		Lobby = 8
+		Lobby = 8,
+		Group = 9
 	}
 }
