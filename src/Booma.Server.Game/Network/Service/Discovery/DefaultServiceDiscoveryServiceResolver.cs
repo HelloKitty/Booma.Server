@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
 using Glader.ASP.ServiceDiscovery;
-using Glader.Essentials;
-using JetBrains.Annotations;
 using Nito.AsyncEx;
 using Refit;
 
@@ -113,32 +109,6 @@ namespace Booma
 		protected virtual HttpMessageHandler BuildHttpClientHandler()
 		{
 			return null;
-		}
-	}
-
-	/// <summary>
-	/// <see cref="IServiceDiscoveryService"/>-based implementation for service resolution.
-	/// </summary>
-	/// <typeparam name="TServiceType"></typeparam>
-	public sealed class AuthorizedServiceDiscoveryServiceResolver<TServiceType> : DefaultServiceDiscoveryServiceResolver<TServiceType>
-		where TServiceType : class
-	{
-		private IReadonlyAuthTokenRepository TokenRepository { get; }
-
-		public AuthorizedServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient, 
-			BoomaServiceType serviceType, 
-			ILog logger,
-			IReadonlyAuthTokenRepository tokenRepository)
-			: base(discoveryClient, serviceType, logger)
-		{
-			if(!Enum.IsDefined(typeof(BoomaServiceType), serviceType)) throw new InvalidEnumArgumentException(nameof(serviceType), (int)serviceType, typeof(BoomaServiceType));
-
-			TokenRepository = tokenRepository ?? throw new ArgumentNullException(nameof(tokenRepository));
-		}
-
-		protected override HttpMessageHandler BuildHttpClientHandler()
-		{
-			return new AuthenticatedHttpClientHandler(TokenRepository, new BypassHttpsValidationHandler());
 		}
 	}
 }
