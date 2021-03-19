@@ -14,11 +14,7 @@ using Refit;
 
 namespace Booma
 {
-	/// <summary>
-	/// <see cref="IServiceDiscoveryService"/>-based implementation for service resolution.
-	/// </summary>
-	/// <typeparam name="TServiceType"></typeparam>
-	public sealed class ServiceDiscoveryServiceResolver<TServiceType> : IServiceResolver<TServiceType> 
+	public class BaseServiceDiscoveryServiceResolver<TServiceType> : IServiceResolver<TServiceType>
 		where TServiceType : class
 	{
 		/// <summary>
@@ -34,38 +30,34 @@ namespace Booma
 		/// <summary>
 		/// The async syncronization object.
 		/// </summary>
-		private AsyncReaderWriterLock SyncObj { get; } = new AsyncReaderWriterLock();
+		protected AsyncReaderWriterLock SyncObj { get; } = new AsyncReaderWriterLock();
 
 		/// <summary>
 		/// Represents an existing resolved service instance.
 		/// (default is unavailable)
 		/// </summary>
-		private ServiceResolveResult<TServiceType> ServiceInstance { get; set; } = new ServiceResolveResult<TServiceType>();
+		protected ServiceResolveResult<TServiceType> ServiceInstance { get; private set; } = new ServiceResolveResult<TServiceType>();
 
 		/// <summary>
 		/// Logging service.
 		/// </summary>
-		private ILog Logger { get; }
+		protected ILog Logger { get; }
 
-		private IReadonlyAuthTokenRepository TokenRepository { get; }
-
-		public ServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient, 
-			BoomaServiceType serviceType, 
-			ILog logger,
-			IReadonlyAuthTokenRepository tokenRepository)
+		public BaseServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient,
+			BoomaServiceType serviceType,
+			ILog logger)
 		{
 			if(!Enum.IsDefined(typeof(BoomaServiceType), serviceType)) throw new InvalidEnumArgumentException(nameof(serviceType), (int)serviceType, typeof(BoomaServiceType));
 
 			DiscoveryClient = discoveryClient ?? throw new ArgumentNullException(nameof(discoveryClient));
 			ServiceType = serviceType;
 			Logger = logger;
-			TokenRepository = tokenRepository ?? throw new ArgumentNullException(nameof(tokenRepository));
 		}
 
 		public async Task<ServiceResolveResult<TServiceType>> Create(CancellationToken context)
 		{
 			//If not available we must resolve.
-			if (!ServiceInstance.isAvailable)
+			if(!ServiceInstance.isAvailable)
 				await TryCreateService(context);
 
 			//No matter what at this point we will return whatever instance is available
@@ -73,12 +65,12 @@ namespace Booma
 				return ServiceInstance;
 		}
 
-		private async Task<bool> TryCreateService(CancellationToken token)
+		protected async Task<bool> TryCreateService(CancellationToken token)
 		{
 			using(await SyncObj.WriterLockAsync(token))
 			{
 				//Double check locking, may have been discovered in the middle of checking.
-				if (ServiceInstance.isAvailable)
+				if(ServiceInstance.isAvailable)
 					return true;
 
 				//TODO: Add cancel token to service discovery
@@ -110,7 +102,7 @@ namespace Booma
 
 		private ServiceResolveResult<TServiceType> BuildService(ResolvedEndpoint endpoint)
 		{
-			if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
+			if(endpoint == null) throw new ArgumentNullException(nameof(endpoint));
 
 			TServiceType service = RestService
 				.For<TServiceType>($"{endpoint.Address}:{endpoint.Port}", new RefitSettings() { HttpMessageHandlerFactory = BuildHttpClientHandler });
@@ -118,7 +110,33 @@ namespace Booma
 			return new ServiceResolveResult<TServiceType>(service);
 		}
 
-		private HttpMessageHandler BuildHttpClientHandler()
+		protected virtual HttpMessageHandler BuildHttpClientHandler()
+		{
+			return null;
+		}
+	}
+
+	/// <summary>
+	/// <see cref="IServiceDiscoveryService"/>-based implementation for service resolution.
+	/// </summary>
+	/// <typeparam name="TServiceType"></typeparam>
+	public sealed class ServiceDiscoveryServiceResolver<TServiceType> : BaseServiceDiscoveryServiceResolver<TServiceType>
+		where TServiceType : class
+	{
+		private IReadonlyAuthTokenRepository TokenRepository { get; }
+
+		public ServiceDiscoveryServiceResolver(IServiceDiscoveryService discoveryClient, 
+			BoomaServiceType serviceType, 
+			ILog logger,
+			IReadonlyAuthTokenRepository tokenRepository)
+			: base(discoveryClient, serviceType, logger)
+		{
+			if(!Enum.IsDefined(typeof(BoomaServiceType), serviceType)) throw new InvalidEnumArgumentException(nameof(serviceType), (int)serviceType, typeof(BoomaServiceType));
+
+			TokenRepository = tokenRepository ?? throw new ArgumentNullException(nameof(tokenRepository));
+		}
+
+		protected override HttpMessageHandler BuildHttpClientHandler()
 		{
 			return new AuthenticatedHttpClientHandler(TokenRepository, new BypassHttpsValidationHandler());
 		}
