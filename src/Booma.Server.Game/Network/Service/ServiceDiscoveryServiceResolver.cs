@@ -86,7 +86,7 @@ namespace Booma
 				try
 				{
 					name = BoomaEndpointConstants.GetServiceIdentifier(ServiceType);
-					var discoveryResponse = await DiscoveryClient.DiscoverServiceAsync(name);
+					var discoveryResponse = await DiscoveryClient.DiscoverServiceAsync(name, token);
 
 					//Failed to discover the service endpoint so service
 					//is unavailable, return existing unavailable model.
