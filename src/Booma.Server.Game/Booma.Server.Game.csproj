@@ -13,9 +13,9 @@
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.0.2" />
     <PackageReference Include="Glader.ASP.RPG.Client" Version="0.1.11" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.4" />
-    <PackageReference Include="Glader.Essentials.Events" Version="2.2.64" />
-    <PackageReference Include="Glader.Essentials.GameFramework" Version="2.2.64" />
-    <PackageReference Include="Glader.Essentials.Refit" Version="2.2.64" />
+    <PackageReference Include="Glader.Essentials.Events" Version="2.2.65" />
+    <PackageReference Include="Glader.Essentials.GameFramework" Version="2.2.65" />
+    <PackageReference Include="Glader.Essentials.Refit" Version="2.2.65" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
   </ItemGroup>
 
