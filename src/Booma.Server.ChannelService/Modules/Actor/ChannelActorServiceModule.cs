@@ -42,6 +42,11 @@ namespace Booma
 			builder.RegisterType<InMemoryLobbyEntryRepository>()
 				.As<ILobbyEntryRepository>()
 				.InstancePerLifetimeScope();
+
+			//Instance registry
+			builder.RegisterType<InMemoryInstanceEntryRepository>()
+				.As<IInstanceEntryRepository>()
+				.InstancePerLifetimeScope();
 		}
 	}
 }
