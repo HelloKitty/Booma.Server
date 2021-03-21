@@ -53,7 +53,7 @@ namespace Booma
 			//Async await for disposal WITH ack
 			if (IsAvailable)
 			{
-				await Reference.RequestAsync<ActorOwnerDisposedMessage, bool>(new ActorOwnerDisposedMessage());
+				await Reference.RequestAsync(new ActorOwnerDisposedMessage());
 				Reference = ActorRefs.Nobody;
 			}
 			else
