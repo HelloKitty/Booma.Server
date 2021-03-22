@@ -12,9 +12,13 @@ namespace Booma.Lobby
 	{
 		private ICharacterLobbySlotRepository LobbySlotRepository { get; }
 
-		public RemovePlayerFromLobby(ICharacterLobbySlotRepository lobbySlotRepository)
+		private IActorState<IActorMessageBroadcaster<LobbyActorGroupType>> LobbyMessageBroadcaster { get; }
+
+		public RemovePlayerFromLobby(ICharacterLobbySlotRepository lobbySlotRepository, 
+			IActorState<IActorMessageBroadcaster<LobbyActorGroupType>> lobbyMessageBroadcaster)
 		{
 			LobbySlotRepository = lobbySlotRepository ?? throw new ArgumentNullException(nameof(lobbySlotRepository));
+			LobbyMessageBroadcaster = lobbyMessageBroadcaster ?? throw new ArgumentNullException(nameof(lobbyMessageBroadcaster));
 		}
 
 		public override async Task HandleMessageAsync(EntityActorMessageContext context, LeaveWorldRequestMessage message, CancellationToken token = new CancellationToken())
@@ -33,6 +37,8 @@ namespace Booma.Lobby
 			//broadcast to all.
 			if (slot.IsInitialized)
 			{
+				LobbyMessageBroadcaster.Data.RemoveFromGroup(LobbyActorGroupType.Players, slot.Actor);
+
 				context.ActorContext
 					.ActorSelection("*")
 					.Tell(new PlayerLeftWorldEventMessage(slot.CharacterData.EntityGuid, slot.Slot));

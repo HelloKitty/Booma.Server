@@ -9,6 +9,7 @@ using MEAKKA;
 namespace Booma
 {
 	[ActorMessageHandler(typeof(LobbyCharacterActor))]
+	[ActorMessageHandler(typeof(InstanceCharacterActor))]
 	public sealed class PacketSendMessageHandler : BaseActorMessageHandler<SendGamePacketMessage>
 	{
 		private IActorState<IMessageSendService<PSOBBGamePacketPayloadServer>> SendService { get; }
