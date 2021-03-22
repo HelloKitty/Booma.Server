@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Booma.API.Common" Version="0.0.49" />
     <PackageReference Include="Glader.ASP.NameQuery.Server" Version="0.0.3" />
-    <PackageReference Include="Glader.ASP.RPG.Server" Version="0.1.11" />
+    <PackageReference Include="Glader.ASP.RPG.Server" Version="0.1.12" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
       <PrivateAssets>all</PrivateAssets>

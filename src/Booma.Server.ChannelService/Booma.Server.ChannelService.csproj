@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Engine\Akka\Handlers\Base\" />
+    <Folder Include="Engine\Akka\Handlers\Shared\" />
     <Folder Include="Services\Config\" />
   </ItemGroup>
 
