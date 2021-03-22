@@ -65,6 +65,7 @@ namespace Booma
 
 				//Set lobby GUID, this is the only way a lobby can know its ID!!
 				lobbyActor.Actor.InitializeState(new NetworkEntityGuid(EntityType.Lobby, message.LobbyId));
+				lobbyActor.Actor.TellEntity<PostInitializeActorMessage>();
 			}
 			catch (Exception e)
 			{
