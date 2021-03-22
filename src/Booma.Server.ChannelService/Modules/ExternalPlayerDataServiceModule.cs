@@ -20,6 +20,10 @@ namespace Booma
 			builder.RegisterType<DefaultLobbyEntryService>()
 				.As<ILobbyEntryService>()
 				.InstancePerLifetimeScope();
+
+			builder.RegisterType<DefaultInstanceEntryService>()
+				.As<IInstanceEntryService>()
+				.InstancePerLifetimeScope();
 		}
 	}
 }
