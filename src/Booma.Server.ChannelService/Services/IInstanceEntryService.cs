@@ -36,13 +36,13 @@ namespace Booma
 
 		private IEntityActorRef<RootChannelActor> ChannelActor { get; }
 
-		private IGroupManagementService GroupManagementService { get; }
+		private IServiceResolver<IGroupManagementService> GroupManagementService { get; }
 
 		public DefaultInstanceEntryService(ICharacterActorReferenceContainer characterActorContainer,
 			ActorSystem globalActorSystem, 
 			ILog logger, 
-			IEntityActorRef<RootChannelActor> channelActor, 
-			IGroupManagementService groupManagementService)
+			IEntityActorRef<RootChannelActor> channelActor,
+			IServiceResolver<IGroupManagementService> groupManagementService)
 		{
 			CharacterActorContainer = characterActorContainer ?? throw new ArgumentNullException(nameof(characterActorContainer));
 			GlobalActorSystem = globalActorSystem ?? throw new ArgumentNullException(nameof(globalActorSystem));
@@ -53,8 +53,13 @@ namespace Booma
 
 		public async Task<bool> TryEnterInstanceAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, CancellationToken token = default)
 		{
+			var serviceResult = await GroupManagementService.Create(token);
+
+			if(!serviceResult.isAvailable)
+				return false;
+
 			//First we must determine if the entity is in a group
-			var groupResponse = await GroupManagementService.RetrieveMemberGroupAsync(entity.Identifier, token);
+			var groupResponse = await serviceResult.Instance.RetrieveMemberGroupAsync(entity.Identifier, token);
 
 			if (!groupResponse.isSuccessful)
 				return false;
