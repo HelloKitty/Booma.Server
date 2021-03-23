@@ -99,6 +99,9 @@ namespace Booma
 			if (!joinResponse.isSuccessful)
 				return false;
 
+			//Dispose of the current actor, we're gonna be leaving.
+			await CharacterActorContainer.DisposeAsync();
+
 			//At this point we have an actor path and need to setup the network's interface
 			//into Akka. To do this we assign a mutateable actor reference which can be accessed by the message
 			//handlers.

@@ -54,9 +54,6 @@ namespace Booma
 			//There are many failure cases, but the success case is easy we just remove them from the lobby and add them to a game.
 			if (groupCreationResult.isSuccessful)
 			{
-				//Dispose of the current actor, we're gonna be leaving the lobby.
-				await ActorContainer.DisposeAsync();
-
 				//This will create the Group/Instance Actor within the system
 				ChannelActor.Actor.TellEntity(new CreateInstanceMessage(groupCreationResult.Result.Id));
 
