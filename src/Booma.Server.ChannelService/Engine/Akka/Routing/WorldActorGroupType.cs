@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Booma
 {
-	public enum LobbyActorGroupType
+	public enum WorldActorGroupType
 	{
 		Players = 1,
 	}

@@ -21,13 +21,13 @@ namespace Booma.Lobby
 
 		private IActorState<NetworkEntityGuid> LobbyIdentifier { get; }
 
-		private IActorState<IActorMessageBroadcaster<LobbyActorGroupType>> LobbyMessageBroadcaster { get; }
+		private IActorState<IActorMessageBroadcaster<WorldActorGroupType>> LobbyMessageBroadcaster { get; }
 
 		public TryCreateCharacterActorInLobbyHandler(ICharacterLobbySlotRepository characterSlotRepository, 
 			IActorFactory<LobbyCharacterActor> lobbyCharacterFactory, 
 			ILog logger, 
 			IActorState<NetworkEntityGuid> lobbyIdentifier, 
-			IActorState<IActorMessageBroadcaster<LobbyActorGroupType>> lobbyMessageBroadcaster)
+			IActorState<IActorMessageBroadcaster<WorldActorGroupType>> lobbyMessageBroadcaster)
 		{
 			CharacterSlotRepository = characterSlotRepository ?? throw new ArgumentNullException(nameof(characterSlotRepository));
 			LobbyCharacterFactory = lobbyCharacterFactory ?? throw new ArgumentNullException(nameof(lobbyCharacterFactory));
@@ -60,7 +60,7 @@ namespace Booma.Lobby
 				if (Logger.IsInfoEnabled)
 					Logger.Info($"Reserved Slot in Lobby: {LobbyIdentifier.Data.Identifier} Character Slot: {slot} Name: {message.CharacterData.Name}");
 
-				LobbyMessageBroadcaster.Data.AddToGroup(LobbyActorGroupType.Players, lobbyCharacterActor.Actor);
+				LobbyMessageBroadcaster.Data.AddToGroup(WorldActorGroupType.Players, lobbyCharacterActor.Actor);
 
 				//Send the actor path if we successfully slotted the character.
 				message.AnswerSuccess(context.Sender, lobbyCharacterActor.Actor.Path.ToString());

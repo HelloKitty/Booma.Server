@@ -11,9 +11,9 @@ namespace Booma.Lobby
 	[ActorMessageHandler(typeof(LobbyActor))]
 	public sealed class BroadcastGamePacketMessageHandler : BaseActorMessageHandler<BroadcastGamePacketMessage>
 	{
-		private IActorState<IActorMessageBroadcaster<LobbyActorGroupType>> LobbyMessageBroadcaster { get; }
+		private IActorState<IActorMessageBroadcaster<WorldActorGroupType>> LobbyMessageBroadcaster { get; }
 
-		public BroadcastGamePacketMessageHandler(IActorState<IActorMessageBroadcaster<LobbyActorGroupType>> lobbyMessageBroadcaster)
+		public BroadcastGamePacketMessageHandler(IActorState<IActorMessageBroadcaster<WorldActorGroupType>> lobbyMessageBroadcaster)
 		{
 			LobbyMessageBroadcaster = lobbyMessageBroadcaster ?? throw new ArgumentNullException(nameof(lobbyMessageBroadcaster));
 		}
@@ -21,7 +21,7 @@ namespace Booma.Lobby
 		/// <inheritdoc />
 		public override Task HandleMessageAsync(EntityActorMessageContext context, BroadcastGamePacketMessage message, CancellationToken token = new CancellationToken())
 		{
-			LobbyMessageBroadcaster.Data.BroadcastMessage(LobbyActorGroupType.Players, new SendGamePacketMessage(message.Packet));
+			LobbyMessageBroadcaster.Data.BroadcastMessage(WorldActorGroupType.Players, new SendGamePacketMessage(message.Packet));
 			return Task.CompletedTask;
 		}
 	}

@@ -12,10 +12,10 @@ namespace Booma.Lobby
 	{
 		private ICharacterLobbySlotRepository LobbySlotRepository { get; }
 
-		private IActorState<IActorMessageBroadcaster<LobbyActorGroupType>> LobbyMessageBroadcaster { get; }
+		private IActorState<IActorMessageBroadcaster<WorldActorGroupType>> LobbyMessageBroadcaster { get; }
 
 		public RemovePlayerFromLobby(ICharacterLobbySlotRepository lobbySlotRepository, 
-			IActorState<IActorMessageBroadcaster<LobbyActorGroupType>> lobbyMessageBroadcaster)
+			IActorState<IActorMessageBroadcaster<WorldActorGroupType>> lobbyMessageBroadcaster)
 		{
 			LobbySlotRepository = lobbySlotRepository ?? throw new ArgumentNullException(nameof(lobbySlotRepository));
 			LobbyMessageBroadcaster = lobbyMessageBroadcaster ?? throw new ArgumentNullException(nameof(lobbyMessageBroadcaster));
@@ -37,7 +37,7 @@ namespace Booma.Lobby
 			//broadcast to all.
 			if (slot.IsInitialized)
 			{
-				LobbyMessageBroadcaster.Data.RemoveFromGroup(LobbyActorGroupType.Players, slot.Actor);
+				LobbyMessageBroadcaster.Data.RemoveFromGroup(WorldActorGroupType.Players, slot.Actor);
 
 				context.ActorContext
 					.ActorSelection("*")

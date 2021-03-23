@@ -14,7 +14,7 @@ namespace Booma.Lobby
 		public override async Task HandleMessageAsync(EntityActorMessageContext context, PostInitializeActorMessage message, CancellationToken token = default)
 		{
 			//This is enable the broadcast group IActorMessageBroadcaster<LobbyActorGroupType>
-			context.Entity.InitializeState<IActorMessageBroadcaster<LobbyActorGroupType>>(new DefaultGenericActorMessageBroadcaster<LobbyActorGroupType>(context.ActorContext));
+			context.Entity.InitializeState<IActorMessageBroadcaster<WorldActorGroupType>>(new DefaultGenericActorMessageBroadcaster<WorldActorGroupType>(context.ActorContext));
 		}
 	}
 }
