@@ -16,11 +16,15 @@ namespace Booma
 
 		private IActorState<NetworkEntityGuid> LobbyIdentifier { get; }
 
+		private IActorState<IActorMessageBroadcaster<WorldActorGroupType>> MessageBroadcaster { get; }
+
 		public FinishBurstingPlayerToLobby(ICharacterLobbySlotRepository lobbyCharacterRepository, 
-			IActorState<NetworkEntityGuid> lobbyIdentifier)
+			IActorState<NetworkEntityGuid> lobbyIdentifier, 
+			IActorState<IActorMessageBroadcaster<WorldActorGroupType>> messageBroadcaster)
 		{
 			LobbyCharacterRepository = lobbyCharacterRepository ?? throw new ArgumentNullException(nameof(lobbyCharacterRepository));
 			LobbyIdentifier = lobbyIdentifier ?? throw new ArgumentNullException(nameof(lobbyIdentifier));
+			MessageBroadcaster = messageBroadcaster ?? throw new ArgumentNullException(nameof(messageBroadcaster));
 		}
 
 		public override async Task HandleMessageAsync(EntityActorMessageContext context, JoinWorldRequestMessage message, CancellationToken token = default)
@@ -47,12 +51,8 @@ namespace Booma
 			CharacterJoinData newJoinData = characterJoinDatas.First(d => d.PlayerHeader.ClientId == slot.Slot);
 			var broadcastPacket = new BlockOtherPlayerJoinedLobbyEventPayload((byte)slot.Slot, 0, (byte)LobbyIdentifier.Data.Identifier, 1, 0, newJoinData);
 
-			//TODO: make broadcasting API
-			foreach (var lobbyPlayer in await LobbyCharacterRepository.RetrieveInitializedAsync(token))
-			{
-				if (lobbyPlayer.Slot != newJoinData.PlayerHeader.ClientId)
-					lobbyPlayer.Actor.Tell(new SendGamePacketMessage(broadcastPacket));
-			}
+			//TODO: Maybe we don't send the original client the "Other Player Joined" packet. Maybe emulators don't send this to the joiner.
+			MessageBroadcaster.Data.BroadcastMessage(WorldActorGroupType.Players, new SendGamePacketMessage(broadcastPacket));
 		}
 
 		private async Task<CharacterJoinData[]> BuildCharacterJoinData()
