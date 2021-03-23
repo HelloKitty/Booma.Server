@@ -9,7 +9,7 @@ using MEAKKA;
 namespace Booma
 {
 	/// <summary>
-	/// Service module for <see cref="InstanceActor"/>
+	/// Service module for <see cref="InstanceCharacterActor"/>
 	/// </summary>
 	public sealed class InstanceCharacterActorServiceModule : Module
 	{
@@ -17,7 +17,7 @@ namespace Booma
 		{
 			base.Load(builder);
 
-			builder.RegisterModule<EntityActorServiceModule<InstanceActor>>();
+			builder.RegisterModule<EntityActorServiceModule<InstanceCharacterActor>>();
 		}
 	}
 }
