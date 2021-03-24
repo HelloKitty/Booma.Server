@@ -55,18 +55,18 @@ namespace Booma
 			if (groupCreationResult.isSuccessful)
 			{
 				//This will create the Group/Instance Actor within the system
-				ChannelActor.Actor.TellEntity(new CreateInstanceMessage(groupCreationResult.Result.Id));
-
-				//Now we can join it
-				if (await InstanceEntryService.TryEnterInstanceAsync(context, ActorContainer.EntityGuid, token))
+				if (await ChannelActor.Actor.RequestAsync(new CreateInstanceMessage(groupCreationResult.Result.Id), token))
 				{
-					//TODO: We need to go through the COMPLEX process of creating a GameLobby actor in AKKA and transfering our session's
-					//actor from the current lobby (see lobby change/switch code) and create a new Player actor in the GameLobby
-					await context.MessageService
-						.SendMessageAsync(new BlockGameJoinEventPayload(0, 0, new GameSettings(DifficultyType.Normal, false, 0, SectionId.Viridia, false, 0, EpisodeType.EpisodeI, false), new PlayerInformationHeader[0]), token);
+					//Now we can join it
+					if(await InstanceEntryService.TryEnterInstanceAsync(context, ActorContainer.EntityGuid, token))
+					{
+						ActorContainer.Reference.TellEntity<PostInitializeActorMessage>();
+					}
+					else
+						await context.MessageService.SendMessageAsync(new SharedCreateMessageBoxEventPayload($"Failed to create game. Reason: Failed to enter created instance."), token);
 				}
 				else
-					await context.MessageService.SendMessageAsync(new SharedCreateMessageBoxEventPayload($"Failed to create game. Reason: Failed to enter created instance."), token);
+					await context.MessageService.SendMessageAsync(new SharedCreateMessageBoxEventPayload($"Failed to create game. Reason: Failed create instance."), token);
 			}
 			else
 			{
