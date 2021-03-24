@@ -14,7 +14,7 @@ namespace Booma
 	/// Handler for mostly <see cref="RootChannelActor"/> which handles instance creation requests.
 	/// </summary>
 	[ActorMessageHandler(typeof(RootChannelActor))]
-	public sealed class CreateInstanceMessageHandler : BaseActorMessageHandler<CreateInstanceMessage>
+	public sealed class CreateInstanceMessageHandler : ActorRequestMessageHandler<CreateInstanceMessage, bool>
 	{
 		/// <summary>
 		/// The logging service.
@@ -41,7 +41,7 @@ namespace Booma
 		}
 
 		/// <inheritdoc />
-		public override async Task HandleMessageAsync(EntityActorMessageContext context, CreateInstanceMessage message, CancellationToken token = default)
+		protected override async Task<bool> HandleRequestAsync(EntityActorMessageContext context, CreateInstanceMessage message, CancellationToken token = default)
 		{
 			if (Logger.IsInfoEnabled)
 				Logger.Info($"Channel {nameof(InstanceActor)} {message.InstanceId:D2} Creation Request: {message}");
@@ -69,6 +69,8 @@ namespace Booma
 
 				//Set instance GUID, this is the only way a instance can know its ID!!
 				instanceActor.Actor.InitializeState(new NetworkEntityGuid(EntityType.Group, message.InstanceId));
+				instanceActor.Actor.TellEntity<PostInitializeActorMessage>();
+				return true;
 			}
 			catch (Exception e)
 			{
@@ -77,6 +79,7 @@ namespace Booma
 
 				//Kill the lobby if we ever made it
 				instanceActor?.Actor?.Tell(PoisonPill.Instance);
+				return false;
 			}
 		}
 	}

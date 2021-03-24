@@ -8,7 +8,7 @@ namespace Booma
 	/// <summary>
 	/// Request message to create an instance.
 	/// </summary>
-	public sealed class CreateInstanceMessage : EntityActorMessage
+	public sealed class CreateInstanceMessage : EntityActorMessage, IActorRequestMessage<bool>
 	{
 		/// <summary>
 		/// The id of the requested instance.
