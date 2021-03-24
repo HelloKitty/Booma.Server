@@ -5,9 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MEAKKA;
 
-namespace Booma.LobbyCharacter
+namespace Booma.Character
 {
 	[ActorMessageHandler(typeof(LobbyCharacterActor))]
+	[ActorMessageHandler(typeof(InstanceCharacterActor))]
 	public sealed class BroadcastGamePacketMessageHandler : BaseActorMessageHandler<BroadcastGamePacketMessage>
 	{
 		public override async Task HandleMessageAsync(EntityActorMessageContext context, BroadcastGamePacketMessage message, CancellationToken token = new CancellationToken())
