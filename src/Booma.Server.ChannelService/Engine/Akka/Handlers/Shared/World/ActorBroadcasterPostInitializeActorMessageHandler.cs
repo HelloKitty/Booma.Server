@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MEAKKA;
 
-namespace Booma.Lobby
+namespace Booma.World
 {
 	[ActorMessageHandler(typeof(LobbyActor))]
 	[ActorMessageHandler(typeof(InstanceActor))]

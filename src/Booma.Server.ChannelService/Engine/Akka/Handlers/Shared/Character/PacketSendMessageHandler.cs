@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GladNet;
 using MEAKKA;
 
-namespace Booma
+namespace Booma.Character
 {
 	[ActorMessageHandler(typeof(LobbyCharacterActor))]
 	[ActorMessageHandler(typeof(InstanceCharacterActor))]
