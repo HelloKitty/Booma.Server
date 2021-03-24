@@ -5,14 +5,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using MEAKKA;
 
-namespace Booma.LobbyPlayer
+namespace Booma.Character
 {
 	[ActorMessageHandler(typeof(LobbyCharacterActor))]
-	public sealed class LeaveLobbyOnActorOwnerDisposed : BaseActorMessageHandler<ActorOwnerDisposedMessage>
+	[ActorMessageHandler(typeof(InstanceCharacterActor))]
+	public sealed class LeaveWorldOnActorOwnerDisposed : BaseActorMessageHandler<ActorOwnerDisposedMessage>
 	{
 		private IActorState<NetworkEntityGuid> GuidState { get; }
 
-		public LeaveLobbyOnActorOwnerDisposed(IActorState<NetworkEntityGuid> guidState)
+		public LeaveWorldOnActorOwnerDisposed(IActorState<NetworkEntityGuid> guidState)
 		{
 			GuidState = guidState ?? throw new ArgumentNullException(nameof(guidState));
 		}
