@@ -23,5 +23,10 @@ namespace Booma
 		/// (don't send messages to an uninitialized character reference)
 		/// </summary>
 		bool IsInitialized { get; set; }
+
+		/// <summary>
+		/// The slot's assigned guid.
+		/// </summary>
+		public NetworkEntityGuid Guid { get; }
 	}
 }

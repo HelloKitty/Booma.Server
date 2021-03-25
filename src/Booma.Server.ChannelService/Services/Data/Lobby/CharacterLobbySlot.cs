@@ -25,6 +25,8 @@ namespace Booma
 		/// </summary>
 		public bool IsInitialized { get; set; } = false;
 
+		public NetworkEntityGuid Guid => CharacterData?.EntityGuid ?? NetworkEntityGuid.Empty;
+
 		public CharacterLobbySlot(InitialCharacterDataSnapshot characterData, int slot, IEntityActorRef<LobbyCharacterActor> actor)
 		{
 			if (slot < 0) throw new ArgumentOutOfRangeException(nameof(slot));

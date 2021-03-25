@@ -76,9 +76,17 @@ namespace Booma
 			return Task.FromResult(Array.FindIndex(InternalStore, slot => slot == null));
 		}
 
-		public abstract Task<bool> ContainsEntitySlotAsync(NetworkEntityGuid messageEntity, CancellationToken token = default);
+		public Task<bool> ContainsEntitySlotAsync(NetworkEntityGuid messageEntity, CancellationToken token = default)
+		{
+			if(messageEntity == null) throw new ArgumentNullException(nameof(messageEntity));
 
-		public abstract Task<TSlotType> RetrieveAsync(NetworkEntityGuid guid, CancellationToken token = default);
+			return Task.FromResult(InternalStore.Any(slot => slot.Guid == messageEntity));
+		}
+
+		public Task<TSlotType> RetrieveAsync(NetworkEntityGuid guid, CancellationToken token = default)
+		{
+			return Task.FromResult(InternalStore.First(slot => slot.Guid == guid));
+		}
 
 		public Task<IEnumerable<TSlotType>> RetrieveInitializedAsync(CancellationToken token = default)
 		{
