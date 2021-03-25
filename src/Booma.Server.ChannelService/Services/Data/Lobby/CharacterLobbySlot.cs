@@ -9,7 +9,7 @@ namespace Booma
 	/// <summary>
 	/// Data model that represents a character lobby slot.
 	/// </summary>
-	public sealed class CharacterLobbySlot
+	public sealed class CharacterLobbySlot : IWorldSlotDefinition
 	{
 		public InitialCharacterDataSnapshot CharacterData { get; }
 
