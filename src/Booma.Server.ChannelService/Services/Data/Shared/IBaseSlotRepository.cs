@@ -46,5 +46,12 @@ namespace Booma
 		/// <param name="token">Cancel token.</param>
 		/// <returns></returns>
 		Task<IEnumerable<TSlotType>> RetrieveInitializedAsync(CancellationToken token = default);
+
+		/// <summary>
+		/// Retrieves the leader id.
+		/// </summary>
+		/// <param name="token">Cancel token.</param>
+		/// <returns></returns>
+		Task<int> RetrieveLeaderIdAsync(CancellationToken token = default);
 	}
 }

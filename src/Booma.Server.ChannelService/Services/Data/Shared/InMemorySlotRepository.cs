@@ -64,18 +64,21 @@ namespace Booma
 			return Task.FromResult(InternalStore);
 		}
 
+		/// <inheritdoc />
 		public Task<bool> HasAvailableSlotAsync(CancellationToken token = default)
 		{
 			//If any slots are null we have one available.
 			return Task.FromResult(InternalStore.Any(s => s == null));
 		}
 
+		/// <inheritdoc />
 		public Task<int> FirstAvailableSlotAsync(CancellationToken token = default)
 		{
 			//Finds first null slot.
 			return Task.FromResult(Array.FindIndex(InternalStore, slot => slot == null));
 		}
 
+		/// <inheritdoc />
 		public Task<bool> ContainsEntitySlotAsync(NetworkEntityGuid messageEntity, CancellationToken token = default)
 		{
 			if(messageEntity == null) throw new ArgumentNullException(nameof(messageEntity));
@@ -83,14 +86,27 @@ namespace Booma
 			return Task.FromResult(InternalStore.Any(slot => slot.Guid == messageEntity));
 		}
 
+		/// <inheritdoc />
 		public Task<TSlotType> RetrieveAsync(NetworkEntityGuid guid, CancellationToken token = default)
 		{
 			return Task.FromResult(InternalStore.First(slot => slot.Guid == guid));
 		}
 
+		/// <inheritdoc />
 		public Task<IEnumerable<TSlotType>> RetrieveInitializedAsync(CancellationToken token = default)
 		{
 			return Task.FromResult(InternalStore.Where(slot => slot != null && slot.IsInitialized));
+		}
+
+		/// <inheritdoc />
+		public Task<int> RetrieveLeaderIdAsync(CancellationToken token = default)
+		{
+			foreach (var entry in InternalStore)
+				if (entry != null)
+					return Task.FromResult(entry.Slot);
+
+			//Leader is or will be 0 slot.
+			return Task.FromResult(0);
 		}
 	}
 }
