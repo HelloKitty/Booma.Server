@@ -18,6 +18,11 @@ namespace Booma
 			base.Load(builder);
 
 			builder.RegisterModule<EntityActorServiceModule<InstanceActor>>();
+
+			//InMemoryCharacterLobbySlotRepository : ICharacterLobbySlotRepository
+			builder.RegisterType<InMemoryCharacterInstanceSlotRepository>()
+				.AsImplementedInterfaces()
+				.InstancePerLifetimeScope();
 		}
 	}
 }
