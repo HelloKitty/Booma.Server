@@ -39,7 +39,7 @@ namespace Booma
 				Logger.Error($"Unexpected DEADLETTER due to no valid actor reference. TODO: We need to make sure this never occurs and disconnect one day.");
 
 			//TODO: Validate packet data!
-			ActorReference.Reference.TellSelf(new BroadcastGamePacketMessage(new BlockNetworkCommand6DEventServerPayload(message.Identifier, message.Command), ActorReference.EntityGuid));
+			ActorReference.Reference.TellSelf(new ForwardPacketMessage(new BlockNetworkCommand6DEventServerPayload(message.Identifier, message.Command), ActorReference.EntityGuid, message.Identifier));
 		}
 	}
 }
