@@ -83,13 +83,13 @@ namespace Booma
 		{
 			if(messageEntity == null) throw new ArgumentNullException(nameof(messageEntity));
 
-			return Task.FromResult(InternalStore.Any(slot => slot.Guid == messageEntity));
+			return Task.FromResult(InternalStore.Any(slot => slot != null && slot.Guid == messageEntity));
 		}
 
 		/// <inheritdoc />
 		public Task<TSlotType> RetrieveAsync(NetworkEntityGuid guid, CancellationToken token = default)
 		{
-			return Task.FromResult(InternalStore.First(slot => slot.Guid == guid));
+			return Task.FromResult(InternalStore.First(slot => slot != null && slot.Guid == guid));
 		}
 
 		/// <inheritdoc />
