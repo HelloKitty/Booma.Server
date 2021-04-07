@@ -21,39 +21,17 @@ namespace Booma
 		{
 			base.Load(builder);
 
-			builder.RegisterType<BoomaEntityNameDictionary>()
+			builder.RegisterNameDictionaryType<BoomaEntityNameDictionary, NetworkEntityGuid, EntityType>()
 				.As<IBoomaEntityNameDictionary>()
-				.SingleInstance()
-				.OnActivated(args =>
-				{
-					IIndex<EntityType, IServiceResolver<INameQueryService>> nameQueryServiceIndex = args
-						.Context.Resolve<IIndex<EntityType, IServiceResolver<INameQueryService>>>();
-
-					//This registers all possibly entity types to the queryable entity dictionary
-					Enum.GetValues(typeof(EntityType))
-						.Cast<EntityType>()
-						.Select(type => new {type, resolver = GetQueryServiceOrDefault(nameQueryServiceIndex, type)})
-						.Where(r => r.resolver != null)
-						.ToList()
-						.ForEach(resolverPair =>
-						{
-							args.Instance.AddService(resolverPair.type, new NameQueryServiceResolverAdapter(resolverPair.resolver));
-						});
-				});
+				.SingleInstance();
 
 			builder.RegisterModule(new ServiceDiscoverableServiceModule<INameQueryService>(BoomaServiceType.CharacterDataService)
 			{
 				Mode = ServiceDiscoveryModuleMode.Default,
-				UrlFactory = new NameQueryServiceBaseUrlFactory(EntityType.Group),
+				UrlFactory = new NameQueryServiceBaseUrlFactory<EntityType>(EntityType.Group),
 				GlobalScope = true,
 				Key = EntityType.Group
 			});
-		}
-
-		private static IServiceResolver<INameQueryService> GetQueryServiceOrDefault(IIndex<EntityType, IServiceResolver<INameQueryService>> nameQueryServiceIndex, EntityType type)
-		{
-			nameQueryServiceIndex.TryGetValue(type, out var value);
-			return value;
 		}
 	}
 
