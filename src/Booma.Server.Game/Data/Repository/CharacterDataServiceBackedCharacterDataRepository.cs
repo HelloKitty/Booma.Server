@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Booma;
 using Common.Logging;
 using Glader.ASP.RPG;
+using Glader.ASP.ServiceDiscovery;
 using GladNet;
 
 //TODO: When Refit fixes: https://github.com/reactiveui/refit/issues/931 we should use closed derived Type.

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Booma;
 using Common.Logging;
 using Glader.ASP.GameConfig;
+using Glader.ASP.ServiceDiscovery;
 using Glader.Essentials;
 using GladNet;
 

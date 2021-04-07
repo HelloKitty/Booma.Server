@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Booma.UI;
 using Glader.ASP.RPG;
+using Glader.ASP.ServiceDiscovery;
 using Glader.Essentials;
 using GladNet;
 using MEAKKA;

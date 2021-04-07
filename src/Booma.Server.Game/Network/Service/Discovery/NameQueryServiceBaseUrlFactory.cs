@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using Glader.ASP.ServiceDiscovery;
+using Glader.Essentials;
 
 namespace Booma
 {
@@ -19,7 +20,7 @@ namespace Booma
 			EntityTypeValue = entityTypeValue;
 		}
 
-		public string Create(ResolvedEndpoint context)
+		public string Create(Uri context)
 		{
 			if (context == null) throw new ArgumentNullException(nameof(context));
 

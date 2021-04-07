@@ -11,10 +11,10 @@
     <PackageReference Include="Common.Logging" Version="3.4.1" />
     <PackageReference Include="FreecraftCore.Serializer" Version="4.0.55" />
     <PackageReference Include="Generic.Math" Version="1.0.2" />
-    <PackageReference Include="Glader.Essentials.Common" Version="2.2.65" />
+    <PackageReference Include="Glader.Essentials.Common" Version="2.2.66" />
     <PackageReference Include="GladNet.API.Server" Version="4.2.12" />
     <PackageReference Include="GladNet.Server.DotNetTcpServer" Version="4.2.12" />
-    <PackageReference Include="Glader.Essentials.GUID" Version="2.2.65" />
+    <PackageReference Include="Glader.Essentials.GUID" Version="2.2.66" />
   </ItemGroup>
 
 </Project>

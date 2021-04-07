@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Glader.ASP.RPG;
+using Glader.ASP.ServiceDiscovery;
 using Glader.Essentials;
 
 //TODO: When Refit fixes: https://github.com/reactiveui/refit/issues/931 we should use closed derived Type.

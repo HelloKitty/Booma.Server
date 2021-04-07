@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Akka.Actor;
 using Common.Logging;
 using Glader.ASP.RPG;
+using Glader.ASP.ServiceDiscovery;
 using Glader.Essentials;
 using GladNet;
 using MEAKKA;

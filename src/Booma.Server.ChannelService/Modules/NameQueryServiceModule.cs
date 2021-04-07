@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Features.Indexed;
 using Glader.ASP.NameQuery;
+using Glader.ASP.ServiceDiscovery;
 
 namespace Booma
 {

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
 using Glader.ASP.RPG;
+using Glader.ASP.ServiceDiscovery;
 using GladNet;
 
 namespace Booma

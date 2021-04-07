@@ -53,9 +53,13 @@ namespace Booma
 				//I know this seems strange, but having the service provider be unique to the
 				//lifetimescope means we can inject Auth tokens into it and not worry about sharing this resource.
 				//It also means if a service dies or gets removed, reconnecting will yield another service on connection.
-				var reg = builder.Register<AuthorizedServiceDiscoveryServiceResolver<TServiceType>>(context =>
+				var reg = builder.Register<AuthorizedServiceDiscoveryServiceResolver<TServiceType, BoomaServiceType>>(context =>
 					{
-						return new AuthorizedServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>(), context.Resolve<IReadonlyAuthTokenRepository>(), UrlFactory);
+						return new AuthorizedServiceDiscoveryServiceResolver<TServiceType, BoomaServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<IReadonlyAuthTokenRepository>())
+						{
+							ServiceNameConverter = new BoomaServiceTypeIdentifierConverter(),
+							UrlFactory = UrlFactory
+						};
 					})
 					.As<IServiceResolver<TServiceType>>();
 
@@ -66,9 +70,13 @@ namespace Booma
 			}
 			else
 			{
-				var reg = builder.Register<DefaultServiceDiscoveryServiceResolver<TServiceType>>(context =>
+				var reg = builder.Register<DefaultServiceDiscoveryServiceResolver<TServiceType, BoomaServiceType>>(context =>
 					{
-						return new DefaultServiceDiscoveryServiceResolver<TServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType, context.Resolve<ILog>(), UrlFactory);
+						return new DefaultServiceDiscoveryServiceResolver<TServiceType, BoomaServiceType>(context.Resolve<IServiceDiscoveryService>(), ServiceType)
+						{
+							ServiceNameConverter = new BoomaServiceTypeIdentifierConverter(),
+							UrlFactory = UrlFactory
+						};
 					})
 					.As<IServiceResolver<TServiceType>>();
 

@@ -8,6 +8,7 @@ using Akka.Actor;
 using Booma.UI;
 using Common.Logging;
 using Glader.ASP.RPG;
+using Glader.ASP.ServiceDiscovery;
 using Glader.Essentials;
 using GladNet;
 using MEAKKA;
