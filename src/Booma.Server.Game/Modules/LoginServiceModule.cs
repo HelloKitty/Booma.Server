@@ -23,7 +23,7 @@ namespace Booma
 			base.Load(builder);
 
 			//Registers the auth service.
-			builder.RegisterModule(new ServiceDiscoverableServiceModule<IAuthenticationService>(BoomaServiceType.AuthService));
+			builder.RegisterModule(new BoomaServiceDiscoverableServiceModule<IAuthenticationService>(BoomaServiceType.AuthService));
 
 			builder.RegisterType<SuccessfulLogin93ResponseMessageFactory>()
 				.AsImplementedInterfaces()

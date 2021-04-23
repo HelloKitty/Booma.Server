@@ -22,9 +22,9 @@ namespace Booma
 		{
 			base.Load(builder);
 
-			builder.RegisterModule(new ServiceDiscoverableServiceModule<IPSOBBCharacterDataQueryService>(BoomaServiceType.CharacterDataService));
-			builder.RegisterModule(new ServiceDiscoverableServiceModule<IPSOBBCharacterCreationService>(BoomaServiceType.CharacterDataService));
-			builder.RegisterModule(new ServiceDiscoverableServiceModule<IPSOBBCharacterAppearanceService>(BoomaServiceType.CharacterDataService));
+			builder.RegisterModule(new BoomaServiceDiscoverableServiceModule<IPSOBBCharacterDataQueryService>(BoomaServiceType.CharacterDataService));
+			builder.RegisterModule(new BoomaServiceDiscoverableServiceModule<IPSOBBCharacterCreationService>(BoomaServiceType.CharacterDataService));
+			builder.RegisterModule(new BoomaServiceDiscoverableServiceModule<IPSOBBCharacterAppearanceService>(BoomaServiceType.CharacterDataService));
 
 			//TODO: If Groups ever move off the CharacterDataService we should change the location of this registeration.
 			builder.RegisterModule<GroupDataServiceModule>();

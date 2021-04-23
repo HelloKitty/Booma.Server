@@ -25,7 +25,7 @@ namespace Booma
 				.As<IBoomaEntityNameDictionary>()
 				.SingleInstance();
 
-			builder.RegisterModule(new ServiceDiscoverableServiceModule<INameQueryService>(BoomaServiceType.CharacterDataService)
+			builder.RegisterModule(new BoomaServiceDiscoverableServiceModule<INameQueryService>(BoomaServiceType.CharacterDataService)
 			{
 				Mode = ServiceDiscoveryModuleMode.Default,
 				UrlFactory = new NameQueryServiceBaseUrlFactory<EntityType>(EntityType.Group),

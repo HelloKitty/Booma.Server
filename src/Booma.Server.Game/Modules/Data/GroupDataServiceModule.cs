@@ -18,7 +18,7 @@ namespace Booma
 			base.Load(builder);
 
 			//Group data currently is on the CharacterDataService too, so we coulda used the other Module to register it
-			builder.RegisterModule(new ServiceDiscoverableServiceModule<IGroupManagementService>(BoomaServiceType.CharacterDataService));
+			builder.RegisterModule(new BoomaServiceDiscoverableServiceModule<IGroupManagementService>(BoomaServiceType.CharacterDataService));
 		}
 	}
 }
