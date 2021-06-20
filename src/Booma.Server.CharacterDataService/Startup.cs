@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using GGDBF;
 using Glader.Essentials;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,15 @@ namespace Booma.Server.CharacterDataService
 		{
 			services.AddControllers()
 				.RegisterCharacterDataController<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass>()
-				.AddNewtonsoftJson();
+				.RegisterGGDBFController()
+				.AddNewtonsoftJson(options =>
+				{
+					//Required for serializing GGDBF tables
+					options.RegisterGGDBFSerializers();
+				});
+
+			//Required to register the GGDBF over HTTP system.
+			services.RegisterGGDBFContentServices<EntityFrameworkGGDBFDataSource, AutoMapperGGDBFDataConverter, RPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType>>();
 
 			services.RegisterCharacterDatabase<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass, DefaultTestSkillType, CharacterStatType>(builder =>
 			{
@@ -41,7 +50,7 @@ namespace Booma.Server.CharacterDataService
 				{
 					optionsBuilder.MigrationsAssembly(GetType().Assembly.FullName);
 				});
-			});
+			}, true); //true required for GGDBF
 
 			services.RegisterGladerASP();
 

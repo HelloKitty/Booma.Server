@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Booma.API.Common" Version="0.0.55" />
     <PackageReference Include="Glader.ASP.NameQuery.Server" Version="0.0.4" />
+    <PackageReference Include="Glader.ASP.RPG.GGDBF" Version="0.2.17" />
     <PackageReference Include="Glader.ASP.RPG.Server" Version="0.2.17" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
@@ -14,6 +15,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.4" />
+    <PackageReference Include="GGDBF.DataSource.EntityFramework" Version="0.0.26" />
+    <PackageReference Include="GGDBF.DataSource.Http.Server.ASP" Version="0.0.26" />
+    <PackageReference Include="GGDBF.Generator" Version="0.0.26" />
   </ItemGroup>
 
   <ItemGroup>
