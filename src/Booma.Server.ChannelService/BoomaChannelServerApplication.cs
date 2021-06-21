@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Autofac;
 using Booma;
 using Common.Logging;
@@ -58,6 +60,13 @@ namespace Booma
 			builder.RegisterModule<GGDBFDataModule>();
 
 			return builder;
+		}
+
+		/// <inheritdoc />
+		public override async Task BeginListeningAsync(CancellationToken token = default)
+		{
+			await Container.Resolve<GGDBFInitializer>().InitializeAsync(token);
+			await base.BeginListeningAsync(token);
 		}
 
 		/// <inheritdoc />

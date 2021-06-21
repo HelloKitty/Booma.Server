@@ -43,8 +43,8 @@ namespace Booma
 				.As<IBoomaGGDBFData>()
 				.SingleInstance();
 
-			builder.RegisterType<InitializeGGDBFInitializable>()
-				.As<IGameInitializable>()
+			builder.RegisterType<GGDBFInitializer>()
+				.AsSelf()
 				.SingleInstance();
 		}
 	}

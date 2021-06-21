@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
 using GGDBF;
@@ -12,7 +13,7 @@ using Refit;
 
 namespace Booma
 {
-	public sealed class InitializeGGDBFInitializable : IGameInitializable
+	public sealed class GGDBFInitializer
 	{
 		private IServiceDiscoveryService ServiceDiscoveryClient { get; }
 
@@ -22,13 +23,13 @@ namespace Booma
 
 		private bool Loaded { get; set; } = false;
 
-		public InitializeGGDBFInitializable(IServiceDiscoveryService serviceDiscoveryClient, ILog logger)
+		public GGDBFInitializer(IServiceDiscoveryService serviceDiscoveryClient, ILog logger)
 		{
 			ServiceDiscoveryClient = serviceDiscoveryClient ?? throw new ArgumentNullException(nameof(serviceDiscoveryClient));
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
-		public async Task OnGameInitialized()
+		public async Task InitializeAsync(CancellationToken token = default)
 		{
 			if (!Loaded)
 			{
@@ -38,7 +39,7 @@ namespace Booma
 					if (Loaded)
 						return;
 
-					var endpointResponse = await ServiceDiscoveryClient.DiscoverServiceAsync(BoomaEndpointConstants.GetServiceIdentifier(BoomaServiceType.CharacterDataService));
+					var endpointResponse = await ServiceDiscoveryClient.DiscoverServiceAsync(BoomaEndpointConstants.GetServiceIdentifier(BoomaServiceType.CharacterDataService), token);
 
 					if(endpointResponse == null)
 						throw new InvalidOperationException($"Failed to retrieve endpoint for ServiceType: {BoomaServiceType.CharacterDataService}");
