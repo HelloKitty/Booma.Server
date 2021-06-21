@@ -54,6 +54,9 @@ namespace Booma
 			builder.RegisterModule<GameConfigServiceModule>();
 			builder.RegisterModule<ExternalPlayerDataServiceModule>();
 
+			//GGDBF Data
+			builder.RegisterModule<GGDBFDataModule>();
+
 			return builder;
 		}
 
