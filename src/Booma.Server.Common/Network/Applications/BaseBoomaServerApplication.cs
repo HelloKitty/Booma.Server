@@ -17,7 +17,7 @@ namespace Booma
 		/// <summary>
 		/// Service container for the application.
 		/// </summary>
-		private IContainer Container { get; }
+		protected IContainer Container { get; }
 
 		/// <summary>
 		/// The factory that can generate sessions.
