@@ -16,7 +16,7 @@ namespace Booma
 
 	public sealed class BoomaGGDBFAdapter : IBoomaGGDBFData
 	{
-		private IRPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType> AdaptedContext { get; }
+		private IRPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType> AdaptedContext => RPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType>.Instance;
 
 		public IReadOnlyDictionary<DefaultTestSkillType, DBRPGSkill<DefaultTestSkillType>> Skill => AdaptedContext.Skill;
 
