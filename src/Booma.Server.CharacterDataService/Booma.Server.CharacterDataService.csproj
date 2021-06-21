@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Booma.API.Common" Version="0.0.55" />
+    <PackageReference Include="Booma.API.Common" Version="0.0.56" />
     <PackageReference Include="Glader.ASP.NameQuery.Server" Version="0.0.4" />
     <PackageReference Include="Glader.ASP.RPG.GGDBF" Version="0.2.21" />
     <PackageReference Include="Glader.ASP.RPG.Server" Version="0.2.21" />
