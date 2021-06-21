@@ -11,7 +11,7 @@
     <PackageReference Include="Booma.Packet.Game" Version="0.0.56" />
     <PackageReference Include="Glader.ASP.Authentication.Client" Version="0.0.5" />
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.0.2" />
-    <PackageReference Include="Glader.ASP.RPG.Client" Version="0.2.21" />
+    <PackageReference Include="Glader.ASP.RPG.Client" Version="0.2.22" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.10" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client.Autofac" Version="0.0.10" />
     <PackageReference Include="Glader.Essentials.Events" Version="2.2.73" />
