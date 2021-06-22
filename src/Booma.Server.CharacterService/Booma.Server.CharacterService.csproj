@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.0.2" />
-    <PackageReference Include="Glader.ASP.RPG.Client" Version="0.2.22" />
+    <PackageReference Include="Glader.ASP.RPG.Client" Version="0.2.24" />
   </ItemGroup>
   
   <ItemGroup>
