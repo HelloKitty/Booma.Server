@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Booma;
 using Common.Logging;
 using Glader.ASP.Authentication;
+using Glader.ASP.RPG;
 using Glader.ASP.ServiceDiscovery;
 using Glader.Essentials;
 using GladNet;
@@ -90,7 +92,8 @@ namespace Booma
 
 			try
 			{
-				JWTModel authResult = await authService.AuthenticateAsync(new AuthenticationRequest(message.UserName, message.Password));
+				JWTModel authResult = await authService.AuthenticateAsync(new AuthenticationRequest(message.UserName, message.Password), token);
+				AuthenticationResponseCode result = AuthenticationResponseCode.LOGIN_93BB_BAD_USER_PWD;
 
 				//TODO: Send more accurate error response.
 				//If token is valid then auth was successful, otherwise something is wrong with credentials.
@@ -99,8 +102,11 @@ namespace Booma
 					TokenRepository.Update(authResult.AccessToken);
 					return SuccessResponseFactory.Create(new SuccessfulLoginResponseCreationContext(authResult, message));
 				}
-				else
-					return new SharedLoginResponsePayload(AuthenticationResponseCode.LOGIN_93BB_BAD_USER_PWD);
+
+				if(Logger.IsInfoEnabled)
+					Logger.Info($"Account: {message.UserName} failed Auth. Reason: {result}");
+
+				return new SharedLoginResponsePayload(result);
 			}
 			catch (ApiException e)
 			{
@@ -113,8 +119,14 @@ namespace Booma
 				if (Logger.IsInfoEnabled)
 					Logger.Info($"Account: {message.UserName} failed Auth. Reason: {authResult.Error} Message: {authResult.ErrorDescription}");
 
-				//TODO: Handle error cases
 				return new SharedLoginResponsePayload(AuthenticationResponseCode.LOGIN_93BB_BAD_USER_PWD);
+			}
+			catch(Exception e)
+			{
+				if(Logger.IsInfoEnabled)
+					Logger.Info($"Account: {message.UserName} failed Auth. Reason: Unknown Message: {e.Message}");
+
+				return new SharedLoginResponsePayload(AuthenticationResponseCode.LOGIN_93BB_UNKNOWN_ERROR);
 			}
 		}
 
@@ -122,7 +134,7 @@ namespace Booma
 		protected override Task OnResponseMessageSendAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, SharedLoginRequest93Payload request, SharedLoginResponsePayload response, SendResult sendResult)
 		{
 			//broadcast the login response.
-			OnLoginResponseSent?.Invoke(this, new LoginResponseSentEventArgs(response.ResponseCode, context, request.Stage, request.SelectedSlot));
+			OnLoginResponseSent?.Invoke(this, new LoginResponseSentEventArgs(response.ResponseCode, context, request));
 
 			return base.OnResponseMessageSendAsync(context, request, response, sendResult);
 		}

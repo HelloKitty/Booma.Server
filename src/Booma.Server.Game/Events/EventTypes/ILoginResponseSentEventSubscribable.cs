@@ -31,17 +31,18 @@ namespace Booma
 		/// </summary>
 		public SessionMessageContext<PSOBBGamePacketPayloadServer> MessageContext { get; }
 
-		public SharedLoginRequest93Payload.SessionStage Stage { get; }
+		public SharedLoginRequest93Payload.SessionStage Stage => LoginRequest.Stage;
 
-		public int CharacterSlot { get; }
+		public int CharacterSlot => LoginRequest.SelectedSlot;
 
-		public LoginResponseSentEventArgs(AuthenticationResponseCode responseCode, SessionMessageContext<PSOBBGamePacketPayloadServer> messageContext, SharedLoginRequest93Payload.SessionStage stage, int characterSlot)
+		public SharedLoginRequest93Payload LoginRequest { get; }
+
+		public LoginResponseSentEventArgs(AuthenticationResponseCode responseCode, SessionMessageContext<PSOBBGamePacketPayloadServer> messageContext, SharedLoginRequest93Payload loginRequest)
 		{
 			if (!Enum.IsDefined(typeof(AuthenticationResponseCode), responseCode)) throw new InvalidEnumArgumentException(nameof(responseCode), (int) responseCode, typeof(AuthenticationResponseCode));
 			ResponseCode = responseCode;
 			MessageContext = messageContext ?? throw new ArgumentNullException(nameof(messageContext));
-			Stage = stage;
-			CharacterSlot = characterSlot;
+			LoginRequest = loginRequest ?? throw new ArgumentNullException(nameof(loginRequest));
 		}
 	}
 }

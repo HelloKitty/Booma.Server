@@ -11,6 +11,8 @@ using Booma.UI;
 using Common.Logging;
 using Glader.Essentials;
 using Glader;
+using Glader.ASP.Authentication;
+using Glader.ASP.RPG;
 using Glader.ASP.ServiceDiscovery;
 using GladNet;
 using MEAKKA;
@@ -25,15 +27,31 @@ namespace Booma
 
 		private ILobbyEntryService LobbyEntryService { get; }
 
+		private IServiceResolver<ICharacterDataQueryService> CharacterDataServiceResolver { get; }
+
+		//TODO: ASSERT INSTANCE PER LIFETIME SCOPE!!
+		private IAuthTokenRepository TokenRepository { get; }
+
+		/// <summary>
+		/// The service resolver for an <see cref="IAuthenticationService"/>.
+		/// </summary>
+		private IServiceResolver<IAuthenticationService> AuthenticationServiceResolver { get; }
+
 		public ChannelWelcomeEventListener(ILoginResponseSentEventSubscribable subscriptionService, 
 			ILog logger, 
 			ILobbyEntryService lobbyEntryService, 
-			IEntityActorRef<RootChannelActor> channelActor) 
+			IEntityActorRef<RootChannelActor> channelActor, 
+			IServiceResolver<ICharacterDataQueryService> characterDataServiceResolver, 
+			IAuthTokenRepository tokenRepository, 
+			IServiceResolver<IAuthenticationService> authenticationServiceResolver) 
 			: base(subscriptionService)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			LobbyEntryService = lobbyEntryService ?? throw new ArgumentNullException(nameof(lobbyEntryService));
 			ChannelActor = channelActor ?? throw new ArgumentNullException(nameof(channelActor));
+			CharacterDataServiceResolver = characterDataServiceResolver ?? throw new ArgumentNullException(nameof(characterDataServiceResolver));
+			TokenRepository = tokenRepository ?? throw new ArgumentNullException(nameof(tokenRepository));
+			AuthenticationServiceResolver = authenticationServiceResolver ?? throw new ArgumentNullException(nameof(authenticationServiceResolver));
 		}
 
 		protected override async Task OnEventFiredAsync(object source, LoginResponseSentEventArgs args)
@@ -41,6 +59,27 @@ namespace Booma
 			//Disconnect if not successful
 			if (args.ResponseCode != AuthenticationResponseCode.LOGIN_93BB_OK)
 			{
+				await args.MessageContext.ConnectionService.DisconnectAsync();
+				return;
+			}
+
+			//Now we must update our token to be a subaccount claim token
+			ServiceResolveResult<IAuthenticationService> authServiceQuery = await AuthenticationServiceResolver.Create(CancellationToken.None);
+
+			//TODO: Logging
+			if (!authServiceQuery.isAvailable)
+			{
+				await args.MessageContext.ConnectionService.DisconnectAsync();
+				return;
+			}
+
+			var secondaryAuthResult = await AuthenticateSubAccountClaimAsync(args.LoginRequest, CancellationToken.None, authServiceQuery.Instance);
+
+			if (secondaryAuthResult != AuthenticationResponseCode.LOGIN_93BB_OK)
+			{
+				if (Logger.IsInfoEnabled)
+					Logger.Info($"Failed to SubAccount Authenticate User: {args.LoginRequest.UserName} Reason: {secondaryAuthResult}");
+
 				await args.MessageContext.ConnectionService.DisconnectAsync();
 				return;
 			}
@@ -75,6 +114,32 @@ namespace Booma
 			}
 
 			return true;
+		}
+
+		private async Task<AuthenticationResponseCode> AuthenticateSubAccountClaimAsync(SharedLoginRequest93Payload message, CancellationToken token, IAuthenticationService authService)
+		{
+			//In the case that we're past CharacterSelection stage we should actually auth the character
+			//as the sub-account
+			if(message.Stage <= SharedLoginRequest93Payload.SessionStage.CharacterSelection)
+				return AuthenticationResponseCode.LOGIN_93BB_OK;
+
+			var serviceQueryResult = await CharacterDataServiceResolver.Create(token);
+
+			if(!serviceQueryResult.isAvailable)
+				return AuthenticationResponseCode.LOGIN_93BB_MAINTENANCE;
+
+			int[] characters = await serviceQueryResult.Instance.RetrieveCharacterBasicListAsync(token);
+
+			if(message.SelectedSlot >= characters.Length)
+				return AuthenticationResponseCode.LOGIN_93BB_NO_USER_RECORD;
+
+			JWTModel authResult = await authService.AuthenticateAsync(new AuthenticationRequest(message.UserName, message.Password), characters[message.SelectedSlot], token);
+
+			if(!authResult.isTokenValid)
+				return AuthenticationResponseCode.LOGIN_93BB_BAD_USER_PWD2;
+
+			TokenRepository.Update(authResult.AccessToken);
+			return AuthenticationResponseCode.LOGIN_93BB_OK;
 		}
 	}
 }

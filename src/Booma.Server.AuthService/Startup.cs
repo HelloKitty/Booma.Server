@@ -11,8 +11,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Autofac;
 using Glader.ASP.Authentication;
+using Glader.ASP.RPG;
+using Glader.ASP.ServiceDiscovery;
+using Glader.Essentials;
 using Microsoft.EntityFrameworkCore;
+using Refit;
 
 namespace Booma
 {
@@ -54,7 +59,26 @@ namespace Booma
 				});
 			});
 
+			//This feature was created to add claims to the JWT for the character
+			//Claims appenders
+			services.AddTransient<IAuthorizedClaimsAppender, AuthorizedCharacterClaimAppender>();
+
 			services.RegisterGladerIdentity();
+		}
+
+		//See: https://autofaccn.readthedocs.io/en/latest/integration/aspnetcore.html
+		// ConfigureContainer is where you can register things directly
+		// with Autofac. This runs after ConfigureServices so the things
+		// here will override registrations made in ConfigureServices.
+		// Don't build the container; that gets done for you by the factory.
+		public void ConfigureContainer(ContainerBuilder builder)
+		{
+			builder.RegisterModule<ServiceDiscoveryServiceModule>();
+			builder.RegisterModule(new BoomaServiceDiscoverableServiceModule<ICharacterDataQueryService<StubEnum, StubEnum>>(BoomaServiceType.CharacterDataService)
+			{
+				//TODO: Eventually we'll need to Auth the auth server (lol) somehow so that we can Role check requests
+				Mode = ServiceDiscoveryModuleMode.Default
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
