@@ -19,6 +19,7 @@ namespace Booma
 		{
 			base.Load(builder);
 
+			//TODO: Renable HTTPS validation one day when we have real valid service.
 			builder.Register(context =>
 			{
 				return RestService.For<IServiceDiscoveryService>(BoomaEndpointConstants.BOOMA_SERVICE_DISCOVERY_ENDPOINT, new RefitSettings() { HttpMessageHandlerFactory = () => new BypassHttpsValidationHandler() });
