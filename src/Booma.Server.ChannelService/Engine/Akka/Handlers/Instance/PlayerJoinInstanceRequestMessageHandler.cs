@@ -31,7 +31,7 @@ namespace Booma
 				return new ResponseModel<string, PlayerJoinInstanceResponseCode>(PlayerJoinInstanceResponseCode.InstanceFull);
 
 			int slot = await SlotRepository.FirstAvailableSlotAsync(token);
-			if (!await SlotRepository.TryCreateAsync(new CharacterInstanceSlot(slot, character, message.PlayerGuid), token))
+			if (!await SlotRepository.TryCreateAsync(new CharacterInstanceSlot(slot, character, message.PlayerGuid, message.CharacterData), token))
 				return new ResponseModel<string, PlayerJoinInstanceResponseCode>(PlayerJoinInstanceResponseCode.GeneralServerError);
 
 			return new ResponseModel<string, PlayerJoinInstanceResponseCode>(character.Actor.Path.ToString());

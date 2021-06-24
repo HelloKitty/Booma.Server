@@ -49,17 +49,21 @@ namespace Booma
 			context.Sender.TellEntity(new SendGamePacketMessage(new BlockGameJoinEventPayload((byte) slot.Slot, (byte) leaderId, new GameSettings(DifficultyType.Normal, false, 0, SectionId.Viridia, false, 0, EpisodeType.EpisodeI, false), await BuildPlayerInformationHeaders())));
 
 			//Let all other players know about the joiner before we join the broadcast group ourselves
-			MessageBroadcaster.Data.BroadcastMessage(WorldActorGroupType.Players, new SendGamePacketMessage(new BlockGamePlayerJoinedEventPayload((byte) slot.Slot, (byte) leaderId, CreateJoinData(message.Entity, (byte) slot.Slot))));
+			MessageBroadcaster.Data.BroadcastMessage(WorldActorGroupType.Players, new SendGamePacketMessage(new BlockGamePlayerJoinedEventPayload((byte) slot.Slot, (byte) leaderId, await CreateJoinData(message.Entity, (byte) slot.Slot))));
 
 			MessageBroadcaster.Data.AddToGroup(WorldActorGroupType.Players, context.Sender);
 			message.Answer(context.Sender, WorldJoinResponseCode.Success);
 			slot.IsInitialized = true;
 		}
 
-		private CharacterJoinData CreateJoinData(NetworkEntityGuid guid, byte slot)
+		private async Task<CharacterJoinData> CreateJoinData(NetworkEntityGuid guid, byte slot)
 		{
-			return new CharacterJoinData(new PlayerInformationHeader((uint) guid.Identifier, slot, "Unknown"), CreateTestInventory(), new LobbyCharacterData(CreateStats(1, CharacterRace.Human, CharacterClass.HUmar), 0, 0, new CharacterProgress((uint) 0, 20), 0, String.Empty, 0, new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), SectionId.Viridia, CharacterClass.HUmar,
-				new CharacterVersionData(0, 0, 0), new CharacterCustomizationInfo(0, 0, 0, 0, 0, new Vector3<ushort>(0, 0, 0), new Vector2<float>(0, 0)), "Unknown"));
+			var slotData = await SlotRepository.RetrieveAsync(guid);
+
+			//TODO: Guild card may be mishandled
+			return new CharacterJoinData(new PlayerInformationHeader((uint) guid.Identifier, slot, slotData.InitialCharacterData.Name), 
+				slotData.InitialCharacterData.Inventory, new LobbyCharacterData(CreateStats((int)slotData.InitialCharacterData.Progress.RawLevel, slotData.InitialCharacterData.GuildCard.ClassType.ToRace(), slotData.InitialCharacterData.GuildCard.ClassType), 0, 0, slotData.InitialCharacterData.Progress, 0, String.Empty, 0, slotData.InitialCharacterData.SpecialCustom, slotData.InitialCharacterData.GuildCard.SectionId, slotData.InitialCharacterData.GuildCard.ClassType,
+				slotData.InitialCharacterData.Version, slotData.InitialCharacterData.Customization, slotData.InitialCharacterData.Name));
 		}
 
 		private CharacterStats CreateStats(int level, CharacterRace race, CharacterClass @class)
@@ -91,7 +95,7 @@ namespace Booma
 			var headers = new PlayerInformationHeader[initializedPlayers.Length];
 
 			for (int i = 0; i < initializedPlayers.Length; i++)
-				headers[i] = new PlayerInformationHeader((uint) initializedPlayers[i].Guid.Identifier, initializedPlayers[i].Slot, "Unknown");
+				headers[i] = new PlayerInformationHeader((uint) initializedPlayers[i].Guid.Identifier, initializedPlayers[i].Slot, initializedPlayers[i].InitialCharacterData.Name);
 
 			return headers;
 		}

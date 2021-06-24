@@ -39,17 +39,21 @@ namespace Booma
 
 		private IServiceResolver<IGroupManagementService> GroupManagementService { get; }
 
+		private ICharacterDataSnapshotFactory SnapshotFactory { get; }
+
 		public DefaultInstanceEntryService(ICharacterActorReferenceContainer characterActorContainer,
 			ActorSystem globalActorSystem, 
 			ILog logger, 
 			IEntityActorRef<RootChannelActor> channelActor,
-			IServiceResolver<IGroupManagementService> groupManagementService)
+			IServiceResolver<IGroupManagementService> groupManagementService, 
+			ICharacterDataSnapshotFactory snapshotFactory)
 		{
 			CharacterActorContainer = characterActorContainer ?? throw new ArgumentNullException(nameof(characterActorContainer));
 			GlobalActorSystem = globalActorSystem ?? throw new ArgumentNullException(nameof(globalActorSystem));
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			ChannelActor = channelActor ?? throw new ArgumentNullException(nameof(channelActor));
 			GroupManagementService = groupManagementService ?? throw new ArgumentNullException(nameof(groupManagementService));
+			SnapshotFactory = snapshotFactory ?? throw new ArgumentNullException(nameof(snapshotFactory));
 		}
 
 		public async Task<bool> TryEnterInstanceAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context, NetworkEntityGuid entity, CancellationToken token = default)
@@ -92,9 +96,13 @@ namespace Booma
 				return false;
 			}
 
+			//Build the snappyshotty
+			InitialCharacterDataSnapshot snapshot = await SnapshotFactory.Create(entity);
+
 			var joinResponse = await instanceActorRef.RequestAsync(new PlayerJoinInstanceRequest()
 			{
 				PlayerGuid = entity,
+				CharacterData = snapshot
 			}, token);
 
 			if (!joinResponse.isSuccessful)
