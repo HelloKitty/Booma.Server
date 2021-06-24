@@ -20,10 +20,10 @@ namespace Booma
 	{
 		private ILog Logger { get; }
 
-		private IServiceResolver<IKeybindConfigurationService> ConfigServiceResolver { get; }
+		private IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> ConfigServiceResolver { get; }
 
 		public CharacterOptionsRequestMessageHandler(ILog logger, 
-			IServiceResolver<IKeybindConfigurationService> configServiceResolver)
+			IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> configServiceResolver)
 		{
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			ConfigServiceResolver = configServiceResolver ?? throw new ArgumentNullException(nameof(configServiceResolver));
@@ -38,16 +38,17 @@ namespace Booma
 			//We should not try to send defaults if the config service
 			//is unavailable, because this will override their config
 			//therefore we should just disconnect in that case.
-			ServiceResolveResult<IKeybindConfigurationService> resolveResult = await ConfigServiceResolver.Create(token);
+			var resolveResult = await ConfigServiceResolver.Create(token);
 
 			if (!resolveResult.isAvailable)
 				return await LogServiceErrorAndDisconnectAsync(context);
 
-			var bindQueryResult = await resolveResult.Instance.RetrieveAccountBindsAsync(token);
+			var bindQueryResult = await resolveResult.Instance.RetrieveConfigAsync(ConfigurationSourceType.Account, PsobbGameConfigurationType.Key, token);
+			var joystickQueryResult = await resolveResult.Instance.RetrieveConfigAsync(ConfigurationSourceType.Account, PsobbGameConfigurationType.Joystick, token);
 
 			//Success means we can directly send down the stored binary data
-			if (bindQueryResult.isSuccessful)
-				return new CharacterOptionsResponsePayload(new CharacterOptionsConfiguration(ParseBindingConfig(bindQueryResult), 1, new AccountTeamInformation(0, new uint[2], 0, 0, String.Empty, 0)));
+			if(bindQueryResult.isSuccessful && joystickQueryResult.isSuccessful)
+				return new CharacterOptionsResponsePayload(new CharacterOptionsConfiguration(new BindingsConfig(bindQueryResult.Result.Data, joystickQueryResult.Result.Data), 1, new AccountTeamInformation(0, new uint[2], 0, 0, String.Empty, 0)));
 
 			//We have special cases for certain results
 			//If not found, that means none exist yet so we should send a default result.
@@ -62,15 +63,12 @@ namespace Booma
 			}
 		}
 
-		private static async Task<CharacterOptionsResponsePayload> HandleNoKeybindStoredAsync(ServiceResolveResult<IKeybindConfigurationService> resolveResult, CancellationToken token)
+		private static async Task<CharacterOptionsResponsePayload> HandleNoKeybindStoredAsync(ServiceResolveResult<IGameConfigurationService<PsobbGameConfigurationType>> resolveResult, CancellationToken token)
 		{
-			await resolveResult.Instance.UpdateAccountBindsAsync(new KeybindConfigurationUpdateRequest(DefaultKeyboardConfig.Concat(DefaultJoystickConfig).ToArray()), token);
-			return new CharacterOptionsResponsePayload(new CharacterOptionsConfiguration(new BindingsConfig(DefaultKeyboardConfig, DefaultJoystickConfig), 1, new AccountTeamInformation(0, new uint[2], 0, 0, String.Empty, 0)));
-		}
+			await resolveResult.Instance.UpdateGameConfigAsync(new GameConfigurationUpdateRequest<PsobbGameConfigurationType>(ConfigurationSourceType.Account, PsobbGameConfigurationType.Key, DefaultKeyboardConfig), token);
+			await resolveResult.Instance.UpdateGameConfigAsync(new GameConfigurationUpdateRequest<PsobbGameConfigurationType>(ConfigurationSourceType.Account, PsobbGameConfigurationType.Joystick, DefaultJoystickConfig), token);
 
-		private static BindingsConfig ParseBindingConfig(ResponseModel<KeybindConfigurationResult, GameConfigQueryResponseCode> bindQueryResult)
-		{
-			return new BindingsConfig(bindQueryResult.Result.KeybindData.Take(364).ToArray(), bindQueryResult.Result.KeybindData.Skip(364).ToArray());
+			return new CharacterOptionsResponsePayload(new CharacterOptionsConfiguration(new BindingsConfig(DefaultKeyboardConfig, DefaultJoystickConfig), 1, new AccountTeamInformation(0, new uint[2], 0, 0, String.Empty, 0)));
 		}
 
 		private async Task<CharacterOptionsResponsePayload> LogServiceErrorAndDisconnectAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context)
@@ -78,7 +76,7 @@ namespace Booma
 			if (context == null) throw new ArgumentNullException(nameof(context));
 
 			if (Logger.IsErrorEnabled)
-				Logger.Error($"Service: {nameof(IKeybindConfigurationService)} unavailable or a failure occurred when querying config data.");
+				Logger.Error($"Service: {nameof(IGameConfigurationService<PsobbGameConfigurationType>)} unavailable or a failure occurred when querying config data.");
 
 			await context.ConnectionService.DisconnectAsync();
 			return default;

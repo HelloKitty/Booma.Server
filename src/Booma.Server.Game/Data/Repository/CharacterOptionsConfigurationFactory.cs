@@ -17,9 +17,9 @@ namespace Booma
 
 	public sealed class DefaultCharacterOptionsConfigurationFactory : ICharacterOptionsConfigurationFactory
 	{
-		private IServiceResolver<IKeybindConfigurationService> ConfigServiceResolver { get; }
+		private IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> ConfigServiceResolver { get; }
 
-		public DefaultCharacterOptionsConfigurationFactory(IServiceResolver<IKeybindConfigurationService> configServiceResolver)
+		public DefaultCharacterOptionsConfigurationFactory(IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> configServiceResolver)
 		{
 			ConfigServiceResolver = configServiceResolver ?? throw new ArgumentNullException(nameof(configServiceResolver));
 		}
@@ -30,25 +30,23 @@ namespace Booma
 				.Create(token);
 
 			if (!result.isAvailable)
-				throw new InvalidOperationException($"Failed to reach required Service: {nameof(IKeybindConfigurationService)}");
+				throw new InvalidOperationException($"Failed to reach required Service: {nameof(IGameConfigurationService<PsobbGameConfigurationType>)}");
 
-			//We have to ASSUME we have actual keybind data.
-			//Exceptional case if we DO NOT
 			var keybindData = await result
 				.Instance
-				.RetrieveAccountBindsAsync(token);
+				.RetrieveConfigAsync(ConfigurationSourceType.Account, PsobbGameConfigurationType.Key, token);
 
-			BindingsConfig bindings = CreateBindingConfig(keybindData.Result);
+			var joystickData = await result
+				.Instance
+				.RetrieveConfigAsync(ConfigurationSourceType.Account, PsobbGameConfigurationType.Joystick, token);
+
+			if (!keybindData.isSuccessful || !joystickData.isSuccessful)
+				throw new InvalidOperationException($"Failed to query Config: {ConfigurationSourceType.Account} {PsobbGameConfigurationType.Joystick} and {PsobbGameConfigurationType.Key}");
+
+			BindingsConfig bindings = new BindingsConfig(keybindData.Result.Data, joystickData.Result.Data);
 
 			//TODO: Send correct GCN
 			return new CharacterOptionsConfiguration(bindings, 1, new AccountTeamInformation(0, Array.Empty<uint>(), 0, 0, String.Empty, 0));
-		}
-
-		private BindingsConfig CreateBindingConfig(KeybindConfigurationResult keybindConfig)
-		{
-			if (keybindConfig == null) throw new ArgumentNullException(nameof(keybindConfig));
-
-			return new BindingsConfig(keybindConfig.KeybindData.Take(364).ToArray(), keybindConfig.KeybindData.Skip(364).ToArray());
 		}
 	}
 }

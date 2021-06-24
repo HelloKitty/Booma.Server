@@ -13,7 +13,7 @@ namespace Booma
 			base.Load(builder);
 
 			//This has config like keybinds and stuff, which character service has to deal with.
-			builder.RegisterModule(new BoomaServiceDiscoverableServiceModule<IKeybindConfigurationService>(BoomaServiceType.GameConfigurationService));
+			builder.RegisterModule(new BoomaServiceDiscoverableServiceModule<IGameConfigurationService<PsobbGameConfigurationType>>(BoomaServiceType.GameConfigurationService));
 
 			//Depends on service resolver so must be instance per lifetimescope.
 			//DefaultCharacterOptionsConfigurationFactory : ICharacterOptionsConfigurationFactory

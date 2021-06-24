@@ -15,7 +15,7 @@
     <PackageReference Include="Glader.ASP.RPG.Client" Version="0.2.28" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.10" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client.Autofac" Version="0.0.10" />
-    <PackageReference Include="Glader.Essentials.ASP" Version="2.2.73" />
+    <PackageReference Include="Glader.Essentials.ASP" Version="2.2.74" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
       <PrivateAssets>all</PrivateAssets>

@@ -19,11 +19,11 @@ namespace Booma
 	/// </summary>
 	public sealed class CharacterOptionsUpdateRequestMessageHandler : GameRequestMessageHandler<CharacterOptionsUpdateRequestPayload, CharacterOptionsResponsePayload>
 	{
-		private IServiceResolver<IKeybindConfigurationService> ConfigServiceResolver { get; }
+		private IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> ConfigServiceResolver { get; }
 
 		private ILog Logger { get; }
 
-		public CharacterOptionsUpdateRequestMessageHandler(ILog logger, IServiceResolver<IKeybindConfigurationService> configServiceResolver, bool awaitResponseSend = false) : base(awaitResponseSend)
+		public CharacterOptionsUpdateRequestMessageHandler(ILog logger, IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> configServiceResolver, bool awaitResponseSend = false) : base(awaitResponseSend)
 		{
 			ConfigServiceResolver = configServiceResolver ?? throw new ArgumentNullException(nameof(configServiceResolver));
 			Logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -34,25 +34,25 @@ namespace Booma
 			//We should not try to send defaults if the config service
 			//is unavailable, because this will override their config
 			//therefore we should just disconnect in that case.
-			ServiceResolveResult<IKeybindConfigurationService> resolveResult = await ConfigServiceResolver.Create(token);
+			ServiceResolveResult<IGameConfigurationService<PsobbGameConfigurationType>> resolveResult = await ConfigServiceResolver.Create(token);
 
 			if (!resolveResult.isAvailable)
 				return await LogServiceErrorAndDisconnectAsync(context);
 
+			//We don't need to sanity check the length of these buffers because the serializer will ensure they don't exceed the length
+			//since they are fixed size
+
 			//Store the binds sent (will be queried at some point by the backend for loading in-game)
 			await resolveResult
 				.Instance
-				.UpdateAccountBindsAsync(new KeybindConfigurationUpdateRequest(SerializeBindingConfig(message)), token);
+				.UpdateGameConfigAsync(new GameConfigurationUpdateRequest<PsobbGameConfigurationType>(ConfigurationSourceType.Account, PsobbGameConfigurationType.Key, message.Config.Bindings.KeyConfiguration), token);
+
+			await resolveResult
+				.Instance
+				.UpdateGameConfigAsync(new GameConfigurationUpdateRequest<PsobbGameConfigurationType>(ConfigurationSourceType.Account, PsobbGameConfigurationType.Joystick, message.Config.Bindings.JoystickConfiguration), token);
 
 			//Echo back, since we persisted this data now
 			return new CharacterOptionsResponsePayload(message.Config);
-		}
-
-		private static byte[] SerializeBindingConfig(CharacterOptionsUpdateRequestPayload message)
-		{
-			return message.Config.Bindings.KeyConfiguration
-				.Concat(message.Config.Bindings.JoystickConfiguration)
-				.ToArray();
 		}
 
 		private async Task<CharacterOptionsResponsePayload> LogServiceErrorAndDisconnectAsync(SessionMessageContext<PSOBBGamePacketPayloadServer> context)
@@ -60,7 +60,7 @@ namespace Booma
 			if(context == null) throw new ArgumentNullException(nameof(context));
 
 			if(Logger.IsErrorEnabled)
-				Logger.Error($"Service: {nameof(IKeybindConfigurationService)} unavailable or a failure occurred when querying config data.");
+				Logger.Error($"Service: {nameof(IGameConfigurationService<PsobbGameConfigurationType>)} unavailable or a failure occurred when querying config data.");
 
 			await context.ConnectionService.DisconnectAsync();
 			return default;

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Booma.Server.GameConfigurationService.Migrations
 {
-    [DbContext(typeof(GameConfigurationDatabaseContext))]
+    [DbContext(typeof(GameConfigurationDatabaseContext<PsobbGameConfigurationType>))]
     [Migration("20210102094730_InitialGameConfigMigration")]
     partial class InitialGameConfigMigration
     {
