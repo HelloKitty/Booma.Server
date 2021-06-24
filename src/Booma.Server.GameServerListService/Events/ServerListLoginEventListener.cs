@@ -32,8 +32,14 @@ namespace Booma
 			if (args.ResponseCode != AuthenticationResponseCode.LOGIN_93BB_OK)
 				return;
 
+			//TODO: Put into a strategy
+			//Compute the actual real time
+			//See Sylverant TIMESTAMP_TYPE
+			var time = DateTime.UtcNow;
+			string timestamp = $"{time.Year}:{time.Month:D2}:{time.Day:D2}: {time.Hour:D2}:{time.Minute:D2}:{time.Second:D2}.{time.Millisecond:D3}";
+
 			//Client authed, send them the scrolling marquee and the server list.
-			await args.MessageContext.MessageService.SendMessageAsync(new CharacterTimestampEventPayload(String.Empty));
+			await args.MessageContext.MessageService.SendMessageAsync(new CharacterTimestampEventPayload(timestamp));
 			await args.MessageContext.MessageService.SendMessageAsync(new SharedMarqueeScrollChangeEventPayload("Hello World, welcome to GladerServ? No that's terrible name!"));
 
 			//Demo ship list
