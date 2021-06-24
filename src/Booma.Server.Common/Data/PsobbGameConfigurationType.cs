@@ -7,6 +7,7 @@ namespace Booma
 	public enum PsobbGameConfigurationType
 	{
 		Key = 1,
-		Joystick = 2
+		Joystick = 2,
+		ActionBar = 3,
 	}
 }

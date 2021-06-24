@@ -31,7 +31,9 @@ namespace Booma
 
 		public NetworkEntityGuid EntityGuid { get; }
 
-		public InitialCharacterDataSnapshot(CharacterInventoryData inventory, CharacterBankData bank, CharacterStats stats, CharacterProgress progress, CharacterSpecialCustomInfo specialCustom, CharacterVersionData version, CharacterCustomizationInfo customization, GuildCardEntry guildCard, CharacterOptionsConfiguration options, NetworkEntityGuid entityGuid)
+		public byte[] ActionBarConfig { get; }
+
+		public InitialCharacterDataSnapshot(CharacterInventoryData inventory, CharacterBankData bank, CharacterStats stats, CharacterProgress progress, CharacterSpecialCustomInfo specialCustom, CharacterVersionData version, CharacterCustomizationInfo customization, GuildCardEntry guildCard, CharacterOptionsConfiguration options, NetworkEntityGuid entityGuid, byte[] actionBarConfig)
 		{
 			Inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
 			Bank = bank ?? throw new ArgumentNullException(nameof(bank));
@@ -43,6 +45,7 @@ namespace Booma
 			GuildCard = guildCard ?? throw new ArgumentNullException(nameof(guildCard));
 			Options = options ?? throw new ArgumentNullException(nameof(options));
 			EntityGuid = entityGuid ?? throw new ArgumentNullException(nameof(entityGuid));
+			ActionBarConfig = actionBarConfig ?? throw new ArgumentNullException(nameof(actionBarConfig));
 		}
 	}
 }

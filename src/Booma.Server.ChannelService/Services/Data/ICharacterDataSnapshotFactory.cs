@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Glader.ASP.GameConfig;
 using Glader.ASP.RPG;
 using Glader.ASP.ServiceDiscovery;
 using Glader.Essentials;
@@ -43,13 +44,21 @@ namespace Booma
 
 		private IServiceResolver<IPSOBBCharacterAppearanceService> AppearanceService { get; }
 
+		private IBoomaGGDBFData Data { get; }
+
+		private IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> ConfigServiceResolver { get; }
+
 		public CharacterDataSnapshotFactory(IServiceResolver<IPSOBBCharacterDataQueryService> dataQueryService, 
 			ICharacterOptionsConfigurationFactory optionsFactory, 
-			IServiceResolver<IPSOBBCharacterAppearanceService> appearanceService)
+			IServiceResolver<IPSOBBCharacterAppearanceService> appearanceService, 
+			IBoomaGGDBFData data, 
+			IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> configServiceResolver)
 		{
 			DataQueryService = dataQueryService ?? throw new ArgumentNullException(nameof(dataQueryService));
 			OptionsFactory = optionsFactory ?? throw new ArgumentNullException(nameof(optionsFactory));
 			AppearanceService = appearanceService ?? throw new ArgumentNullException(nameof(appearanceService));
+			Data = data ?? throw new ArgumentNullException(nameof(data));
+			ConfigServiceResolver = configServiceResolver ?? throw new ArgumentNullException(nameof(configServiceResolver));
 		}
 
 		public async Task<InitialCharacterDataSnapshot> Create(CharacterDataEventPayloadCreationContext context)
@@ -105,10 +114,30 @@ namespace Booma
 				GetCustomizationData(PsobbCustomizationSlots.Hair, customizationData),
 				hairColor, proportions);
 
+			byte[] actionBarConfig = await LoadActionBarConfigAsync();
+
+			//TODO: Remove +19 level
 			//new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration)
-			return new InitialCharacterDataSnapshot(CreateEmptyInventory(), CreateEmptyBank(), CreateEmptyStats(), new CharacterProgress((uint) data.Progress.Experience, (uint) data.Progress.Level),
+			return new InitialCharacterDataSnapshot(CreateTestInventory(), CreateEmptyBank(), CreateStats(data.Progress.Level, data.Race, data.ClassType), new CharacterProgress((uint) data.Progress.Experience, (uint) data.Progress.Level + 19),
 				new CharacterSpecialCustomInfo(0, modelType, 0), new CharacterVersionData(0, 0, 0), customizationInfo,
-				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, data.ClassType), configuration, guid);
+				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, data.ClassType), configuration, guid, actionBarConfig);
+		}
+
+		private async Task<byte[]> LoadActionBarConfigAsync()
+		{
+			var serviceQueryResult = await ConfigServiceResolver.Create(CancellationToken.None);
+
+			if(!serviceQueryResult.isAvailable)
+				throw new InvalidOperationException($"Failed to aquire service Type: {nameof(IGameConfigurationService<PsobbGameConfigurationType>)}");
+
+			var result = await serviceQueryResult.Instance.RetrieveConfigAsync(ConfigurationSourceType.Character, PsobbGameConfigurationType.ActionBar);
+
+			//TODO: Enforce defaults better?
+			//Maybe they didn't have one defined for some reason (old case during developement)
+			if (!result.isSuccessful)
+				return new byte[0xE8];
+
+			return result.Result.Data;
 		}
 
 		private static ushort GetCustomizationData(PsobbCustomizationSlots slot, RPGCharacterCustomizationData<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>> data)
@@ -149,23 +178,32 @@ namespace Booma
 			return new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray());
 		}
 
+
 		private CharacterInventoryData CreateEmptyInventory()
 		{
 			return new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray());
 		}
 
-		//TODO: use object mapper.
-		private LobbyCharacterData Convert(RPGCharacterData<CharacterRace, CharacterClass> character)
+		private static CharacterInventoryData CreateTestInventory()
 		{
-			if(character == null) throw new ArgumentNullException(nameof(character));
+			var saber = new InventoryItem(0x00010000, 0x1, 0, 0x8);
+			saber.SetWeaponType(0x01);
 
-			return new LobbyCharacterData(CreateEmptyStats(), 0, 0, new CharacterProgress((uint)character.Progress.Experience, (uint)character.Progress.Level), 0, String.Empty, 0, new CharacterSpecialCustomInfo(0, CharacterModelType.Regular, 0), SectionId.Viridia, character.ClassType,
-				new CharacterVersionData(0, 0, 0), new CharacterCustomizationInfo(0, 0, 0, 0, 0, new Vector3<ushort>(0, 0, 0), new Vector2<float>(0, 0)), character.Entry.Name);
+			InventoryItem[] starterItems = new InventoryItem[] { saber };
+			InventoryItem[] emptyItems = Enumerable.Repeat(new InventoryItem(), 30 - starterItems.Length).ToArray();
+
+			return new CharacterInventoryData((byte)starterItems.Length, 0, 0, 1, starterItems.Concat(emptyItems).ToArray());
 		}
 
-		private static CharacterStats CreateEmptyStats()
+		private CharacterStats CreateStats(int level, CharacterRace race, CharacterClass @class)
 		{
-			return new CharacterStats(Enumerable.Repeat((ushort)1, 7).ToArray());
+			var stats = new ushort[7];
+
+			//Level 1 is represented as 0
+			foreach(var entry in Data.CharacterStatDefault.CalculateBaseStats(level + 1, race, @class))
+				stats[(int)entry.Key] = (ushort)entry.Value.Value;
+
+			return new CharacterStats(stats);
 		}
 	}
 }

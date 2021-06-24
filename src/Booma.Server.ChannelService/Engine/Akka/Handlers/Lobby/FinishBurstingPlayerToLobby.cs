@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Akka.Actor;
+using Glader.ASP.GameConfig;
+using Glader.ASP.ServiceDiscovery;
 using MEAKKA;
 
 namespace Booma
@@ -69,7 +71,7 @@ namespace Booma
 		{
 			if (data == null) throw new ArgumentNullException(nameof(data));
 
-			return new LobbyCharacterData(data.Stats, 0, 0, data.Progress, 0, data.GuildCard.GuildCard.ToString(), 0, data.SpecialCustom, data.GuildCard.SectionId, data.GuildCard.ClassType, data.Version, data.Customization, data.Name);
+			return new LobbyCharacterData(data.Stats, 0, 0, data.Progress, 0, data.GuildCard.GuildCard.ToString(), 0, data.SpecialCustom, data.GuildCard.SectionId, data.GuildCard.ClassType, data.Version, data.Customization, data.Name, data.ActionBarConfig);
 		}
 	}
 }
