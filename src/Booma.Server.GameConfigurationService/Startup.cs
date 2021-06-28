@@ -62,6 +62,7 @@ namespace Booma
 						.IssuerSigningKey = new X509SecurityKey(certificate);
 
 					options.TokenValidationParameters.RequireExpirationTime = false;
+					options.TokenValidationParameters.ValidateLifetime = false;
 
 					//TODO: This audience stuff is ALL WRONG.
 					options.Audience = "auth-server";

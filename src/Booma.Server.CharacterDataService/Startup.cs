@@ -70,6 +70,9 @@ namespace Booma.Server.CharacterDataService
 					options.TokenValidationParameters
 						.IssuerSigningKey = new X509SecurityKey(certificate);
 
+					options.TokenValidationParameters.RequireExpirationTime = false;
+					options.TokenValidationParameters.ValidateLifetime = false;
+
 					//TODO: This audience stuff is ALL WRONG.
 					options.Audience = "auth-server";
 					options.TokenValidationParameters.ValidIssuers = new [] {"https://localhost:5003/", "https://127.0.0.1:5003/"};
