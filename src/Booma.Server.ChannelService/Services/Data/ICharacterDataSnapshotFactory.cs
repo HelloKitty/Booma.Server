@@ -186,8 +186,8 @@ namespace Booma
 
 		private static CharacterInventoryData CreateTestInventory()
 		{
-			var saber = new InventoryItem(0x00010000, 0x1, 0, 0x8);
-			saber.SetWeaponType(0x01);
+			var saber = new InventoryItem(0x00010000, 0x1, 0, InventoryItemFlags.Equipped);
+			saber.SetWeaponType(0x0A);
 
 			InventoryItem[] starterItems = new InventoryItem[] { saber };
 			InventoryItem[] emptyItems = Enumerable.Repeat(new InventoryItem(), 30 - starterItems.Length).ToArray();

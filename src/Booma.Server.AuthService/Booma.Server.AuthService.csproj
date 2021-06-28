@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -12,7 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="Glader.ASP.Authentication.Server" Version="0.0.5" />
-    <PackageReference Include="Glader.ASP.RPG.Client" Version="0.2.28" />
+    <PackageReference Include="Glader.ASP.RPG.Client" Version="0.2.29" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.10" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client.Autofac" Version="0.0.10" />
     <PackageReference Include="Glader.Essentials.ASP" Version="2.2.74" />

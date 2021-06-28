@@ -10,10 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Booma.API.Common" Version="0.0.58" />
+    <PackageReference Include="Booma.API.Common" Version="0.0.59" />
     <PackageReference Include="Glader.ASP.NameQuery.Server" Version="0.0.4" />
-    <PackageReference Include="Glader.ASP.RPG.GGDBF" Version="0.2.28" />
-    <PackageReference Include="Glader.ASP.RPG.Server" Version="0.2.28" />
+    <PackageReference Include="Glader.ASP.RPG.GGDBF" Version="0.2.29" />
+    <PackageReference Include="Glader.ASP.RPG.Server" Version="0.2.29" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
       <PrivateAssets>all</PrivateAssets>
