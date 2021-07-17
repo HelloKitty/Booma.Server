@@ -48,17 +48,21 @@ namespace Booma
 
 		private IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> ConfigServiceResolver { get; }
 
+		private IServiceResolver<ICharacterInventoryService> CharacterInventoryServiceResolver { get; }
+
 		public CharacterDataSnapshotFactory(IServiceResolver<IPSOBBCharacterDataQueryService> dataQueryService, 
 			ICharacterOptionsConfigurationFactory optionsFactory, 
 			IServiceResolver<IPSOBBCharacterAppearanceService> appearanceService, 
 			IBoomaGGDBFData data, 
-			IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> configServiceResolver)
+			IServiceResolver<IGameConfigurationService<PsobbGameConfigurationType>> configServiceResolver, 
+			IServiceResolver<ICharacterInventoryService> characterInventoryServiceResolver)
 		{
 			DataQueryService = dataQueryService ?? throw new ArgumentNullException(nameof(dataQueryService));
 			OptionsFactory = optionsFactory ?? throw new ArgumentNullException(nameof(optionsFactory));
 			AppearanceService = appearanceService ?? throw new ArgumentNullException(nameof(appearanceService));
 			Data = data ?? throw new ArgumentNullException(nameof(data));
 			ConfigServiceResolver = configServiceResolver ?? throw new ArgumentNullException(nameof(configServiceResolver));
+			CharacterInventoryServiceResolver = characterInventoryServiceResolver ?? throw new ArgumentNullException(nameof(characterInventoryServiceResolver));
 		}
 
 		public async Task<InitialCharacterDataSnapshot> Create(CharacterDataEventPayloadCreationContext context)
@@ -116,9 +120,8 @@ namespace Booma
 
 			byte[] actionBarConfig = await LoadActionBarConfigAsync();
 
-			//TODO: Remove +19 level
 			//new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration)
-			return new InitialCharacterDataSnapshot(CreateTestInventory(), CreateEmptyBank(), CreateStats(data.Progress.Level, data.Race, data.ClassType), new CharacterProgress((uint) data.Progress.Experience, (uint) data.Progress.Level + 19),
+			return new InitialCharacterDataSnapshot(await CreateTestInventory(data.Entry.Id), CreateEmptyBank(), CreateStats(data.Progress.Level, data.Race, data.ClassType), new CharacterProgress((uint) data.Progress.Experience, (uint) data.Progress.Level + 19),
 				new CharacterSpecialCustomInfo(0, modelType, 0), new CharacterVersionData(0, 0, 0), customizationInfo,
 				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, data.ClassType), configuration, guid, actionBarConfig);
 		}
@@ -178,27 +181,38 @@ namespace Booma
 			return new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray());
 		}
 
-
-		private CharacterInventoryData CreateEmptyInventory()
+		private async Task<CharacterInventoryData> CreateTestInventory(int characterId)
 		{
-			return new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray());
-		}
+			var resolveResult = await CharacterInventoryServiceResolver.Create(CancellationToken.None);
 
-		private CharacterInventoryData CreateTestInventory()
-		{
+			if (!resolveResult.isAvailable)
+				throw new InvalidOperationException($"Failed to aquire service Type: {nameof(ICharacterInventoryService)}");
+
+			var inventoryResponse = await resolveResult.Instance.RetrieveItemsAsync(characterId);
+
 			List<InventoryItem> starterItems = new List<InventoryItem>();
-			foreach(var itemTemplate in Data.ItemTemplate.Values)
+
+			//Possible empty so don't throw unless not empty
+			if (inventoryResponse.isSuccessful)
 			{
-				//0x00010000 is Saber id
-				var item = new InventoryItem(0x00010000, 0, 0, InventoryItemFlags.Equipped);
-				item.SetWeaponType((byte)itemTemplate.SubClassId);
-				item.ItemData1[2] = (byte) itemTemplate.Id;
+				foreach (var inventoryItem in inventoryResponse.Result.Items)
+				{
+					//TODO: Add logging/warning doesn't exist
+					if (!Data.ItemTemplate.ContainsKey(inventoryItem.TemplateId))
+						continue;
 
-				if(itemTemplate.Id == Data.ItemTemplate.Values.First().Id)
-					item.Equip();
+					var template = Data.ItemTemplate[inventoryItem.TemplateId];
 
-				starterItems.Add(item);
+					//0x00010000 is Saber id
+					var item = new InventoryItem((uint) inventoryItem.InstanceId, 0, 0, 0);
+					item.SetWeaponType((byte)template.SubClassId);
+					item.ItemData1[2] = (byte)template.Id;
+
+					starterItems.Add(item);
+				}
 			}
+			else if(inventoryResponse.ResultCode != CharacterItemInventoryQueryResult.Empty)
+				throw new InvalidOperationException($"Failed to load inventory for Character: {characterId} Reason: {inventoryResponse.ResultCode}");
 
 			InventoryItem[] emptyItems = Enumerable.Repeat(new InventoryItem(), 30 - starterItems.Count).ToArray();
 
