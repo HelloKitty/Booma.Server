@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Booma.Server.CharacterDataService.Migrations
 {
-    [DbContext(typeof(RPGCharacterDatabaseContext<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass, DefaultTestSkillType, CharacterStatType>))]
+    [DbContext(typeof(RPGCharacterDatabaseContext<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass, DefaultTestSkillType, CharacterStatType, ItemClassType, PsobbQuality, Vector3<byte>>))]
     partial class RPGCharacterDatabaseContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -426,6 +426,132 @@ namespace Booma.Server.CharacterDataService.Migrations
                     b.ToTable("group_member");
                 });
 
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGItemClass<Booma.ItemClassType>", b =>
+                {
+                    b.Property<byte>("Id")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("VisualName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("item_class");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (byte)0,
+                            Description = "",
+                            VisualName = "Weapon"
+                        },
+                        new
+                        {
+                            Id = (byte)1,
+                            Description = "",
+                            VisualName = "Guard"
+                        },
+                        new
+                        {
+                            Id = (byte)2,
+                            Description = "",
+                            VisualName = "Mag"
+                        },
+                        new
+                        {
+                            Id = (byte)3,
+                            Description = "",
+                            VisualName = "Tool"
+                        },
+                        new
+                        {
+                            Id = (byte)4,
+                            Description = "",
+                            VisualName = "Meseta"
+                        });
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGItemTemplate<Booma.ItemClassType, Booma.PsobbQuality, Booma.Vector3<byte>>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<byte>("ClassId")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int>("QualityType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubClassId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VisualName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QualityType");
+
+                    b.HasIndex("ClassId", "SubClassId");
+
+                    b.ToTable("item_template");
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGQuality<Booma.PsobbQuality, Booma.Vector3<byte>>", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("VisualName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("quality");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "",
+                            VisualName = "Common"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "",
+                            VisualName = "Rare"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "",
+                            VisualName = "Epic"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "",
+                            VisualName = "Legendary"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "",
+                            VisualName = "SRank"
+                        });
+                });
+
             modelBuilder.Entity("Glader.ASP.RPG.DBRPGRace<Booma.CharacterRace>", b =>
                 {
                     b.Property<int>("Id")
@@ -460,6 +586,25 @@ namespace Booma.Server.CharacterDataService.Migrations
                             Description = "",
                             VisualName = "Cast"
                         });
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGSItemSubClass<Booma.ItemClassType>", b =>
+                {
+                    b.Property<byte>("ItemClassId")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.Property<int>("SubClassId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("VisualName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("ItemClassId", "SubClassId");
+
+                    b.ToTable("item_sub_class");
                 });
 
             modelBuilder.Entity("Glader.ASP.RPG.DBRPGSkill<Booma.DefaultTestSkillType>", b =>
@@ -761,6 +906,55 @@ namespace Booma.Server.CharacterDataService.Migrations
                     b.HasOne("Glader.ASP.RPG.DBRPGGroup", "Group")
                         .WithMany("Members")
                         .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGItemTemplate<Booma.ItemClassType, Booma.PsobbQuality, Booma.Vector3<byte>>", b =>
+                {
+                    b.HasOne("Glader.ASP.RPG.DBRPGQuality<Booma.PsobbQuality, Booma.Vector3<byte>>", "Quality")
+                        .WithMany()
+                        .HasForeignKey("QualityType")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Glader.ASP.RPG.DBRPGSItemSubClass<Booma.ItemClassType>", "ItemSubClass")
+                        .WithMany()
+                        .HasForeignKey("ClassId", "SubClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGQuality<Booma.PsobbQuality, Booma.Vector3<byte>>", b =>
+                {
+                    b.OwnsOne("Booma.Vector3<byte>", "Color", b1 =>
+                        {
+                            b1.Property<int>("DBRPGQuality<PsobbQuality, Vector3<byte>>Id")
+                                .HasColumnType("int");
+
+                            b1.Property<byte>("X")
+                                .HasColumnType("tinyint unsigned");
+
+                            b1.Property<byte>("Y")
+                                .HasColumnType("tinyint unsigned");
+
+                            b1.Property<byte>("Z")
+                                .HasColumnType("tinyint unsigned");
+
+                            b1.HasKey("DBRPGQuality<PsobbQuality, Vector3<byte>>Id");
+
+                            b1.ToTable("quality");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DBRPGQuality<PsobbQuality, Vector3<byte>>Id");
+                        });
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGSItemSubClass<Booma.ItemClassType>", b =>
+                {
+                    b.HasOne("Glader.ASP.RPG.DBRPGItemClass<Booma.ItemClassType>", "ItemClass")
+                        .WithMany("SubClasses")
+                        .HasForeignKey("ItemClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

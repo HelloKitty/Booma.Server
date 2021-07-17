@@ -36,7 +36,7 @@ namespace Booma
 				if(endpointResponse == null)
 					throw new InvalidOperationException($"Failed to retrieve endpoint for ServiceType: {BoomaServiceType.CharacterDataService}");
 
-				var dataSource = new RefitHttpGGDBFDataSource<RPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType>>($"{endpointResponse.Result.Address}:{endpointResponse.Result.Port}", new RefitHttpGGDBFDataSourceOptions()
+				var dataSource = new RefitHttpGGDBFDataSource<RPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType, ItemClassType, PsobbQuality, Vector3<byte>>>($"{endpointResponse.Result.Address}:{endpointResponse.Result.Port}", new RefitHttpGGDBFDataSourceOptions()
 				{
 					RefreshOnFirstQuery = true,
 					Settings = new RefitSettings()
@@ -45,7 +45,7 @@ namespace Booma
 					}
 				});
 
-				await RPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType>.Initialize(dataSource);
+				await RPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType, ItemClassType, PsobbQuality, Vector3<byte>>.Initialize(dataSource);
 
 				if(Logger.IsInfoEnabled)
 					Logger.Info($"GGDBF Initialized");

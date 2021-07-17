@@ -32,27 +32,19 @@ namespace Booma.Server.CharacterDataService
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllers()
-				.RegisterCharacterDataController<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass>()
-				.RegisterGGDBFController()
-				.AddNewtonsoftJson(options =>
-				{
-					//Required for serializing GGDBF tables
-					options.RegisterGGDBFSerializers();
-				});
+			var mvcBuilder = services.AddControllers();
 
-			//Required to register the GGDBF over HTTP system.
-			services.RegisterGGDBFContentServices<EntityFrameworkGGDBFDataSource, AutoMapperGGDBFDataConverter, RPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType>>();
-
-			services.RegisterCharacterDatabase<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass, DefaultTestSkillType, CharacterStatType>(builder =>
+			services.RegisterGladerRPGSystem(builder =>
 			{
 				builder.UseMySql("server=127.0.0.1;port=3306;Database=booma.game;Uid=root;Pwd=test;", optionsBuilder =>
 				{
 					optionsBuilder.MigrationsAssembly(GetType().Assembly.FullName);
 				});
-			}, true); //true required for GGDBF
+			}, CreateRPGDatabaseOptions, mvcBuilder);
 
 			services.RegisterGladerASP();
+
+			services.RegisterGladerRPGGGDBF<EntityFrameworkGGDBFDataSource, AutoMapperGGDBFDataConverter>(CreateRPGDatabaseOptions, mvcBuilder);
 
 			//TODO: Support real certs. This is a complete DEV ONLY HACK!
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -77,6 +69,22 @@ namespace Booma.Server.CharacterDataService
 					options.Audience = "auth-server";
 					options.TokenValidationParameters.ValidIssuers = new [] {"https://localhost:5003/", "https://127.0.0.1:5003/"};
 				});
+		}
+
+		private RPGOptionsBuilder CreateRPGDatabaseOptions(RPGOptionsBuilder builder)
+		{
+			//true required for GGDBF
+			builder = builder with { RegisterAsNonGenericDBContext = true };
+
+			return builder
+				.WithCustomizationType<PsobbCustomizationSlots, Vector3<ushort>>()
+				.WithProportionType<PsobbProportionSlots, Vector2<float>>()
+				.WithRaceType<CharacterRace>()
+				.WithClassType<CharacterClass>()
+				.WithSkillType<DefaultTestSkillType>()
+				.WithStatType<CharacterStatType>()
+				.WithItemClassType<ItemClassType>()
+				.WithQualityType<PsobbQuality, Vector3<byte>>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

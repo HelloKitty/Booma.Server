@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Booma.Server.CharacterDataService.Migrations
 {
-    [DbContext(typeof(RPGCharacterDatabaseContext<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass, DefaultTestSkillType, CharacterStatType>))]
+    [DbContext(typeof(RPGCharacterDatabaseContext<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass, DefaultTestSkillType, CharacterStatType, ItemClassType, PsobbQuality, Vector3<byte>>))]
     [Migration("20210621093549_FixedStatsTable")]
     partial class FixedStatsTable
     {

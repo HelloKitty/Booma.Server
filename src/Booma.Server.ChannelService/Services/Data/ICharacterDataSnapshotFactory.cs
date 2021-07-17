@@ -184,15 +184,25 @@ namespace Booma
 			return new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray());
 		}
 
-		private static CharacterInventoryData CreateTestInventory()
+		private CharacterInventoryData CreateTestInventory()
 		{
-			var saber = new InventoryItem(0x00010000, 0x1, 0, InventoryItemFlags.Equipped);
-			saber.SetWeaponType(0x0A);
+			List<InventoryItem> starterItems = new List<InventoryItem>();
+			foreach(var itemTemplate in Data.ItemTemplate.Values)
+			{
+				//0x00010000 is Saber id
+				var item = new InventoryItem(0x00010000, 0, 0, InventoryItemFlags.Equipped);
+				item.SetWeaponType((byte)itemTemplate.SubClassId);
+				item.ItemData1[2] = (byte) itemTemplate.Id;
 
-			InventoryItem[] starterItems = new InventoryItem[] { saber };
-			InventoryItem[] emptyItems = Enumerable.Repeat(new InventoryItem(), 30 - starterItems.Length).ToArray();
+				if(itemTemplate.Id == Data.ItemTemplate.Values.First().Id)
+					item.Equip();
 
-			return new CharacterInventoryData((byte)starterItems.Length, 0, 0, 1, starterItems.Concat(emptyItems).ToArray());
+				starterItems.Add(item);
+			}
+
+			InventoryItem[] emptyItems = Enumerable.Repeat(new InventoryItem(), 30 - starterItems.Count).ToArray();
+
+			return new CharacterInventoryData((byte)starterItems.Count, 0, 0, 1, starterItems.Concat(emptyItems).ToArray());
 		}
 
 		private CharacterStats CreateStats(int level, CharacterRace race, CharacterClass @class)

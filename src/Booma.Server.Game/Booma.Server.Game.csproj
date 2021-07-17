@@ -11,12 +11,12 @@
     <PackageReference Include="Booma.Packet.Game" Version="0.0.59" />
     <PackageReference Include="Glader.ASP.Authentication.Client" Version="0.0.5" />
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.1.6" />
-    <PackageReference Include="Glader.ASP.RPG.Client" Version="0.2.29" />
+    <PackageReference Include="Glader.ASP.RPG.Client" Version="0.3.37" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client" Version="0.0.10" />
     <PackageReference Include="Glader.ASP.ServiceDiscovery.Client.Autofac" Version="0.0.10" />
-    <PackageReference Include="Glader.Essentials.Events" Version="2.2.74" />
-    <PackageReference Include="Glader.Essentials.GameFramework" Version="2.2.74" />
-    <PackageReference Include="Glader.Essentials.Refit" Version="2.2.74" />
+    <PackageReference Include="Glader.Essentials.Events" Version="2.2.77" />
+    <PackageReference Include="Glader.Essentials.GameFramework" Version="2.2.77" />
+    <PackageReference Include="Glader.Essentials.Refit" Version="2.2.77" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
   </ItemGroup>
 

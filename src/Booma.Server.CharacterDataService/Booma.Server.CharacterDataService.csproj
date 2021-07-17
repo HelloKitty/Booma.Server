@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,17 +13,17 @@
   <ItemGroup>
     <PackageReference Include="Booma.API.Common" Version="0.0.59" />
     <PackageReference Include="Glader.ASP.NameQuery.Server" Version="0.0.4" />
-    <PackageReference Include="Glader.ASP.RPG.GGDBF" Version="0.2.29" />
-    <PackageReference Include="Glader.ASP.RPG.Server" Version="0.2.29" />
+    <PackageReference Include="Glader.ASP.RPG.GGDBF" Version="0.3.37" />
+    <PackageReference Include="Glader.ASP.RPG.Server" Version="0.3.37" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.4" />
-    <PackageReference Include="GGDBF.DataSource.EntityFramework" Version="0.1.34" />
-    <PackageReference Include="GGDBF.DataSource.Http.Server.ASP" Version="0.1.34" />
-    <PackageReference Include="GGDBF.Generator" Version="0.1.34" />
+    <PackageReference Include="GGDBF.DataSource.EntityFramework" Version="0.1.41" />
+    <PackageReference Include="GGDBF.DataSource.Http.Server.ASP" Version="0.1.41" />
+    <PackageReference Include="GGDBF.Generator" Version="0.1.41" />
   </ItemGroup>
 
   <ItemGroup>

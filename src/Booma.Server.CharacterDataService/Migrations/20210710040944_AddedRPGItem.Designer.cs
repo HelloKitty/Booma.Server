@@ -9,25 +9,21 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Booma.Server.CharacterDataService.Migrations
 {
     [DbContext(typeof(RPGCharacterDatabaseContext<PsobbCustomizationSlots, Vector3<ushort>, PsobbProportionSlots, Vector2<float>, CharacterRace, CharacterClass, DefaultTestSkillType, CharacterStatType, ItemClassType, PsobbQuality, Vector3<byte>>))]
-    [Migration("20210223041308_NewInitialMigration")]
-    partial class NewInitialMigration
+    [Migration("20210710040944_AddedRPGItem")]
+    partial class AddedRPGItem
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.10")
+                .HasAnnotation("ProductVersion", "3.1.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacter<Booma.CharacterRace, Booma.CharacterClass>", b =>
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacter", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<byte>("ClassId")
-                        .HasColumnName("Class")
-                        .HasColumnType("tinyint unsigned");
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -41,15 +37,7 @@ namespace Booma.Server.CharacterDataService.Migrations
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("RaceId")
-                        .HasColumnName("Race")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ClassId");
-
-                    b.HasIndex("RaceId");
 
                     b.ToTable("character");
                 });
@@ -128,7 +116,30 @@ namespace Booma.Server.CharacterDataService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterOwnership<Booma.CharacterRace, Booma.CharacterClass>", b =>
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterDefinition<Booma.CharacterRace, Booma.CharacterClass>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<byte>("ClassId")
+                        .HasColumnName("Class")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.Property<int>("RaceId")
+                        .HasColumnName("Race")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("RaceId");
+
+                    b.ToTable("character_definition");
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterOwnership", b =>
                 {
                     b.Property<int>("OwnershipId")
                         .HasColumnType("int");
@@ -145,7 +156,7 @@ namespace Booma.Server.CharacterDataService.Migrations
                     b.ToTable("character_ownership");
                 });
 
-            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterProgress<Booma.CharacterRace, Booma.CharacterClass>", b =>
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterProgress", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -262,6 +273,26 @@ namespace Booma.Server.CharacterDataService.Migrations
                     b.ToTable("character_skill_level");
                 });
 
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterStatDefault<Booma.CharacterStatType, Booma.CharacterRace, Booma.CharacterClass>", b =>
+                {
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RaceId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("ClassId")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.HasKey("Level", "RaceId", "ClassId");
+
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("RaceId");
+
+                    b.ToTable("character_stat_default");
+                });
+
             modelBuilder.Entity("Glader.ASP.RPG.DBRPGClass<Booma.CharacterClass>", b =>
                 {
                     b.Property<byte>("Id")
@@ -352,6 +383,177 @@ namespace Booma.Server.CharacterDataService.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("group");
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGGroupMember", b =>
+                {
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CharacterId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("group_member");
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGItemClass<Booma.ItemClassType>", b =>
+                {
+                    b.Property<byte>("Id")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("VisualName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("item_class");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (byte)0,
+                            Description = "",
+                            VisualName = "Weapon"
+                        },
+                        new
+                        {
+                            Id = (byte)1,
+                            Description = "",
+                            VisualName = "Guard"
+                        },
+                        new
+                        {
+                            Id = (byte)2,
+                            Description = "",
+                            VisualName = "Mag"
+                        },
+                        new
+                        {
+                            Id = (byte)3,
+                            Description = "",
+                            VisualName = "Tool"
+                        },
+                        new
+                        {
+                            Id = (byte)4,
+                            Description = "",
+                            VisualName = "Meseta"
+                        });
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGItemTemplate<Booma.ItemClassType, Booma.PsobbQuality, Booma.Vector3<byte>>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<byte>("ClassId")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int>("QualityType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubClassId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VisualName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QualityType");
+
+                    b.HasIndex("ClassId", "SubClassId");
+
+                    b.ToTable("item_template");
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGQuality<Booma.PsobbQuality, Booma.Vector3<byte>>", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("VisualName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("quality");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "",
+                            VisualName = "Common"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "",
+                            VisualName = "Rare"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "",
+                            VisualName = "Epic"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "",
+                            VisualName = "Legendary"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "",
+                            VisualName = "SRank"
+                        });
+                });
+
             modelBuilder.Entity("Glader.ASP.RPG.DBRPGRace<Booma.CharacterRace>", b =>
                 {
                     b.Property<int>("Id")
@@ -388,6 +590,25 @@ namespace Booma.Server.CharacterDataService.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGSItemSubClass<Booma.ItemClassType>", b =>
+                {
+                    b.Property<byte>("ItemClassId")
+                        .HasColumnType("tinyint unsigned");
+
+                    b.Property<int>("SubClassId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("VisualName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("ItemClassId", "SubClassId");
+
+                    b.ToTable("item_sub_class");
+                });
+
             modelBuilder.Entity("Glader.ASP.RPG.DBRPGSkill<Booma.DefaultTestSkillType>", b =>
                 {
                     b.Property<int>("Id")
@@ -416,24 +637,69 @@ namespace Booma.Server.CharacterDataService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacter<Booma.CharacterRace, Booma.CharacterClass>", b =>
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGStat<Booma.CharacterStatType>", b =>
                 {
-                    b.HasOne("Glader.ASP.RPG.DBRPGClass<Booma.CharacterClass>", "Class")
-                        .WithMany()
-                        .HasForeignKey("ClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.HasOne("Glader.ASP.RPG.DBRPGRace<Booma.CharacterRace>", "Race")
-                        .WithMany()
-                        .HasForeignKey("RaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("VisualName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("stat");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 0,
+                            Description = "",
+                            VisualName = "ATP"
+                        },
+                        new
+                        {
+                            Id = 1,
+                            Description = "",
+                            VisualName = "MST"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "",
+                            VisualName = "EVP"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "",
+                            VisualName = "HP"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "",
+                            VisualName = "DFP"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "",
+                            VisualName = "ATA"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "",
+                            VisualName = "LCK"
+                        });
                 });
 
             modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterCustomizableSlot<Booma.PsobbCustomizationSlots, Booma.Vector3<ushort>>", b =>
                 {
-                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter<Booma.CharacterRace, Booma.CharacterClass>", null)
+                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter", null)
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -471,27 +737,48 @@ namespace Booma.Server.CharacterDataService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterOwnership<Booma.CharacterRace, Booma.CharacterClass>", b =>
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterDefinition<Booma.CharacterRace, Booma.CharacterClass>", b =>
                 {
-                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter<Booma.CharacterRace, Booma.CharacterClass>", "Character")
+                    b.HasOne("Glader.ASP.RPG.DBRPGClass<Booma.CharacterClass>", "Class")
+                        .WithMany()
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter", "Character")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Glader.ASP.RPG.DBRPGRace<Booma.CharacterRace>", "Race")
+                        .WithMany()
+                        .HasForeignKey("RaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterOwnership", b =>
+                {
+                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter", "Character")
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterProgress<Booma.CharacterRace, Booma.CharacterClass>", b =>
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterProgress", b =>
                 {
-                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter<Booma.CharacterRace, Booma.CharacterClass>", "Character")
+                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter", "Character")
                         .WithOne("Progress")
-                        .HasForeignKey("Glader.ASP.RPG.DBRPGCharacterProgress<Booma.CharacterRace, Booma.CharacterClass>", "Id")
+                        .HasForeignKey("Glader.ASP.RPG.DBRPGCharacterProgress", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterProportionSlot<Booma.PsobbProportionSlots, Booma.Vector2<float>>", b =>
                 {
-                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter<Booma.CharacterRace, Booma.CharacterClass>", null)
+                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter", null)
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -528,7 +815,7 @@ namespace Booma.Server.CharacterDataService.Migrations
 
             modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterSkillKnown<Booma.DefaultTestSkillType>", b =>
                 {
-                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter<Booma.CharacterRace, Booma.CharacterClass>", null)
+                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter", null)
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -543,7 +830,7 @@ namespace Booma.Server.CharacterDataService.Migrations
 
             modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterSkillLevel<Booma.DefaultTestSkillType>", b =>
                 {
-                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter<Booma.CharacterRace, Booma.CharacterClass>", null)
+                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter", null)
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -558,6 +845,118 @@ namespace Booma.Server.CharacterDataService.Migrations
                     b.HasOne("Glader.ASP.RPG.DBRPGCharacterSkillKnown<Booma.DefaultTestSkillType>", "KnownSkill")
                         .WithOne("SkillLevelData")
                         .HasForeignKey("Glader.ASP.RPG.DBRPGCharacterSkillLevel<Booma.DefaultTestSkillType>", "CharacterId", "SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGCharacterStatDefault<Booma.CharacterStatType, Booma.CharacterRace, Booma.CharacterClass>", b =>
+                {
+                    b.HasOne("Glader.ASP.RPG.DBRPGClass<Booma.CharacterClass>", "Class")
+                        .WithMany()
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Glader.ASP.RPG.DBRPGRace<Booma.CharacterRace>", "Race")
+                        .WithMany()
+                        .HasForeignKey("RaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsMany("Glader.ASP.RPG.RPGStatValue<Booma.CharacterStatType>", "Stats", b1 =>
+                        {
+                            b1.Property<int>("Level")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Race")
+                                .HasColumnType("int");
+
+                            b1.Property<byte>("ClassId")
+                                .HasColumnType("tinyint unsigned");
+
+                            b1.Property<int>("StatType")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("int");
+
+                            b1.HasKey("Level", "Race", "ClassId", "StatType");
+
+                            b1.HasIndex("StatType");
+
+                            b1.ToTable("RPGStatValue<CharacterStatType>");
+
+                            b1.HasOne("Glader.ASP.RPG.DBRPGStat<Booma.CharacterStatType>", "Stat")
+                                .WithMany()
+                                .HasForeignKey("StatType")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
+                            b1.WithOwner()
+                                .HasForeignKey("Level", "Race", "ClassId");
+                        });
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGGroupMember", b =>
+                {
+                    b.HasOne("Glader.ASP.RPG.DBRPGCharacter", "Character")
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Glader.ASP.RPG.DBRPGGroup", "Group")
+                        .WithMany("Members")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGItemTemplate<Booma.ItemClassType, Booma.PsobbQuality, Booma.Vector3<byte>>", b =>
+                {
+                    b.HasOne("Glader.ASP.RPG.DBRPGQuality<Booma.PsobbQuality, Booma.Vector3<byte>>", "Quality")
+                        .WithMany()
+                        .HasForeignKey("QualityType")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Glader.ASP.RPG.DBRPGSItemSubClass<Booma.ItemClassType>", "ItemSubClass")
+                        .WithMany()
+                        .HasForeignKey("ClassId", "SubClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGQuality<Booma.PsobbQuality, Booma.Vector3<byte>>", b =>
+                {
+                    b.OwnsOne("Booma.Vector3<byte>", "Color", b1 =>
+                        {
+                            b1.Property<int>("DBRPGQuality<PsobbQuality, Vector3<byte>>Id")
+                                .HasColumnType("int");
+
+                            b1.Property<byte>("X")
+                                .HasColumnType("tinyint unsigned");
+
+                            b1.Property<byte>("Y")
+                                .HasColumnType("tinyint unsigned");
+
+                            b1.Property<byte>("Z")
+                                .HasColumnType("tinyint unsigned");
+
+                            b1.HasKey("DBRPGQuality<PsobbQuality, Vector3<byte>>Id");
+
+                            b1.ToTable("quality");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DBRPGQuality<PsobbQuality, Vector3<byte>>Id");
+                        });
+                });
+
+            modelBuilder.Entity("Glader.ASP.RPG.DBRPGSItemSubClass<Booma.ItemClassType>", b =>
+                {
+                    b.HasOne("Glader.ASP.RPG.DBRPGItemClass<Booma.ItemClassType>", "ItemClass")
+                        .WithMany("SubClasses")
+                        .HasForeignKey("ItemClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

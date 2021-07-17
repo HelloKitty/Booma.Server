@@ -9,14 +9,14 @@ using Glader.Essentials;
 
 namespace Booma
 {
-	public interface IBoomaGGDBFData : IRPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType>
+	public interface IBoomaGGDBFData : IRPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType, ItemClassType, PsobbQuality, Vector3<byte>>
 	{
 
 	}
 
 	public sealed class BoomaGGDBFAdapter : IBoomaGGDBFData
 	{
-		private IRPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType> AdaptedContext => RPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType>.Instance;
+		private IRPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType, ItemClassType, PsobbQuality, Vector3<byte>> AdaptedContext => RPGStaticDataContext<DefaultTestSkillType, CharacterRace, CharacterClass, PsobbProportionSlots, PsobbCustomizationSlots, CharacterStatType, ItemClassType, PsobbQuality, Vector3<byte>>.Instance;
 
 		public IReadOnlyDictionary<DefaultTestSkillType, DBRPGSkill<DefaultTestSkillType>> Skill => AdaptedContext.Skill;
 
@@ -31,6 +31,14 @@ namespace Booma
 		public IReadOnlyDictionary<CharacterStatType, DBRPGStat<CharacterStatType>> Stat => AdaptedContext.Stat;
 
 		public IReadOnlyDictionary<DBRPGCharacterStatDefaultKey<CharacterStatType, CharacterRace, CharacterClass>, DBRPGCharacterStatDefault<CharacterStatType, CharacterRace, CharacterClass>> CharacterStatDefault => AdaptedContext.CharacterStatDefault;
+
+		public IReadOnlyDictionary<ItemClassType, DBRPGItemClass<ItemClassType>> ItemClass => AdaptedContext.ItemClass;
+
+		public IReadOnlyDictionary<DBRPGSItemSubClassKey<ItemClassType>, DBRPGSItemSubClass<ItemClassType>> ItemSubClass => AdaptedContext.ItemSubClass;
+
+		public IReadOnlyDictionary<PsobbQuality, DBRPGQuality<PsobbQuality, Vector3<byte>>> Quality => AdaptedContext.Quality;
+
+		public IReadOnlyDictionary<int, DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>> ItemTemplate => AdaptedContext.ItemTemplate;
 	}
 
 	public sealed class GGDBFDataModule : Module
