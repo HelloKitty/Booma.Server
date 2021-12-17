@@ -34,17 +34,9 @@ namespace Booma.Server.CharacterDataService
 		{
 			var mvcBuilder = services.AddControllers();
 
-			services.RegisterGladerRPGSystem(builder =>
-			{
-				builder.UseMySql("server=127.0.0.1;port=3306;Database=booma.game;Uid=root;Pwd=test;", optionsBuilder =>
-				{
-					optionsBuilder.MigrationsAssembly(GetType().Assembly.FullName);
-				});
-			}, CreateRPGDatabaseOptions, mvcBuilder);
+			RegisterGladerRPGSystem(services, mvcBuilder);
 
 			services.RegisterGladerASP();
-
-			services.RegisterGladerRPGGGDBF<EntityFrameworkGGDBFDataSource, AutoMapperGGDBFDataConverter>(CreateRPGDatabaseOptions, mvcBuilder);
 
 			//TODO: Support real certs. This is a complete DEV ONLY HACK!
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -71,7 +63,14 @@ namespace Booma.Server.CharacterDataService
 				});
 		}
 
-		private RPGOptionsBuilder CreateRPGDatabaseOptions(RPGOptionsBuilder builder)
+		public static void RegisterGladerRPGSystem(IServiceCollection services, IMvcBuilder mvcBuilder)
+		{
+			services.RegisterGladerRPGSystem(builder => { builder.UseMySql("server=127.0.0.1;port=3306;Database=booma.game;Uid=root;Pwd=test;", optionsBuilder => { optionsBuilder.MigrationsAssembly(typeof(Startup).Assembly.FullName); }); }, CreateRPGDatabaseOptions, mvcBuilder);
+
+			services.RegisterGladerRPGGGDBF<EntityFrameworkGGDBFDataSource, AutoMapperGGDBFDataConverter>(CreateRPGDatabaseOptions, mvcBuilder);
+		}
+
+		private static RPGOptionsBuilder CreateRPGDatabaseOptions(RPGOptionsBuilder builder)
 		{
 			//true required for GGDBF
 			builder = builder with { RegisterAsNonGenericDBContext = true };
