@@ -84,6 +84,7 @@ namespace Booma.Server
 					item.ItemData1[2] = (byte)(itemTemplate.Id & 0xFF);
 
 					await context.MessageService.SendMessageAsync(new BlockNetworkCommand60EventServerPayload(new Sub60CreateInventoryItemCommand(0, item.ItemId, item.ItemData1, item.ItemData2)), token);
+					break;
 				}
 			}
 		}
