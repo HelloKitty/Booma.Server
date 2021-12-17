@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Booma.Server.CharacterDataService;
+using Booma.Tools.ItemPMT.JSON.Barriers;
 using Booma.Tools.ItemPMT.JSON.Frames;
 using Booma.Tools.ItemPMT.JSON.Weapons;
 using Fasterflect;
@@ -30,8 +31,31 @@ namespace Booma.Tools.ItemPMT.JSON.DatabasePopulator
 
 				await LoadWeaponEntriesAsync(itemTemplateSet, itemSubclassSet);
 				await LoadFrameEntriesAsync(itemTemplateSet, itemSubclassSet);
+				await LoadBarrierEntriesAsync(itemTemplateSet, itemSubclassSet);
 
 				await context.SaveChangesAsync(true);
+			}
+		}
+
+		private static async Task LoadBarrierEntriesAsync(DbSet<DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>> itemTemplateSet, DbSet<DBRPGSItemSubClass<ItemClassType>> itemSubclassSet)
+		{
+			var barrierData = JsonConvert.DeserializeObject<ItemPMTBarriers>(File.ReadAllText($@"C:\Users\Glader\Documents\Github\Booma.Server\Data\JSON\ItemPMT.Barriers.json"));
+
+			for(int i = 0; i < barrierData.barriers.list.Count; i++)
+			{
+				var entry = barrierData.barriers.list[i];
+				var key = CreateItemTemplateKey(ItemClassType.Guard, 2, i); //Subclass 1 is Barrier
+
+				//If it's already inserted don't reinsert
+				if((await itemTemplateSet.FindAsync(key)) != null)
+					continue;
+
+				await CreateSubclassIfNeededAsync(ItemClassType.Guard, itemSubclassSet, 2, "Frame");
+
+				var dbEntry = new DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>(ItemClassType.Guard, 2, entry.name, entry.desc, PsobbQuality.Common);
+				dbEntry.TrySetPropertyValue(nameof(DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>.Id), key);
+				itemTemplateSet.Add(dbEntry);
+				Console.WriteLine($"Inserting: {key} - {entry.name}");
 			}
 		}
 
