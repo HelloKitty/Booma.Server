@@ -29,27 +29,31 @@ namespace Booma.Tools.ItemPMT.JSON.DatabasePopulator
 				var itemSubclassSet = context.Set<DBRPGSItemSubClass<ItemClassType>>();
 
 				await LoadWeaponEntriesAsync(itemTemplateSet, itemSubclassSet);
-
-				var frameData = JsonConvert.DeserializeObject<ItemPMTFrames>(File.ReadAllText($@"C:\Users\Glader\Documents\Github\Booma.Server\Data\JSON\ItemPMT.Frames.json"));
-
-				for (int i = 0; i < frameData.frames.list.Count; i++)
-				{
-					var entry = frameData.frames.list[i];
-					var key = CreateItemTemplateKey(ItemClassType.Guard, 1, i); //Subclass 1 is Frame
-
-					//If it's already inserted don't reinsert
-					if((await itemTemplateSet.FindAsync(key)) != null)
-						continue;
-
-					await CreateSubclassIfNeededAsync(ItemClassType.Guard, itemSubclassSet, 1, "Frame");
-
-					var dbEntry = new DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>(ItemClassType.Guard, 1, entry.name, entry.desc, PsobbQuality.Common);
-					dbEntry.TrySetPropertyValue(nameof(DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>.Id), key);
-					itemTemplateSet.Add(dbEntry);
-					Console.WriteLine($"Inserting: {key} - {entry.name}");
-				}
+				await LoadFrameEntriesAsync(itemTemplateSet, itemSubclassSet);
 
 				await context.SaveChangesAsync(true);
+			}
+		}
+
+		private static async Task LoadFrameEntriesAsync(DbSet<DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>> itemTemplateSet, DbSet<DBRPGSItemSubClass<ItemClassType>> itemSubclassSet)
+		{
+			var frameData = JsonConvert.DeserializeObject<ItemPMTFrames>(File.ReadAllText($@"C:\Users\Glader\Documents\Github\Booma.Server\Data\JSON\ItemPMT.Frames.json"));
+
+			for (int i = 0; i < frameData.frames.list.Count; i++)
+			{
+				var entry = frameData.frames.list[i];
+				var key = CreateItemTemplateKey(ItemClassType.Guard, 1, i); //Subclass 1 is Frame
+
+				//If it's already inserted don't reinsert
+				if ((await itemTemplateSet.FindAsync(key)) != null)
+					continue;
+
+				await CreateSubclassIfNeededAsync(ItemClassType.Guard, itemSubclassSet, 1, "Frame");
+
+				var dbEntry = new DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>(ItemClassType.Guard, 1, entry.name, entry.desc, PsobbQuality.Common);
+				dbEntry.TrySetPropertyValue(nameof(DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>.Id), key);
+				itemTemplateSet.Add(dbEntry);
+				Console.WriteLine($"Inserting: {key} - {entry.name}");
 			}
 		}
 
