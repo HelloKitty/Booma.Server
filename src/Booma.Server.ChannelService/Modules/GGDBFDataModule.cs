@@ -39,6 +39,10 @@ namespace Booma
 		public IReadOnlyDictionary<PsobbQuality, DBRPGQuality<PsobbQuality, Vector3<byte>>> Quality => AdaptedContext.Quality;
 
 		public IReadOnlyDictionary<int, DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>> ItemTemplate => AdaptedContext.ItemTemplate;
+
+		public IReadOnlyDictionary<int, DBRPGCharacterItemDefault<CharacterRace, CharacterClass, ItemClassType, PsobbQuality, Vector3<byte>>> CharacterItemDefault => AdaptedContext.CharacterItemDefault;
+
+		public IReadOnlyDictionary<int, DBRPGMap> Map => AdaptedContext.Map;
 	}
 
 	public sealed class GGDBFDataModule : Module

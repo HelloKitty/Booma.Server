@@ -24,6 +24,7 @@ namespace Booma
 			return new CharacterGuildCardChunkResponsePayload(message.ChunkNumber, chunk);
 		}
 
+		//TODO: Optimize performance.
 		private static byte[] ComputeChunk(int messageChunkNumber)
 		{
 			//PSOBB sends a statically sized guild card data chunk.
