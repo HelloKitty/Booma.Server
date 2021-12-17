@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Booma.Server.CharacterDataService;
 using Booma.Tools.ItemPMT.JSON.Barriers;
 using Booma.Tools.ItemPMT.JSON.Frames;
+using Booma.Tools.ItemPMT.JSON.Units;
 using Booma.Tools.ItemPMT.JSON.Weapons;
 using Fasterflect;
 using Glader.ASP.RPG;
@@ -32,8 +33,31 @@ namespace Booma.Tools.ItemPMT.JSON.DatabasePopulator
 				await LoadWeaponEntriesAsync(itemTemplateSet, itemSubclassSet);
 				await LoadFrameEntriesAsync(itemTemplateSet, itemSubclassSet);
 				await LoadBarrierEntriesAsync(itemTemplateSet, itemSubclassSet);
+				await LoadUnitsEntriesAsync(itemTemplateSet, itemSubclassSet);
 
 				await context.SaveChangesAsync(true);
+			}
+		}
+
+		private static async Task LoadUnitsEntriesAsync(DbSet<DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>> itemTemplateSet, DbSet<DBRPGSItemSubClass<ItemClassType>> itemSubclassSet)
+		{
+			var unitData = JsonConvert.DeserializeObject<ItemPMTUnits>(File.ReadAllText($@"C:\Users\Glader\Documents\Github\Booma.Server\Data\JSON\ItemPMT.Units.json"));
+
+			for(int i = 0; i < unitData.units.list.Count; i++)
+			{
+				var entry = unitData.units.list[i];
+				var key = CreateItemTemplateKey(ItemClassType.Guard, 3, i); //Subclass 3 is Unit
+
+				//If it's already inserted don't reinsert
+				if((await itemTemplateSet.FindAsync(key)) != null)
+					continue;
+
+				await CreateSubclassIfNeededAsync(ItemClassType.Guard, itemSubclassSet, 3, "Unit");
+
+				var dbEntry = new DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>(ItemClassType.Guard, 3, entry.name, entry.desc, PsobbQuality.Common);
+				dbEntry.TrySetPropertyValue(nameof(DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>.Id), key);
+				itemTemplateSet.Add(dbEntry);
+				Console.WriteLine($"Inserting: {key} - {entry.name}");
 			}
 		}
 
@@ -44,13 +68,13 @@ namespace Booma.Tools.ItemPMT.JSON.DatabasePopulator
 			for(int i = 0; i < barrierData.barriers.list.Count; i++)
 			{
 				var entry = barrierData.barriers.list[i];
-				var key = CreateItemTemplateKey(ItemClassType.Guard, 2, i); //Subclass 1 is Barrier
+				var key = CreateItemTemplateKey(ItemClassType.Guard, 2, i); //Subclass 2 is Barrier
 
 				//If it's already inserted don't reinsert
 				if((await itemTemplateSet.FindAsync(key)) != null)
 					continue;
 
-				await CreateSubclassIfNeededAsync(ItemClassType.Guard, itemSubclassSet, 2, "Frame");
+				await CreateSubclassIfNeededAsync(ItemClassType.Guard, itemSubclassSet, 2, "Barrier");
 
 				var dbEntry = new DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>(ItemClassType.Guard, 2, entry.name, entry.desc, PsobbQuality.Common);
 				dbEntry.TrySetPropertyValue(nameof(DBRPGItemTemplate<ItemClassType, PsobbQuality, Vector3<byte>>.Id), key);
