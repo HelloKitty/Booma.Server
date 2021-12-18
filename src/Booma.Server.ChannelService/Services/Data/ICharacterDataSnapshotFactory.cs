@@ -121,7 +121,7 @@ namespace Booma
 			byte[] actionBarConfig = await LoadActionBarConfigAsync();
 
 			//new InitializeCharacterDataEventPayload(new CharacterInventoryData(0, 0, 0, 1, Enumerable.Repeat(new InventoryItem(), 30).ToArray()), CreateDefaultCharacterData(), 0, new CharacterBankData(0, Enumerable.Repeat(new BankItem(), 200).ToArray()), new GuildCardEntry(1, "Glader", String.Empty, String.Empty, 1, SectionId.Viridia, CharacterClass.HUmar), 0, configuration)
-			return new InitialCharacterDataSnapshot(await CreateTestInventory(data.Entry.Id), CreateEmptyBank(), CreateStats(data.Progress.Level, data.Race, data.ClassType), new CharacterProgress((uint) data.Progress.Experience, (uint) data.Progress.Level + 19),
+			return new InitialCharacterDataSnapshot(await CreateTestInventory(data.Entry.Id), CreateEmptyBank(), CreateStats(data.Progress.Level, data.Race, data.ClassType), new CharacterProgress((uint) data.Progress.Experience, (uint) data.Progress.Level),
 				new CharacterSpecialCustomInfo(0, modelType, 0), new CharacterVersionData(0, 0, 0), customizationInfo,
 				new GuildCardEntry(1, data.Entry.Name, String.Empty, String.Empty, 1, SectionId.Viridia, data.ClassType), configuration, guid, actionBarConfig);
 		}
