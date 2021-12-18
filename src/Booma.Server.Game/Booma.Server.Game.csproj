@@ -7,8 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.2.0" />
-    <PackageReference Include="Booma.Crypto.Common" Version="0.0.60" />
-    <PackageReference Include="Booma.Packet.Game" Version="0.0.60" />
+    <PackageReference Include="Booma.Crypto.Common" Version="0.0.61" />
+    <PackageReference Include="Booma.Packet.Game" Version="0.0.61" />
     <PackageReference Include="Glader.ASP.Authentication.Client" Version="0.0.12" />
     <PackageReference Include="Glader.ASP.GameConfig.Client" Version="0.1.6" />
     <PackageReference Include="Glader.ASP.RPG.Client" Version="0.3.41" />
