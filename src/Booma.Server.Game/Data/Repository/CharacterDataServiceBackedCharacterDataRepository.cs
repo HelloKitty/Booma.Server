@@ -174,6 +174,7 @@ namespace Booma
 			return creationResult.isSuccessful;
 		}
 
+		//TODO: Refactor to Booma.Proxy
 		private CharacterRace ComputeCharacterRace(CharacterClass @class)
 		{
 			switch (@class)
