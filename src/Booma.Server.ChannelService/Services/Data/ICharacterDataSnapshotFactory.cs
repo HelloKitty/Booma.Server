@@ -206,6 +206,7 @@ namespace Booma
 					//0x00010000 is Saber id
 					var item = new InventoryItem((uint) inventoryItem.InstanceId, 0, 0, 0);
 					item.SetWeaponType((byte)template.SubClassId);
+					item.ItemData1[0] = (byte)((int)template.ClassId & 0xFF);
 					item.ItemData1[2] = (byte)(template.Id & 0xFF);
 
 					starterItems.Add(item);

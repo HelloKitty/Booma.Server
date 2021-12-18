@@ -81,6 +81,7 @@ namespace Booma.Server
 					//Successfully added
 					var item = new InventoryItem((uint)instanceCreateResult.Result.InstanceId, 0, 0, 0);
 					item.SetWeaponType((byte)itemTemplate.SubClassId);
+					item.ItemData1[0] = (byte)((int)itemTemplate.ClassId & 0xFF);
 					item.ItemData1[2] = (byte)(itemTemplate.Id & 0xFF);
 
 					await context.MessageService.SendMessageAsync(new BlockNetworkCommand60EventServerPayload(new Sub60CreateInventoryItemCommand(0, item.ItemId, item.ItemData1, item.ItemData2)), token);
